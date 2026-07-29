@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abobi Ferramentas | Suíte de Ferramentas Web Rápidas, Gratuitas e 100% Privadas</title>
+  <meta name="description" content="Ferramentas online para desenvolvedores e produtividade: Gerador de CPF/CNPJ, Formatador JSON, Gerador de QR Code, Hashes, Senhas, Base64 e muito mais. 100% local e seguro." />
+  <meta name="keywords" content="ferramentas dev, gerador cpf, gerador cnpj, formatador json, qr code generator, gerador de senha, hash md5 sha256, base64, abobi ferramentas" />
+  <meta name="author" content="Abobi Ferramentas" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://abobiferramentas.com" />
+  <meta property="og:title" content="Abobi Ferramentas - Suíte de Ferramentas Web Gratuitas" />
+  <meta property="og:description" content="Ferramentas para devs, designers e produtividade. 100% grátis, rápido e processado localmente no seu navegador." />
+  <meta property="og:image" content="https://abobiferramentas.com/og-image.png" />
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- CryptoJS for Hashes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-layout">
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="#" class="brand" id="brand-logo">
+          <div class="brand-icon">
+            <i data-lucide="wrench"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">Abobi<span class="brand-accent">Ferramentas</span></span>
+            <span class="brand-tagline">.com</span>
+          </div>
+        </a>
+
+        <!-- Global Search Bar -->
+        <div class="search-box">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: CPF, JSON, QR Code)" autocomplete="off" />
+          <kbd class="search-kbd">Ctrl K</kbd>
+        </div>
+
+        <div class="nav-actions">
+          <button id="theme-toggle" class="btn-icon" title="Alternar Tema Claro/Escuro" aria-label="Alternar Tema">
+            <i data-lucide="moon" id="theme-icon"></i>
+          </button>
+          <a href="https://github.com/caducosilva/abobiferramentas" target="_blank" class="btn btn-outline" title="Repositório GitHub">
+            <i data-lucide="github"></i>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      
+      <!-- Sidebar Categories -->
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <div class="nav-section-title">Navegação</div>
+          <button class="nav-item active" data-category="all">
+            <i data-lucide="layout-grid"></i>
+            <span>Todas as Ferramentas</span>
+            <span class="badge" id="count-all">0</span>
+          </button>
+          <button class="nav-item" data-category="favorites">
+            <i data-lucide="star"></i>
+            <span>Favoritas</span>
+            <span class="badge" id="count-favorites">0</span>
+          </button>
+
+          <div class="nav-section-title">Categorias</div>
+          <button class="nav-item" data-category="dev">
+            <i data-lucide="code-2"></i>
+            <span>Desenvolvedor & Código</span>
+          </button>
+          <button class="nav-item" data-category="documentos">
+            <i data-lucide="file-check"></i>
+            <span>Documentos & Geradores</span>
+          </button>
+          <button class="nav-item" data-category="design">
+            <i data-lucide="palette"></i>
+            <span>Design & Mídia</span>
+          </button>
+          <button class="nav-item" data-category="seguranca">
+            <i data-lucide="shield-check"></i>
+            <span>Segurança & Cripto</span>
+          </button>
+          <button class="nav-item" data-category="texto">
+            <i data-lucide="type"></i>
+            <span>Texto & Utilidades</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="privacy-badge">
+            <i data-lucide="shield-lock"></i>
+            <span>100% Processamento Local no Navegador</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="content-area">
+        
+        <!-- Hero Section (Visible on Grid View) -->
+        <section id="hero-banner" class="hero-banner">
+          <div class="hero-content">
+            <h1 class="hero-title">Suíte de Ferramentas Web <span class="gradient-text">Gratuitas e Ultra Rápidas</span></h1>
+            <p class="hero-subtitle">Ferramentas essenciais para desenvolvedores, criadores e produtividade diária. Sem cadastros, sem rastreamento e sem limites.</p>
+          </div>
+        </section>
+
+        <!-- Tool Grid View -->
+        <section id="tools-grid-view" class="tools-grid-container">
+          <div class="section-header">
+            <h2 id="current-category-title">Todas as Ferramentas</h2>
+            <span id="tools-count-label" class="text-muted">Mostrando 12 ferramentas</span>
+          </div>
+
+          <div class="tools-grid" id="tools-grid">
+            <!-- Dynamic Tool Cards will be injected by JavaScript -->
+          </div>
+        </section>
+
+        <!-- Single Tool Workspace (Hidden by Default) -->
+        <section id="tool-active-view" class="tool-active-view hidden">
+          <div class="tool-view-header">
+            <button id="btn-back-to-grid" class="btn btn-secondary">
+              <i data-lucide="arrow-left"></i>
+              <span>Voltar para Ferramentas</span>
+            </button>
+            
+            <div class="tool-view-title-wrap">
+              <div id="active-tool-icon" class="active-tool-icon"></div>
+              <div>
+                <h2 id="active-tool-title">Nome da Ferramenta</h2>
+                <p id="active-tool-desc" class="text-muted">Descrição da ferramenta.</p>
+              </div>
+            </div>
+
+            <button id="active-tool-fav-btn" class="btn-icon btn-fav-toggle" title="Favoritar">
+              <i data-lucide="star"></i>
+            </button>
+          </div>
+
+          <!-- Dynamic Active Tool Container -->
+          <div id="active-tool-container" class="active-tool-card">
+            <!-- Dynamic Tool Interface Component -->
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <p>© 2026 Abobi Ferramentas (<a href="https://abobiferramentas.com" class="link">abobiferramentas.com</a>). Código Aberto sob a Licença MIT.</p>
+        <p class="footer-subtext">Desenvolvido com foco em velocidade, privacidade e experiência do usuário.</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
