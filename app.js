@@ -1,7 +1,13 @@
 /**
- * ÓRBITA DEVTOOLS - CORE LOGIC (2026)
- * Design Clean, Minimalista, Responsivo e Direto.
- * Criado por Carlos Eduardo.
+ * ÓRBITA DEVTOOLS / ABOBI FERRAMENTAS (2026)
+ * Suíte Minimalista Focada Exclusivamente nas Ferramentas Solicitadas:
+ * 1. Horários de Ônibus de Mogi das Cruzes
+ * 2. Baixador de Vídeos da Internet (Auto-Download + Pop-up AdSense)
+ * 3. Gerador de Senha Forte (Estilo LastPass)
+ * 4. Gerador de CPF (Com e Sem Pontuação)
+ * 5. Gerador de CNPJ (Com e Sem Pontuação)
+ * 
+ * Desenvolvido por Carlos Eduardo.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,12 +20,124 @@ document.addEventListener('DOMContentLoaded', () => {
     theme: localStorage.getItem('orbita_theme') || 'dark'
   };
 
+  // Base de Dados de Horários de Ônibus de Mogi das Cruzes
+  const busLinesMogi = [
+    {
+      code: 'C001',
+      name: 'Terminal Central ↔ Jundiapeba (via Brás Cubas)',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Central',
+      weekdays: ['05:00', '05:30', '06:00', '06:20', '06:40', '07:00', '07:30', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '20:00', '21:00', '22:00', '23:00'],
+      saturdays: ['05:30', '06:30', '07:30', '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00', '20:30', '22:00'],
+      sundays: ['06:00', '07:30', '09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00']
+    },
+    {
+      code: 'E102',
+      name: 'Terminal Estudantes ↔ Jardim Jundiaí / Vassarola',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:15', '05:45', '06:15', '06:45', '07:15', '07:45', '08:30', '09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30', '16:15', '16:45', '17:15', '17:45', '18:15', '19:00', '20:00', '21:15', '22:30'],
+      saturdays: ['06:00', '07:00', '08:15', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00', '18:30', '20:00', '21:30'],
+      sundays: ['06:30', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00']
+    },
+    {
+      code: 'E103',
+      name: 'Terminal Estudantes ↔ Jundiapeba (via Parque Jundiaí)',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:10', '05:40', '06:10', '06:35', '07:00', '07:25', '07:50', '08:40', '09:40', '10:40', '11:40', '12:40', '13:40', '14:40', '15:40', '16:20', '16:50', '17:20', '17:50', '18:20', '19:10', '20:10', '21:20', '22:40'],
+      saturdays: ['05:45', '07:00', '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00', '20:45'],
+      sundays: ['06:00', '07:45', '09:45', '11:45', '13:45', '15:45', '17:45', '19:45']
+    },
+    {
+      code: 'C201',
+      name: 'Terminal Central ↔ Brás Cubas (via Vila Cintra)',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Central',
+      weekdays: ['05:20', '05:50', '06:20', '06:50', '07:20', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '16:40', '17:20', '18:00', '18:40', '19:30', '20:30', '21:40', '22:50'],
+      saturdays: ['06:15', '07:30', '09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'],
+      sundays: ['07:00', '09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00']
+    },
+    {
+      code: 'C402',
+      name: 'Terminal Central ↔ Sabaúna (via César de Souza)',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Central',
+      weekdays: ['05:30', '06:15', '07:00', '08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '16:45', '17:45', '18:45', '20:00', '21:30', '22:45'],
+      saturdays: ['06:00', '07:30', '09:30', '11:30', '13:30', '15:30', '17:30', '19:30', '21:30'],
+      sundays: ['07:00', '09:30', '12:00', '14:30', '17:00', '19:30']
+    },
+    {
+      code: 'E890',
+      name: 'Terminal Estudantes ↔ Botujuru / Itapety',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:05', '05:35', '06:05', '06:35', '07:05', '07:35', '08:20', '09:20', '10:20', '11:20', '12:20', '13:20', '14:20', '15:20', '16:05', '16:35', '17:05', '17:35', '18:05', '18:45', '19:45', '21:00', '22:15'],
+      saturdays: ['05:30', '06:45', '08:15', '09:45', '11:15', '12:45', '14:15', '15:45', '17:15', '18:45', '20:15', '21:45'],
+      sundays: ['06:15', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00']
+    },
+    {
+      code: 'E108',
+      name: 'Terminal Estudantes ↔ Jardim Universo',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:25', '05:55', '06:25', '06:55', '07:25', '08:10', '09:10', '10:10', '11:10', '12:10', '13:10', '14:10', '15:10', '16:15', '16:55', '17:35', '18:15', '19:15', '20:15', '21:30', '22:40'],
+      saturdays: ['06:10', '07:30', '09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'],
+      sundays: ['07:15', '09:15', '11:15', '13:15', '15:15', '17:15', '19:15', '21:15']
+    },
+    {
+      code: 'C301',
+      name: 'Terminal Central ↔ Conjunto Santo Ângelo',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Central',
+      weekdays: ['05:10', '05:40', '06:10', '06:40', '07:10', '07:40', '08:30', '09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30', '16:10', '16:40', '17:10', '17:40', '18:10', '18:50', '19:50', '21:10', '22:25'],
+      saturdays: ['05:40', '07:00', '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00', '20:30'],
+      sundays: ['06:30', '08:30', '10:30', '12:30', '14:30', '16:30', '18:30', '20:30']
+    },
+    {
+      code: 'E392',
+      name: 'Terminal Estudantes ↔ Manoel Ferreira / Biritiba Ussú',
+      type: 'Municipal SIM Mogi',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:30', '06:45', '08:15', '10:00', '12:00', '14:00', '15:45', '17:15', '18:45', '20:30', '22:15'],
+      saturdays: ['06:00', '08:00', '10:30', '13:00', '15:30', '18:00', '20:30'],
+      sundays: ['07:00', '10:00', '13:00', '16:00', '19:00']
+    },
+    {
+      code: '416',
+      name: 'Mogi das Cruzes (Terminal Estudantes) ↔ Santa Isabel (EMTU)',
+      type: 'Intermunicipal EMTU',
+      terminal: 'Terminal Estudantes',
+      weekdays: ['05:15', '06:00', '06:45', '07:30', '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:00', '18:00', '19:15', '20:45', '22:15'],
+      saturdays: ['06:00', '07:45', '09:45', '11:45', '13:45', '15:45', '17:45', '19:45', '21:30'],
+      sundays: ['06:30', '09:00', '12:00', '15:00', '18:00', '21:00']
+    },
+    {
+      code: '200',
+      name: 'Mogi das Cruzes (Rodoviária) ↔ SP Terminal Rodoviário Tietê (EMTU)',
+      type: 'Intermunicipal EMTU / Pássaro Marron',
+      terminal: 'Terminal Rodoviário Geraldo Scavone',
+      weekdays: ['05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:30', '09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30', '16:30', '17:15', '18:00', '18:45', '19:45', '20:45', '22:00'],
+      saturdays: ['06:00', '07:15', '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00', '20:30', '22:00'],
+      sundays: ['07:00', '09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00']
+    }
+  ];
+
+  // Ferramentas Ativas Exclusivas Solicitadas pelo Usuário
   const tools = [
+    {
+      id: 'mogi-bus',
+      name: 'Horários de Ônibus de Mogi das Cruzes',
+      description: 'Consulte horários e itinerários das linhas municipais e intermunicipais de Mogi das Cruzes (SIM Mogi / EMTU).',
+      category: 'transportes',
+      icon: 'bus',
+      render: renderMogiBusTool
+    },
     {
       id: 'video-downloader',
       name: 'Baixador de Vídeos da Internet',
-      description: 'Baixe vídeos públicos do YouTube, Instagram, TikTok e Twitter na máxima qualidade disponível.',
-      category: 'video',
+      description: 'Baixe vídeos públicos do YouTube, Instagram, TikTok sem marca d\'água e Twitter na melhor qualidade.',
+      category: 'midia',
       icon: 'video',
       render: renderVideoDownloaderTool
     },
@@ -34,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cpf',
       name: 'Gerador de CPF (Com e Sem Pontuação)',
-      description: 'Gere CPFs válidos para testes com botões de 1-clique com e sem pontuação.',
+      description: 'Gere CPFs válidos para testes com botões de 1-clique com e sem pontuação + auto-cópia.',
       category: 'documentos',
       icon: 'file-check',
       render: renderCPFTool
@@ -46,78 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
       category: 'documentos',
       icon: 'building-2',
       render: renderCNPJTool
-    },
-    {
-      id: 'json',
-      name: 'Formatador & Minificador JSON',
-      description: 'Valide, formate e minifique estruturas JSON de forma rápida e segura.',
-      category: 'dev',
-      icon: 'code-2',
-      render: renderJSONTool
-    },
-    {
-      id: 'qrcode',
-      name: 'Gerador de QR Code',
-      description: 'Crie códigos QR para links, textos ou chave PIX com download em alta qualidade.',
-      category: 'utilitarios',
-      icon: 'qr-code',
-      render: renderQRCodeTool
-    },
-    {
-      id: 'hash',
-      name: 'Gerador de Hashes (MD5 / SHA-256)',
-      description: 'Gere hashes MD5 e SHA-256 a partir de qualquer texto instantaneamente.',
-      category: 'seguranca',
-      icon: 'key-round',
-      render: renderHashTool
-    },
-    {
-      id: 'base64',
-      name: 'Codificador / Decodificador Base64',
-      description: 'Codifique e decodifique textos em Base64 com 1 clique.',
-      category: 'dev',
-      icon: 'binary',
-      render: renderBase64Tool
-    },
-    {
-      id: 'counter',
-      name: 'Contador de Texto e Palavras',
-      description: 'Análise completa de caracteres, palavras, linhas e estimativa de tempo de leitura.',
-      category: 'utilitarios',
-      icon: 'type',
-      render: renderCounterTool
-    },
-    {
-      id: 'uuid',
-      name: 'Gerador de UUID v4',
-      description: 'Gere identificadores únicos universais (UUID v4) em lote.',
-      category: 'dev',
-      icon: 'fingerprint',
-      render: renderUUIDTool
-    },
-    {
-      id: 'px-rem',
-      name: 'Conversor PX para REM',
-      description: 'Conversão instantânea de Pixels para REM para folhas de estilo CSS.',
-      category: 'dev',
-      icon: 'ruler',
-      render: renderPxRemTool
-    },
-    {
-      id: 'lorem',
-      name: 'Gerador de Lorem Ipsum',
-      description: 'Gere parágrafos de texto fictício Lorem Ipsum para layouts.',
-      category: 'utilitarios',
-      icon: 'align-left',
-      render: renderLoremTool
-    },
-    {
-      id: 'color',
-      name: 'Seletor de Cores & HEX',
-      description: 'Seletor de cores rápido com códigos HEX e RGB copiáveis.',
-      category: 'utilitarios',
-      icon: 'palette',
-      render: renderColorTool
     }
   ];
 
@@ -197,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return matchCat && matchSearch;
     });
 
-    el.toolsCountLabel.textContent = `${filtered.length} de ${tools.length} ferramentas`;
+    el.toolsCountLabel.textContent = `${filtered.length} de ${tools.length} ferramentas exclusivas`;
 
     filtered.forEach(tool => {
       const card = document.createElement('div');
@@ -211,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="tool-card-desc">${tool.description}</p>
         </div>
         <div class="tool-card-action">
-          <span>Abrir</span>
+          <span>Abrir Ferramenta</span>
           <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
         </div>
       `;
@@ -303,13 +349,104 @@ document.addEventListener('DOMContentLoaded', () => {
     el.themeIcon.setAttribute('data-lucide', state.theme === 'dark' ? 'moon' : 'sun');
   }
 
-  /* 1. BAIXADOR DE VÍDEOS */
+  /* ========================================================
+     1. HORÁRIOS DE ÔNIBUS DE MOGI DAS CRUZES
+     ======================================================== */
+  function renderMogiBusTool(container) {
+    container.innerHTML = `
+      <div style="max-width: 820px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h3 style="font-size: 1.3rem; font-weight: 800;">Consulta de Horários de Ônibus - Mogi das Cruzes</h3>
+          <p class="text-muted" style="font-size: 0.9rem;">Pesquise por código, bairro ou nome da linha municipal ou intermunicipal.</p>
+        </div>
+
+        <!-- Bus Search Bar -->
+        <div class="form-group" style="margin-bottom: 20px;">
+          <div style="position: relative;">
+            <input type="text" id="mogi-bus-search" class="form-input" placeholder="Buscar por código ou bairro (Ex: C001, Jundiapeba, Estudantes, Sabaúna)..." style="padding-left: 40px;" />
+            <i data-lucide="search" style="position: absolute; left: 12px; top: 12px; width: 18px; height: 18px; color: var(--text-muted);"></i>
+          </div>
+        </div>
+
+        <div id="mogi-bus-list" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Dynamic Bus Cards -->
+        </div>
+      </div>
+    `;
+
+    const searchInput = container.querySelector('#mogi-bus-search');
+    const busList = container.querySelector('#mogi-bus-list');
+
+    function renderBuses(query = '') {
+      busList.innerHTML = '';
+      const q = query.toLowerCase().trim();
+      const filtered = busLinesMogi.filter(b => 
+        b.code.toLowerCase().includes(q) || 
+        b.name.toLowerCase().includes(q) || 
+        b.terminal.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        busList.innerHTML = `
+          <div style="text-align: center; padding: 32px; color: var(--text-muted);">
+            <p>Nenhuma linha de ônibus encontrada para "${query}".</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(bus => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+          background: var(--bg-input);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 20px;
+        `;
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <span style="background: var(--accent-primary); color: #fff; font-weight: 800; font-size: 0.85rem; padding: 3px 10px; border-radius: var(--radius-full); font-family: var(--font-mono);">${bus.code}</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">${bus.type}</span>
+              <h4 style="font-size: 1.1rem; font-weight: 700; margin-top: 6px;">${bus.name}</h4>
+              <p style="font-size: 0.82rem; color: var(--text-muted);">Ponto Principal: ${bus.terminal}</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; border-top: 1px dashed var(--border-color); padding-top: 14px;">
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 4px;">DIAS ÚTEIS:</div>
+              <div class="font-mono" style="font-size: 0.82rem; color: var(--text-primary); line-height: 1.6;">${bus.weekdays.join(' • ')}</div>
+            </div>
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-green); margin-bottom: 4px;">SÁBADOS:</div>
+              <div class="font-mono" style="font-size: 0.82rem; color: var(--text-primary); line-height: 1.6;">${bus.saturdays.join(' • ')}</div>
+            </div>
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-hover); margin-bottom: 4px;">DOMINGOS E FERIADOS:</div>
+              <div class="font-mono" style="font-size: 0.82rem; color: var(--text-primary); line-height: 1.6;">${bus.sundays.join(' • ')}</div>
+            </div>
+          </div>
+        `;
+        busList.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    searchInput.addEventListener('input', (e) => renderBuses(e.target.value));
+    renderBuses();
+  }
+
+  /* ========================================================
+     2. BAIXADOR DE VÍDEOS DA INTERNET (AUTO-DOWNLOAD + POP-UP ADSENSE)
+     ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 680px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
           <h3 style="font-size: 1.3rem; font-weight: 800;">Baixar Vídeo em Máxima Qualidade</h3>
-          <p class="text-muted" style="font-size: 0.9rem;">Cole o link do YouTube, Instagram, TikTok ou Twitter.</p>
+          <p class="text-muted" style="font-size: 0.9rem;">Cole o link do YouTube, Instagram, TikTok sem marca d'água ou Twitter.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
@@ -425,7 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* 2. LASTPASS PASSWORDS */
+  /* ========================================================
+     3. GERADOR DE SENHA FORTE (ESTILO LASTPASS)
+     ======================================================== */
   function renderLastPassPasswordTool(container) {
     container.innerHTML = `
       <div style="max-width: 680px; margin: 0 auto;">
@@ -496,7 +635,9 @@ document.addEventListener('DOMContentLoaded', () => {
     generate(true);
   }
 
-  /* 3. CPF TOOL */
+  /* ========================================================
+     4. GERADOR DE CPF (COM E SEM PONTUAÇÃO)
+     ======================================================== */
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="max-width: 680px; margin: 0 auto;">
@@ -536,7 +677,9 @@ document.addEventListener('DOMContentLoaded', () => {
     genCPF(true);
   }
 
-  /* 4. CNPJ TOOL */
+  /* ========================================================
+     5. GERADOR DE CNPJ (COM E SEM PONTUAÇÃO)
+     ======================================================== */
   function renderCNPJTool(container) {
     container.innerHTML = `
       <div style="max-width: 680px; margin: 0 auto;">
@@ -576,258 +719,6 @@ document.addEventListener('DOMContentLoaded', () => {
     container.querySelector('#btn-cnpj-fmt').onclick = () => genCNPJ(true);
     container.querySelector('#btn-cnpj-raw').onclick = () => genCNPJ(false);
     genCNPJ(true);
-  }
-
-  /* 5. JSON TOOL */
-  function renderJSONTool(container) {
-    container.innerHTML = `
-      <div class="form-group">
-        <textarea id="json-input" class="form-textarea font-mono" placeholder='Cole seu JSON aqui...'></textarea>
-      </div>
-
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <button id="btn-fmt" class="btn btn-primary">Formatar e Copiar</button>
-        <button id="btn-min" class="btn btn-secondary">Minificar e Copiar</button>
-      </div>
-
-      <div class="output-box">
-        <pre id="json-out" class="font-mono" style="font-size: 0.9rem; color: var(--accent-cyan); white-space: pre-wrap;"></pre>
-      </div>
-    `;
-
-    const input = container.querySelector('#json-input');
-    const out = container.querySelector('#json-out');
-
-    container.querySelector('#btn-fmt').onclick = () => {
-      try {
-        const obj = JSON.parse(input.value);
-        const res = JSON.stringify(obj, null, 2);
-        out.textContent = res;
-        copyToClipboard(res, 'JSON formatado e copiado!');
-      } catch (e) { out.textContent = 'JSON inválido'; }
-    };
-
-    container.querySelector('#btn-min').onclick = () => {
-      try {
-        const obj = JSON.parse(input.value);
-        const res = JSON.stringify(obj);
-        out.textContent = res;
-        copyToClipboard(res, 'JSON minificado e copiado!');
-      } catch (e) { out.textContent = 'JSON inválido'; }
-    };
-  }
-
-  /* 6. QR CODE */
-  function renderQRCodeTool(container) {
-    container.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
-        <div>
-          <div class="form-group">
-            <label class="form-label">Link ou Texto:</label>
-            <input type="text" id="qr-in" class="form-input" value="https://abobiferramentas.com" />
-          </div>
-          <button id="btn-qr" class="btn btn-primary" style="width: 100%;">Gerar QR Code</button>
-        </div>
-        <div style="text-align: center; background: #fff; padding: 16px; border-radius: var(--radius-md);">
-          <div id="qr-box"></div>
-        </div>
-      </div>
-    `;
-
-    const input = container.querySelector('#qr-in');
-    const box = container.querySelector('#qr-box');
-
-    function make() {
-      box.innerHTML = '';
-      if (input.value) new QRCode(box, { text: input.value, width: 160, height: 160 });
-    }
-
-    container.querySelector('#btn-qr').onclick = make;
-    make();
-  }
-
-  /* 7. HASH TOOL */
-  function renderHashTool(container) {
-    container.innerHTML = `
-      <div class="form-group">
-        <label class="form-label">Texto:</label>
-        <input type="text" id="hash-in" class="form-input" value="Órbita DevTools" />
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div class="output-box" id="box-md5" style="cursor: pointer;">MD5: <span id="md5-out" class="font-mono" style="color: var(--accent-cyan);"></span></div>
-        <div class="output-box" id="box-sha256" style="cursor: pointer;">SHA-256: <span id="sha256-out" class="font-mono" style="color: var(--accent-cyan);"></span></div>
-      </div>
-    `;
-
-    const input = container.querySelector('#hash-in');
-    const md5 = container.querySelector('#md5-out');
-    const sha = container.querySelector('#sha256-out');
-
-    function update() {
-      if (!input.value) return;
-      md5.textContent = CryptoJS.MD5(input.value).toString();
-      sha.textContent = CryptoJS.SHA256(input.value).toString();
-    }
-
-    container.querySelector('#box-md5').onclick = () => copyToClipboard(md5.textContent);
-    container.querySelector('#box-sha256').onclick = () => copyToClipboard(sha.textContent);
-
-    input.oninput = update;
-    update();
-  }
-
-  /* 8. BASE64 */
-  function renderBase64Tool(container) {
-    container.innerHTML = `
-      <div class="form-group">
-        <textarea id="b64-in" class="form-textarea font-mono" placeholder="Digite seu texto..."></textarea>
-      </div>
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <button id="btn-enc" class="btn btn-primary">Codificar</button>
-        <button id="btn-dec" class="btn btn-secondary">Decodificar</button>
-      </div>
-      <div class="output-box"><div id="b64-out" class="font-mono"></div></div>
-    `;
-
-    const input = container.querySelector('#b64-in');
-    const out = container.querySelector('#b64-out');
-
-    container.querySelector('#btn-enc').onclick = () => {
-      const res = btoa(unescape(encodeURIComponent(input.value)));
-      out.textContent = res;
-      copyToClipboard(res);
-    };
-
-    container.querySelector('#btn-dec').onclick = () => {
-      try {
-        const res = decodeURIComponent(escape(atob(input.value)));
-        out.textContent = res;
-        copyToClipboard(res);
-      } catch (e) { out.textContent = 'Erro ao decodificar'; }
-    };
-  }
-
-  /* 9. COUNTER */
-  function renderCounterTool(container) {
-    container.innerHTML = `
-      <div class="form-group">
-        <textarea id="cnt-in" class="form-textarea" placeholder="Digite seu texto..."></textarea>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center;">
-        <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md);">
-          <div id="cnt-c" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-primary);">0</div>
-          <div class="text-muted" style="font-size: 0.8rem;">Caracteres</div>
-        </div>
-        <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md);">
-          <div id="cnt-w" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-cyan);">0</div>
-          <div class="text-muted" style="font-size: 0.8rem;">Palavras</div>
-        </div>
-        <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md);">
-          <div id="cnt-l" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-green);">0</div>
-          <div class="text-muted" style="font-size: 0.8rem;">Linhas</div>
-        </div>
-        <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md);">
-          <div id="cnt-r" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-hover);">0m</div>
-          <div class="text-muted" style="font-size: 0.8rem;">Leitura</div>
-        </div>
-      </div>
-    `;
-
-    const input = container.querySelector('#cnt-in');
-    input.oninput = () => {
-      const text = input.value;
-      const chars = text.length;
-      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-      const lines = text ? text.split('\n').length : 0;
-
-      container.querySelector('#cnt-c').textContent = chars;
-      container.querySelector('#cnt-w').textContent = words;
-      container.querySelector('#cnt-l').textContent = lines;
-      container.querySelector('#cnt-r').textContent = `${Math.ceil(words / 200)}m`;
-    };
-  }
-
-  /* 10. UUID */
-  function renderUUIDTool(container) {
-    container.innerHTML = `
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <button id="btn-uuid" class="btn btn-primary">Gerar 5 UUIDs v4 e Copiar</button>
-      </div>
-      <div class="output-box"><pre id="uuid-out" class="font-mono" style="color: var(--accent-cyan);"></pre></div>
-    `;
-
-    const out = container.querySelector('#uuid-out');
-    function gen() {
-      const res = Array.from({ length: 5 }, () => crypto.randomUUID()).join('\n');
-      out.textContent = res;
-      copyToClipboard(res);
-    }
-    container.querySelector('#btn-uuid').onclick = gen;
-    gen();
-  }
-
-  /* 11. PX TO REM */
-  function renderPxRemTool(container) {
-    container.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div class="form-group">
-          <label class="form-label">Pixels (PX):</label>
-          <input type="number" id="px-in" class="form-input font-mono" value="16" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">REM:</label>
-          <input type="number" id="rem-in" class="form-input font-mono" value="1" step="0.125" />
-        </div>
-      </div>
-    `;
-
-    const px = container.querySelector('#px-in');
-    const rem = container.querySelector('#rem-in');
-    px.oninput = () => { rem.value = px.value ? (px.value / 16) : ''; };
-    rem.oninput = () => { px.value = rem.value ? (rem.value * 16) : ''; };
-  }
-
-  /* 12. LOREM */
-  function renderLoremTool(container) {
-    container.innerHTML = `
-      <button id="btn-lorem" class="btn btn-primary" style="margin-bottom: 16px;">Gerar Lorem Ipsum e Copiar</button>
-      <div class="output-box" id="lorem-out" style="line-height: 1.6;"></div>
-    `;
-    const txt = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-    const out = container.querySelector('#lorem-out');
-    function gen() {
-      out.textContent = txt;
-      copyToClipboard(txt);
-    }
-    container.querySelector('#btn-lorem').onclick = gen;
-    gen();
-  }
-
-  /* 13. COLOR */
-  function renderColorTool(container) {
-    container.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;">
-        <div>
-          <div class="form-group">
-            <input type="color" id="picker" value="#3b82f6" style="width: 100%; height: 50px; border: none; border-radius: var(--radius-md); cursor: pointer;" />
-          </div>
-          <div class="output-box" id="hex-box" style="cursor: pointer; margin-bottom: 8px;">HEX: <strong id="hex-val" class="font-mono">#3b82f6</strong></div>
-        </div>
-        <div id="color-prev" style="height: 120px; border-radius: var(--radius-md); background: #3b82f6;"></div>
-      </div>
-    `;
-    const picker = container.querySelector('#picker');
-    const hex = container.querySelector('#hex-val');
-    const prev = container.querySelector('#color-prev');
-
-    picker.oninput = () => {
-      hex.textContent = picker.value;
-      prev.style.background = picker.value;
-    };
-
-    container.querySelector('#hex-box').onclick = () => copyToClipboard(hex.textContent);
   }
 
 });
