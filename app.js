@@ -1,8 +1,13 @@
 /**
- * ABOBI FERRAMENTAS - LÓGICA PRINCIPAL (2026)
- * Interface Direta, Clean, Responsiva e Formatada em Maiúsculas com Acentuação Perfeita.
+ * ABOBI FERRAMENTAS - LÓGICA PRINCIPAL COM ROTEAMENTO DE URLS AMIGÁVEIS (2026)
+ * Suporte a URLs diretas:
+ * - /horario-de-onibus-mogi
+ * - /baixador-de-videos (ou /video-downloader)
+ * - /gerador-de-senha
+ * - /gerador-de-cpf
+ * - /gerador-de-cnpj
  * 
- * Criado por Carlos Eduardo.
+ * Desenvolvido por Carlos Eduardo.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     theme: localStorage.getItem('abobi_theme') || 'dark'
   };
 
-  // Base de Dados Oficial dos Horários de Ônibus de Mogi das Cruzes (Com acentuação perfeita)
+  // Base de Dados Oficial dos Horários de Ônibus de Mogi das Cruzes
   const busLinesMogi = [
     {
       code: 'C001',
@@ -118,10 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  // As 5 Ferramentas Solicitadas
+  // Ferramentas com Slugs para Roteamento de URL
   const tools = [
     {
       id: 'mogi-bus',
+      slug: 'horarios-de-onibus-mogi',
+      aliases: ['/horario-de-onibus-mogi', '/onibus-mogi', '/mogi-bus'],
       name: 'HORÁRIOS DE ÔNIBUS DE MOGI DAS CRUZES',
       description: 'CONSULTE HORÁRIOS E ITINERÁRIOS DAS LINHAS MUNICIPAIS E INTERMUNICIPAIS DE MOGI DAS CRUZES (SIM MOGI / EMTU).',
       category: 'transportes',
@@ -130,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 'video-downloader',
+      slug: 'baixador-de-videos',
+      aliases: ['/video-downloader', '/baixar-videos'],
       name: 'BAIXADOR DE VÍDEOS DA INTERNET',
       description: 'BAIXE VÍDEOS PÚBLICOS DO YOUTUBE, INSTAGRAM, TIKTOK SEM MARCA D\'ÁGUA E TWITTER NA MÁXIMA QUALIDADE.',
       category: 'midia',
@@ -138,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 'password',
+      slug: 'gerador-de-senha',
+      aliases: ['/gerador-de-senhas', '/senha'],
       name: 'GERADOR DE SENHA FORTE (ESTILO LASTPASS)',
       description: 'GERE SENHAS ULTRA SEGURAS ESTILO LASTPASS COM AUTO-CÓPIA AUTOMÁTICA NO CLIPBOARD.',
       category: 'seguranca',
@@ -146,6 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 'cpf',
+      slug: 'gerador-de-cpf',
+      aliases: ['/cpf', '/gerar-cpf'],
       name: 'GERADOR DE CPF (COM E SEM PONTUAÇÃO)',
       description: 'GERE CPFS VÁLIDOS PARA TESTES COM BOTÕES DE 1-CLIQUE COM E SEM PONTUAÇÃO + AUTO-CÓPIA.',
       category: 'documentos',
@@ -154,6 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 'cnpj',
+      slug: 'gerador-de-cnpj',
+      aliases: ['/cnpj', '/gerar-cnpj'],
       name: 'GERADOR DE CNPJ (COM E SEM PONTUAÇÃO)',
       description: 'GERE CNPJS VÁLIDOS COM E SEM PONTUAÇÃO INSTANTANEAMENTE COM AUTO-CÓPIA.',
       category: 'documentos',
@@ -187,6 +202,37 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGrid();
   attachEvents();
 
+  // ROTEAMENTO INICIAL BASEADO NA URL DO NAVEGADOR
+  handleInitialRoute();
+
+  // Roteamento ao clicar no voltar/avançar do navegador
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.toolId) {
+      openTool(e.state.toolId, false);
+    } else {
+      showGridView(false);
+    }
+  });
+
+  function handleInitialRoute() {
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/' || path === '' || path === '/index.html') {
+      showGridView(false);
+      return;
+    }
+
+    const matchedTool = tools.find(t => 
+      `/${t.slug}` === path || 
+      t.aliases.includes(path)
+    );
+
+    if (matchedTool) {
+      openTool(matchedTool.id, false);
+    } else {
+      showGridView(false);
+    }
+  }
+
   function attachEvents() {
     el.globalSearch.addEventListener('input', (e) => {
       state.searchQuery = e.target.value.toLowerCase().trim();
@@ -203,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    el.btnBackToGrid.addEventListener('click', showGridView);
+    el.btnBackToGrid.addEventListener('click', () => showGridView(true));
     el.themeToggle.addEventListener('click', toggleTheme);
 
     document.querySelectorAll('.btn-open-modal').forEach(btn => {
@@ -256,14 +302,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
         </div>
       `;
-      card.addEventListener('click', () => openTool(tool.id));
+      card.addEventListener('click', () => openTool(tool.id, true));
       el.toolsGrid.appendChild(card);
     });
 
     lucide.createIcons();
   }
 
-  function openTool(id) {
+  function openTool(id, updateHistory = true) {
     const tool = tools.find(t => t.id === id);
     if (!tool) return;
 
@@ -277,14 +323,23 @@ document.addEventListener('DOMContentLoaded', () => {
     el.activeToolContainer.innerHTML = '';
     tool.render(el.activeToolContainer);
 
+    // ATUALIZAR URL NO NAVEGADOR (Ex: /gerador-de-cpf, /baixador-de-videos)
+    if (updateHistory) {
+      history.pushState({ toolId: tool.id }, tool.name, `/${tool.slug}`);
+    }
+
     lucide.createIcons();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function showGridView() {
+  function showGridView(updateHistory = true) {
     state.activeToolId = null;
     el.toolActiveView.classList.add('hidden');
     el.toolsGridView.classList.remove('hidden');
+
+    if (updateHistory) {
+      history.pushState(null, 'ABOBI FERRAMENTAS', '/');
+    }
   }
 
   function showToast(message) {
