@@ -10,8 +10,8 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7169685901436487" crossorigin="anonymous"></script>
   
   <!-- Primary SEO Meta Tags -->
-  <meta name="description" content="Suíte de ferramentas web gratuitas, ultra rápidas e 100% privadas: Gerador de Senha Forte estilo LastPass, Gerador de CPF/CNPJ, Formatador JSON, QR Code, Hashes e muito mais." />
-  <meta name="keywords" content="gerador de senha, gerador de cpf, gerador de cnpj, formatador json, gerador de qr code, abobi ferramentas, ferramentas online grátis, devtools brasil" />
+  <meta name="description" content="Suíte de ferramentas web gratuitas, ultra rápidas e 100% privadas: Baixador de Vídeos, Gerador de Senha Forte estilo LastPass, Gerador de CPF/CNPJ, Formatador JSON, QR Code, Hashes e muito mais." />
+  <meta name="keywords" content="baixador de videos, gerador de senha, gerador de cpf, gerador de cnpj, formatador json, gerador de qr code, abobi ferramentas, ferramentas online grátis, devtools brasil" />
   <meta name="author" content="Abobi Ferramentas" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://abobiferramentas.com" />
@@ -19,8 +19,8 @@
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://abobiferramentas.com/" />
-  <meta property="og:title" content="Abobi Ferramentas | Gerador de Senhas, CPF e Ferramentas Web" />
-  <meta property="og:description" content="Gerador de senhas estilo LastPass, CPF/CNPJ com auto-cópia no clipboard, formatador JSON, QR Code e muito mais. 100% grátis e seguro." />
+  <meta property="og:title" content="Abobi Ferramentas | Gerador de Senhas, CPF e Baixador de Vídeos" />
+  <meta property="og:description" content="Baixador de vídeos na máxima qualidade, gerador de senhas estilo LastPass, CPF/CNPJ com auto-cópia no clipboard, formatador JSON, QR Code e muito mais. 100% grátis e seguro." />
   <meta property="og:image" content="https://abobiferramentas.com/og-image.png" />
 
   <!-- Twitter Cards -->
@@ -80,7 +80,7 @@
         <!-- Global Search Bar -->
         <div class="search-box">
           <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: Senha, CPF, JSON, QR)" autocomplete="off" />
+          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: Vídeo, Senha, CPF, JSON)" autocomplete="off" />
           <kbd class="search-kbd">Ctrl K</kbd>
         </div>
 
@@ -115,6 +115,10 @@
           </button>
 
           <div class="nav-section-title">Categorias</div>
+          <button class="nav-item" data-category="design">
+            <i data-lucide="video"></i>
+            <span>Baixador de Vídeos & Mídia</span>
+          </button>
           <button class="nav-item" data-category="seguranca">
             <i data-lucide="shield-check"></i>
             <span>Segurança & Senhas</span>
@@ -126,10 +130,6 @@
           <button class="nav-item" data-category="dev">
             <i data-lucide="code-2"></i>
             <span>Desenvolvedor & Código</span>
-          </button>
-          <button class="nav-item" data-category="design">
-            <i data-lucide="palette"></i>
-            <span>Design & Mídia</span>
           </button>
           <button class="nav-item" data-category="texto">
             <i data-lucide="type"></i>
@@ -180,7 +180,7 @@
         <section id="hero-banner" class="hero-banner">
           <div class="hero-content">
             <h1 class="hero-title">Ferramentas Web Gratuitas com <span class="gradient-text">Auto-Cópia para o Clipboard</span></h1>
-            <p class="hero-subtitle">Gere senhas fortes estilo LastPass, CPFs, CNPJs, QR Codes e hashes de forma instantânea. Qualquer valor gerado é <strong>copiado automaticamente para colar (Ctrl+V)</strong> no seu dispositivo.</p>
+            <p class="hero-subtitle">Baixe vídeos na melhor qualidade, gere senhas estilo LastPass, CPFs, CNPJs, QR Codes e hashes de forma instantânea. Qualquer valor é <strong>copiado automaticamente para colar (Ctrl+V)</strong> no seu dispositivo.</p>
           </div>
         </section>
 
@@ -188,7 +188,7 @@
         <section id="tools-grid-view" class="tools-grid-container">
           <div class="section-header">
             <h2 id="current-category-title">Todas as Ferramentas</h2>
-            <span id="tools-count-label" class="text-muted">Mostrando 12 ferramentas</span>
+            <span id="tools-count-label" class="text-muted">Mostrando 13 ferramentas</span>
           </div>
 
           <div class="tools-grid" id="tools-grid">
@@ -228,6 +228,38 @@
 
     <!-- Persistent Copy Banner / Toast Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- AdSense Interstitial Pop-up Modal (Monetização nos Downloads de Vídeo) -->
+    <div id="modal-ad-interstitial" class="modal-backdrop hidden">
+      <div class="modal-card" style="max-width: 520px; text-align: center;">
+        <div class="modal-header" style="justify-content: center;">
+          <h3 style="color: var(--accent-green); display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="sparkles"></i> <span>Seu Vídeo Está Sendo Preparado...</span>
+          </h3>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.95rem; margin-bottom: 16px; color: var(--text-primary);">
+            Aguarde um instante enquanto processamos o download na <strong>máxima qualidade disponível</strong>.
+          </p>
+
+          <!-- AdSense Pop-up Container -->
+          <div class="ad-container" style="min-height: 250px; margin: 16px 0;">
+            <span class="ad-label">PUBLICIDADE PARCEIRA</span>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7169685901436487"
+                 data-ad-slot="auto"
+                 data-ad-format="rectangle"
+                 data-full-width-responsive="true"></ins>
+          </div>
+
+          <button id="btn-close-ad-popup" class="btn btn-primary" style="width: 100%; padding: 12px; gap: 8px;">
+            <i data-lucide="download"></i>
+            <span>Continuar para o Download do Vídeo</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Modals for Terms & Privacy (AdSense Requirement) -->
     <div id="modal-privacy" class="modal-backdrop hidden">

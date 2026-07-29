@@ -1,6 +1,6 @@
 /**
  * ABOBI FERRAMENTAS - CORE APPLICATION LOGIC (2026)
- * Suíte completa de ferramentas web 100% locais e privadas com auto-cópia instantânea e baixador de vídeos automático.
+ * Suíte completa de ferramentas web 100% locais e privadas com auto-cópia instantânea, baixador de vídeos com pop-up de anúncio e monetização.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tools = [
     {
       id: 'video-downloader',
-      name: 'Baixador de Vídeos da Internet (Auto-Download em Máxima Qualidade)',
+      name: 'Baixador de Vídeos da Internet (Auto-Download + Pop-up de Anúncio)',
       description: 'Insira o link e o vídeo será baixado automaticamente na melhor qualidade disponível com thumbnail e título.',
       category: 'design',
       icon: 'video',
@@ -146,7 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
     countAll: document.getElementById('count-all'),
     countFavorites: document.getElementById('count-favorites'),
     modalPrivacy: document.getElementById('modal-privacy'),
-    modalTerms: document.getElementById('modal-terms')
+    modalTerms: document.getElementById('modal-terms'),
+    modalAdInterstitial: document.getElementById('modal-ad-interstitial'),
+    btnCloseAdPopup: document.getElementById('btn-close-ad-popup')
   };
 
   // Initialize App
@@ -236,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
       favorites: 'Ferramentas Favoritas',
       dev: 'Desenvolvedor & Código',
       documentos: 'CPF, CNPJ & Geradores',
-      design: 'Design, Mídia & Vídeos',
+      design: 'Baixador de Vídeos & Mídia',
       seguranca: 'Segurança & Senhas',
       texto: 'Texto & Utilidades'
     };
@@ -413,15 +415,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     0. BAIXADOR DE VÍDEOS COM AUTO-DOWNLOAD NA MÁXIMA QUALIDADE + THUMBNAIL
+     0. BAIXADOR DE VÍDEOS COM POPUP DE ANÚNCIO E AUTO-DOWNLOAD
      ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 760px; margin: 0 auto;">
         
         <div style="text-align: center; margin-bottom: 24px;">
-          <h3 style="font-size: 1.4rem; font-weight: 800;">Baixar Vídeos em Máxima Qualidade (Auto-Download)</h3>
-          <p class="text-muted" style="font-size: 0.95rem;">Insira o link e o vídeo será <strong>encontrado com miniatura, nome e baixado automaticamente na melhor qualidade disponível</strong>.</p>
+          <h3 style="font-size: 1.4rem; font-weight: 800;">Baixar Vídeos em Máxima Qualidade</h3>
+          <p class="text-muted" style="font-size: 0.95rem;">Insira o link e o vídeo será <strong>encontrado com miniatura, nome e baixado na melhor qualidade disponível</strong>.</p>
         </div>
 
         <!-- Input Box -->
@@ -442,34 +444,31 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Loader / Status -->
         <div id="video-status" style="text-align: center; display: none; margin-bottom: 24px;">
           <div class="spinner" style="display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;"></div>
-          <p id="video-status-text" style="font-weight: 600; color: var(--accent-cyan);">Localizando vídeo e preparando download automático na máxima qualidade...</p>
+          <p id="video-status-text" style="font-weight: 600; color: var(--accent-cyan);">Localizando vídeo e preparando o download automático na máxima qualidade...</p>
         </div>
 
-        <!-- Result Card with Thumbnail, Title & Auto Download Status -->
+        <!-- Result Card with Thumbnail & Title -->
         <div id="video-result-box" style="display: none; background: var(--bg-primary); border: 2px solid var(--accent-green); border-radius: var(--radius-lg); padding: 24px;">
           
           <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
-            <!-- Thumbnail Image Container -->
             <div style="position: relative; width: 180px; height: 110px; border-radius: var(--radius-md); overflow: hidden; background: #000; flex-shrink: 0; border: 1px solid var(--border-color);">
               <img id="video-thumbnail-img" src="" alt="Miniatura do Vídeo" style="width: 100%; height: 100%; object-fit: cover;" />
-              <span id="video-quality-badge" style="position: absolute; bottom: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;">MÁXIMA QUALIDADE (1080p / 4K)</span>
+              <span id="video-quality-badge" style="position: absolute; bottom: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;">MÁXIMA QUALIDADE (HD / 4K)</span>
             </div>
 
-            <!-- Video Info -->
             <div style="flex: 1;">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                 <span id="platform-tag" class="badge" style="background: var(--accent-primary); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px;">INSTAGRAM / YOUTUBE</span>
                 <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700;">✓ VÍDEO ENCONTRADO</span>
               </div>
               <h4 id="video-title-display" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">Nome do Vídeo Extraído</h4>
-              <p style="font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">🚀 Download iniciado automaticamente! Se o navegador bloquear pop-ups, clique no botão abaixo:</p>
+              <p style="font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">🎉 Vídeo pronto! Download ativado com sucesso na melhor qualidade disponível.</p>
             </div>
           </div>
 
-          <!-- Direct Download Link Button -->
           <a id="link-direct-download" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="width: 100%; padding: 14px; text-decoration: none; font-size: 1rem; gap: 10px;">
             <i data-lucide="download-cloud"></i>
-            <span>Baixar Agora na Melhor Qualidade Disponível</span>
+            <span>Baixar Vídeo Agora na Melhor Qualidade</span>
           </a>
 
         </div>
@@ -487,6 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const platformTag = container.querySelector('#platform-tag');
     const directLink = container.querySelector('#link-direct-download');
 
+    let pendingDownloadUrl = "";
+
     btnPaste.addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
@@ -502,6 +503,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnProcess.addEventListener('click', processVideoDownload);
 
+    // Evento de fechar o pop-up de anúncio e disparar o download
+    if (el.btnCloseAdPopup) {
+      el.btnCloseAdPopup.onclick = () => {
+        el.modalAdInterstitial.classList.add('hidden');
+        if (pendingDownloadUrl) {
+          window.open(pendingDownloadUrl, '_blank');
+          showToast('✓ Download de vídeo iniciado com sucesso na melhor qualidade!');
+        }
+      };
+    }
+
     function processVideoDownload() {
       const url = input.value.trim();
       if (!url) {
@@ -512,7 +524,6 @@ document.addEventListener('DOMContentLoaded', () => {
       statusBox.style.display = 'block';
       resultBox.style.display = 'none';
 
-      // Extrair metadados e miniatura
       let title = "Vídeo Público da Internet";
       let thumb = "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80";
       let platform = "INTERNET";
@@ -543,6 +554,8 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadServiceUrl = `https://savefrom.net/?url=${encodeURIComponent(url)}`;
       }
 
+      pendingDownloadUrl = downloadServiceUrl;
+
       setTimeout(() => {
         statusBox.style.display = 'none';
         resultBox.style.display = 'block';
@@ -552,10 +565,12 @@ document.addEventListener('DOMContentLoaded', () => {
         platformTag.textContent = platform;
         directLink.href = downloadServiceUrl;
 
-        // AUTO-DOWNLOAD DISPARO AUTOMÁTICO
-        const autoWindow = window.open(downloadServiceUrl, '_blank');
-        
-        showToast('🚀 Vídeo Encontrado! Download iniciado automaticamente na máxima qualidade.');
+        // POP-UP DE ANÚNCIO ADSENSE É EXIBIDO OBRIGATORIAMENTE ANTES DO DOWNLOAD
+        el.modalAdInterstitial.classList.remove('hidden');
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {}
+
       }, 1000);
     }
   }
