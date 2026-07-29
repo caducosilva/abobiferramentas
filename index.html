@@ -3,40 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Abobi Ferramentas | Gerador de Senhas, CPF, CNPJ e DevTools Grátis</title>
+  <title>Órbita DevTools | Suíte Minimalista de Ferramentas Web & Dev</title>
 
   <!-- Google AdSense Verification Meta Tag & Script -->
   <meta name="google-adsense-account" content="ca-pub-7169685901436487">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7169685901436487" crossorigin="anonymous"></script>
   
   <!-- Primary SEO Meta Tags -->
-  <meta name="description" content="Suíte de ferramentas web gratuitas, ultra rápidas e 100% privadas: Baixador de Vídeos, Gerador de Senha Forte estilo LastPass, Gerador de CPF/CNPJ, Formatador JSON, QR Code, Hashes e muito mais." />
-  <meta name="keywords" content="baixador de videos, gerador de senha, gerador de cpf, gerador de cnpj, formatador json, gerador de qr code, abobi ferramentas, ferramentas online grátis, devtools brasil" />
-  <meta name="author" content="Abobi Ferramentas" />
+  <meta name="description" content="Suíte minimalista, limpa e ultra rápida de ferramentas web: Baixador de Vídeos na Máxima Qualidade, Gerador de Senhas estilo LastPass, Gerador de CPF/CNPJ com e sem pontuação, Formatador JSON, QR Code e Hashes." />
+  <meta name="keywords" content="orbita devtools, baixador de videos, gerador de senha, gerador de cpf, gerador de cnpj, formatador json, qr code, devtools brasil" />
+  <meta name="author" content="Carlos Eduardo" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://abobiferramentas.com" />
 
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://abobiferramentas.com/" />
-  <meta property="og:title" content="Abobi Ferramentas | Gerador de Senhas, CPF e Baixador de Vídeos" />
-  <meta property="og:description" content="Baixador de vídeos na máxima qualidade, gerador de senhas estilo LastPass, CPF/CNPJ com auto-cópia no clipboard, formatador JSON, QR Code e muito mais. 100% grátis e seguro." />
-  <meta property="og:image" content="https://abobiferramentas.com/og-image.png" />
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://abobiferramentas.com/" />
-  <meta name="twitter:title" content="Abobi Ferramentas - Suíte de Ferramentas Web" />
-  <meta name="twitter:description" content="Ferramentas online rápidas, 100% locais e sem cadastro." />
+  <meta property="og:title" content="Órbita DevTools | Ferramentas Web Clean & Rápidas" />
+  <meta property="og:description" content="Baixador de vídeos, gerador de senhas estilo LastPass, CPF/CNPJ com auto-cópia no clipboard, 100% grátis e limpo." />
 
   <!-- JSON-LD Structured Data for Google Search Rich Snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Abobi Ferramentas",
+    "name": "Órbita DevTools",
     "url": "https://abobiferramentas.com",
-    "description": "Suíte de ferramentas web rápidas, gratuitas e 100% privadas com auto-cópia para área de transferência.",
+    "description": "Suíte minimalista de ferramentas web rápidas, gratuitas e 100% privadas com auto-cópia.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "offers": {
@@ -56,256 +49,171 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- CryptoJS for Hashes -->
+  <!-- CryptoJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="app" class="app-layout">
 
-    <!-- Header Navigation -->
-    <header class="navbar">
-      <div class="nav-container">
-        <a href="#" class="brand" id="brand-logo">
-          <div class="brand-icon">
-            <i data-lucide="wrench"></i>
-          </div>
-          <div class="brand-text">
-            <span class="brand-title">Abobi<span class="brand-accent">Ferramentas</span></span>
-            <span class="brand-tagline">.com</span>
-          </div>
+  <!-- Minimalist Header -->
+  <header class="header">
+    <div class="header-container">
+      <a href="#" class="logo" id="brand-logo">
+        <i data-lucide="zap" style="color: var(--accent-primary);"></i>
+        <span>Órbita<span style="color: var(--accent-primary);">DevTools</span></span>
+        <span class="logo-badge">PRO</span>
+      </a>
+
+      <!-- Global Search Input -->
+      <div class="search-wrapper">
+        <i data-lucide="search" class="search-icon-svg"></i>
+        <input type="text" id="global-search" class="search-input" placeholder="Buscar ferramenta (Ex: Vídeo, Senha, CPF, JSON)..." autocomplete="off" />
+      </div>
+
+      <div class="nav-controls">
+        <button id="theme-toggle" class="btn-icon" title="Alternar Tema Claro/Escuro" aria-label="Alternar Tema">
+          <i data-lucide="moon" id="theme-icon"></i>
+        </button>
+        <a href="https://github.com/caducosilva/orbita-devtools" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 8px 14px; font-size: 0.85rem;" title="Repositório GitHub">
+          <i data-lucide="github"></i>
+          <span>GitHub</span>
         </a>
+      </div>
+    </div>
+  </header>
 
-        <!-- Global Search Bar -->
-        <div class="search-box">
-          <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: Vídeo, Senha, CPF, JSON)" autocomplete="off" />
-          <kbd class="search-kbd">Ctrl K</kbd>
+  <!-- Main Application Container -->
+  <main class="container">
+
+    <!-- Top Banner AdSpace (AdSense Ready) -->
+    <div class="ad-container" id="ad-banner-top">
+      <span class="ad-label">PUBLICIDADE PARCEIRA</span>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7169685901436487"
+           data-ad-slot="auto"
+           data-ad-format="horizontal"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <!-- Category Tabs Navigation -->
+    <div class="category-tabs" id="category-tabs">
+      <button class="tab-btn active" data-category="all">Todas as Ferramentas</button>
+      <button class="tab-btn" data-category="video">Baixador de Vídeos</button>
+      <button class="tab-btn" data-category="seguranca">Segurança & Senhas</button>
+      <button class="tab-btn" data-category="documentos">CPF & CNPJ</button>
+      <button class="tab-btn" data-category="dev">Desenvolvedor & Código</button>
+      <button class="tab-btn" data-category="utilitarios">Texto & Design</button>
+    </div>
+
+    <!-- Tools Grid View -->
+    <section id="tools-grid-view">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 id="current-category-title" style="font-size: 1.15rem; font-weight: 700;">Todas as Ferramentas</h2>
+        <span id="tools-count-label" class="text-muted" style="font-size: 0.85rem;">13 ferramentas disponíveis</span>
+      </div>
+
+      <div class="tools-grid" id="tools-grid">
+        <!-- Dynamic Clean Cards -->
+      </div>
+    </section>
+
+    <!-- Single Active Tool Workspace -->
+    <section id="tool-active-view" class="hidden">
+      <div class="tool-view-card">
+        <div class="tool-view-header">
+          <button id="btn-back-to-grid" class="btn btn-secondary">
+            <i data-lucide="arrow-left"></i>
+            <span>Voltar</span>
+          </button>
+          <div>
+            <h2 id="active-tool-title" style="font-size: 1.25rem; font-weight: 800;">Nome da Ferramenta</h2>
+            <p id="active-tool-desc" class="text-muted" style="font-size: 0.88rem;">Descrição da ferramenta.</p>
+          </div>
+          <div></div>
         </div>
 
-        <div class="nav-actions">
-          <button id="theme-toggle" class="btn-icon" title="Alternar Tema Claro/Escuro" aria-label="Alternar Tema">
-            <i data-lucide="moon" id="theme-icon"></i>
-          </button>
-          <a href="https://github.com/caducosilva/abobiferramentas" target="_blank" rel="noopener" class="btn btn-outline" title="Repositório GitHub">
-            <i data-lucide="github"></i>
-            <span>GitHub</span>
-          </a>
+        <div id="active-tool-container">
+          <!-- Dynamic Content -->
         </div>
       </div>
-    </header>
+    </section>
 
-    <!-- Main Workspace -->
-    <div class="workspace">
-      
-      <!-- Sidebar Categories -->
-      <aside class="sidebar">
-        <nav class="sidebar-nav">
-          <div class="nav-section-title">Navegação</div>
-          <button class="nav-item active" data-category="all">
-            <i data-lucide="layout-grid"></i>
-            <span>Todas as Ferramentas</span>
-            <span class="badge" id="count-all">0</span>
-          </button>
-          <button class="nav-item" data-category="favorites">
-            <i data-lucide="star"></i>
-            <span>Favoritas</span>
-            <span class="badge" id="count-favorites">0</span>
-          </button>
+  </main>
 
-          <div class="nav-section-title">Categorias</div>
-          <button class="nav-item" data-category="design">
-            <i data-lucide="video"></i>
-            <span>Baixador de Vídeos & Mídia</span>
-          </button>
-          <button class="nav-item" data-category="seguranca">
-            <i data-lucide="shield-check"></i>
-            <span>Segurança & Senhas</span>
-          </button>
-          <button class="nav-item" data-category="documentos">
-            <i data-lucide="file-check"></i>
-            <span>CPF, CNPJ & Geradores</span>
-          </button>
-          <button class="nav-item" data-category="dev">
-            <i data-lucide="code-2"></i>
-            <span>Desenvolvedor & Código</span>
-          </button>
-          <button class="nav-item" data-category="texto">
-            <i data-lucide="type"></i>
-            <span>Texto & Utilidades</span>
-          </button>
-        </nav>
+  <!-- Persistent Copy Toast -->
+  <div id="toast-container" class="toast-container"></div>
 
-        <!-- Sidebar AdSpace Container (Google AdSense Ready) -->
-        <div class="ad-container ad-sidebar" id="ad-sidebar-slot">
-          <span class="ad-label">PUBLICIDADE</span>
+  <!-- AdSense Interstitial Pop-up Modal (Monetização nos Downloads de Vídeo) -->
+  <div id="modal-ad-interstitial" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width: 500px; text-align: center;">
+      <div class="modal-header" style="justify-content: center;">
+        <h3 style="color: var(--accent-green); display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="sparkles"></i> <span>Seu Vídeo Está Sendo Preparado...</span>
+        </h3>
+      </div>
+      <div style="padding: 12px 0;">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Aguarde um instante enquanto processamos o download na <strong>máxima qualidade disponível</strong>.
+        </p>
+
+        <!-- AdSense Pop-up Container -->
+        <div class="ad-container" style="min-height: 250px; margin: 16px 0;">
+          <span class="ad-label">PUBLICIDADE PARCEIRA</span>
           <ins class="adsbygoogle"
                style="display:block"
                data-ad-client="ca-pub-7169685901436487"
                data-ad-slot="auto"
-               data-ad-format="auto"
+               data-ad-format="rectangle"
                data-full-width-responsive="true"></ins>
-          <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
         </div>
 
-        <div class="sidebar-footer">
-          <div class="privacy-badge">
-            <i data-lucide="shield-lock"></i>
-            <span>100% Processamento Local no Seu Navegador</span>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Main Content Area -->
-      <main class="content-area">
-        
-        <!-- Top AdSpace Banner (Google AdSense Ready) -->
-        <div class="ad-container ad-banner" id="ad-banner-top">
-          <span class="ad-label">PUBLICIDADE</span>
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-7169685901436487"
-               data-ad-slot="auto"
-               data-ad-format="horizontal"
-               data-full-width-responsive="true"></ins>
-          <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </div>
-
-        <!-- Hero Section -->
-        <section id="hero-banner" class="hero-banner">
-          <div class="hero-content">
-            <h1 class="hero-title">Ferramentas Web Gratuitas com <span class="gradient-text">Auto-Cópia para o Clipboard</span></h1>
-            <p class="hero-subtitle">Baixe vídeos na melhor qualidade, gere senhas estilo LastPass, CPFs, CNPJs, QR Codes e hashes de forma instantânea. Qualquer valor é <strong>copiado automaticamente para colar (Ctrl+V)</strong> no seu dispositivo.</p>
-          </div>
-        </section>
-
-        <!-- Tool Grid View -->
-        <section id="tools-grid-view" class="tools-grid-container">
-          <div class="section-header">
-            <h2 id="current-category-title">Todas as Ferramentas</h2>
-            <span id="tools-count-label" class="text-muted">Mostrando 13 ferramentas</span>
-          </div>
-
-          <div class="tools-grid" id="tools-grid">
-            <!-- Dynamic Tool Cards -->
-          </div>
-        </section>
-
-        <!-- Single Tool Workspace -->
-        <section id="tool-active-view" class="tool-active-view hidden">
-          <div class="tool-view-header">
-            <button id="btn-back-to-grid" class="btn btn-secondary">
-              <i data-lucide="arrow-left"></i>
-              <span>Voltar para Ferramentas</span>
-            </button>
-            
-            <div class="tool-view-title-wrap">
-              <div id="active-tool-icon" class="active-tool-icon"></div>
-              <div>
-                <h2 id="active-tool-title">Nome da Ferramenta</h2>
-                <p id="active-tool-desc" class="text-muted">Descrição da ferramenta.</p>
-              </div>
-            </div>
-
-            <button id="active-tool-fav-btn" class="btn-icon btn-fav-toggle" title="Favoritar">
-              <i data-lucide="star"></i>
-            </button>
-          </div>
-
-          <!-- Active Tool Container -->
-          <div id="active-tool-container" class="active-tool-card">
-            <!-- Dynamic Component -->
-          </div>
-        </section>
-
-      </main>
-    </div>
-
-    <!-- Persistent Copy Banner / Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <!-- AdSense Interstitial Pop-up Modal (Monetização nos Downloads de Vídeo) -->
-    <div id="modal-ad-interstitial" class="modal-backdrop hidden">
-      <div class="modal-card" style="max-width: 520px; text-align: center;">
-        <div class="modal-header" style="justify-content: center;">
-          <h3 style="color: var(--accent-green); display: flex; align-items: center; gap: 8px;">
-            <i data-lucide="sparkles"></i> <span>Seu Vídeo Está Sendo Preparado...</span>
-          </h3>
-        </div>
-        <div class="modal-body">
-          <p style="font-size: 0.95rem; margin-bottom: 16px; color: var(--text-primary);">
-            Aguarde um instante enquanto processamos o download na <strong>máxima qualidade disponível</strong>.
-          </p>
-
-          <!-- AdSense Pop-up Container -->
-          <div class="ad-container" style="min-height: 250px; margin: 16px 0;">
-            <span class="ad-label">PUBLICIDADE PARCEIRA</span>
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7169685901436487"
-                 data-ad-slot="auto"
-                 data-ad-format="rectangle"
-                 data-full-width-responsive="true"></ins>
-          </div>
-
-          <button id="btn-close-ad-popup" class="btn btn-primary" style="width: 100%; padding: 12px; gap: 8px;">
-            <i data-lucide="download"></i>
-            <span>Continuar para o Download do Vídeo</span>
-          </button>
-        </div>
+        <button id="btn-close-ad-popup" class="btn btn-primary" style="width: 100%; padding: 12px; gap: 8px;">
+          <i data-lucide="download"></i>
+          <span>Continuar para o Download do Vídeo</span>
+        </button>
       </div>
     </div>
-
-    <!-- Modals for Terms & Privacy (AdSense Requirement) -->
-    <div id="modal-privacy" class="modal-backdrop hidden">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>Política de Privacidade</h3>
-          <button class="btn-icon btn-close-modal" data-modal="privacy"><i data-lucide="x"></i></button>
-        </div>
-        <div class="modal-body">
-          <p>O <strong>Abobi Ferramentas</strong> respeita integralmente a sua privacidade. Todas as operações de geração de senhas, validação de documentos (CPF/CNPJ), formatação de código e geração de hashes ocorrem <strong>exclusivamente de forma local no seu navegador</strong>.</p>
-          <p style="margin-top: 12px;">Nenhum dado digitado ou gerado é transmitido, armazenado ou coletado em nossos servidores. Utilizamos apenas o `localStorage` do seu navegador para guardar suas preferências de tema (Claro/Escuro) e suas ferramentas favoritas.</p>
-          <p style="margin-top: 12px;">Exibimos anúncios de parceiros como o Google AdSense que podem utilizar cookies não invasivos para personalizar anúncios relevantes.</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="modal-terms" class="modal-backdrop hidden">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>Termos de Uso</h3>
-          <button class="btn-icon btn-close-modal" data-modal="terms"><i data-lucide="x"></i></button>
-        </div>
-        <div class="modal-body">
-          <p>Ao utilizar o <strong>Abobi Ferramentas</strong>, você concorda com os seguintes termos:</p>
-          <ul style="margin-left: 20px; margin-top: 8px;">
-            <li>As ferramentas de geração de CPF e CNPJ destinam-se exclusivamente para testes de sistemas e desenvolvimento de software.</li>
-            <li>Não nos responsabilizamos pelo uso indevido dos dados gerados por terceiros.</li>
-            <li>Todas as ferramentas são fornecidas gratuitamente 'como estão'.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-container">
-        <p>© 2026 Abobi Ferramentas (<a href="https://abobiferramentas.com" class="link">abobiferramentas.com</a>). Todos os direitos reservados.</p>
-        <div class="footer-links" style="margin-top: 8px; display: flex; gap: 16px; justify-content: center; font-size: 0.85rem;">
-          <button class="link-button btn-open-modal" data-modal="privacy">Política de Privacidade</button>
-          <span>•</span>
-          <button class="link-button btn-open-modal" data-modal="terms">Termos de Uso</button>
-        </div>
-      </div>
-    </footer>
-
   </div>
+
+  <!-- Footer Modals -->
+  <div id="modal-privacy" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Política de Privacidade</h3>
+        <button class="btn-icon btn-close-modal" data-modal="privacy"><i data-lucide="x"></i></button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+        O <strong>Órbita DevTools</strong> processa 100% dos dados de forma local no seu próprio navegador. Nenhum dado de senha, CPF ou código é enviado para servidores. Exibimos anúncios do Google AdSense para manter o serviço gratuito.
+      </p>
+    </div>
+  </div>
+
+  <div id="modal-terms" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Termos de Uso</h3>
+        <button class="btn-icon btn-close-modal" data-modal="terms"><i data-lucide="x"></i></button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+        Ferramentas fornecidas para fins de teste e desenvolvimento. Os dados gerados são de inteira responsabilidade do usuário.
+      </p>
+    </div>
+  </div>
+
+  <!-- Minimalist Footer -->
+  <footer class="footer">
+    <p>© 2026 Órbita DevTools. Criado por <a href="https://github.com/caducosilva" target="_blank" rel="noopener">Carlos Eduardo</a>. Todos os direitos reservados.</p>
+    <div style="margin-top: 8px; display: flex; gap: 16px; justify-content: center; font-size: 0.8rem;">
+      <button class="btn-open-modal" data-modal="privacy" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">Privacidade</button>
+      <span>•</span>
+      <button class="btn-open-modal" data-modal="terms" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">Termos</button>
+    </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>
