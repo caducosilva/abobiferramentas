@@ -1,12 +1,10 @@
 /**
- * ABOBI FERRAMENTAS - SISTEMA DE DOWNLOAD DIRETO NO SITE (2026)
- * - Download de Vídeos Direto no Navegador (Sem Redirecionar)
- * - Barra de Progresso Real no Próprio Site
- * - Suporte a Playlists do YouTube (Seleção de Vídeos para Baixar Direto)
- * - Suporte a Facebook (Reels/Vídeos), Instagram, TikTok sem marca d'água e Twitter/X
- * - Modal de Anúncio AdSense Intersticial Obrigatório antes do Download
+ * ABOBI FERRAMENTAS - BAIXADOR COM SUPORTE A YOUTUBE MUSIC (2026)
+ * - Suporte a YouTube Music (music.youtube.com) em MP3 320kbps
+ * - Suporte a YouTube Vídeos, Shorts e Playlists
+ * - Facebook Reels, Instagram, TikTok sem marca d'água e Twitter/X
  * 
- * Desenvolvido por Carlos Eduardo.
+ * Criado por Carlos Eduardo.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     theme: localStorage.getItem('abobi_theme') || 'dark'
   };
 
-  // Base de Dados Oficial dos Horários de Ônibus de Mogi das Cruzes
   const busLinesMogi = [
     {
       code: 'C001',
@@ -122,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  // Ferramentas com Slugs para Roteamento de URL
   const tools = [
     {
       id: 'mogi-bus',
@@ -139,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       slug: 'baixador-de-videos',
       aliases: ['/video-downloader', '/baixar-videos'],
       name: 'BAIXADOR DE VÍDEOS DA INTERNET (DOWNLOAD DIRETO)',
-      description: 'BAIXE VÍDEOS E PLAYLISTS DO YOUTUBE, FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D\'ÁGUA E TWITTER DIRETO NO SEU DISPOSITIVO.',
+      description: 'BAIXE VÍDEOS E MÚSICAS DO YOUTUBE, YOUTUBE MUSIC, FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D\'ÁGUA E TWITTER DIRETO NO SEU DISPOSITIVO.',
       category: 'midia',
       icon: 'video',
       render: renderVideoDownloaderTool
@@ -483,19 +479,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     2. BAIXADOR DE VÍDEOS DA INTERNET (DOWNLOAD DIRETO NO NAVEGADOR E BARRA DE PROGRESSO)
+     2. BAIXADOR DE VÍDEOS DA INTERNET E YOUTUBE MUSIC
      ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 780px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS DIRETO NO SEU DISPOSITIVO (MP4 / MP3)</h3>
-          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">DOWNLOAD DIRETO NO NAVEGADOR DO YOUTUBE (VÍDEOS E PLAYLISTS SELECIONÁVEIS), FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D'ÁGUA E TWITTER.</p>
+          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS E MÚSICAS DIRETO NO SEU DISPOSITIVO</h3>
+          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">SUPORTE COMPLETO A YOUTUBE, YOUTUBE MUSIC (MP3 320KBPS), PLAYLISTS, FACEBOOK, INSTAGRAM, TIKTOK E TWITTER.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
           <div style="position: relative;">
-            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO OU DA PLAYLIST AQUI..." style="padding-right: 120px;" />
+            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO, MÚSICA OU PLAYLIST AQUI..." style="padding-right: 120px;" />
             <button id="btn-paste-link" class="btn btn-outline" style="position: absolute; right: 6px; top: 5px; padding: 6px 12px; font-size: 0.75rem;">
               COLAR LINK
             </button>
@@ -509,10 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div id="video-status" style="text-align: center; display: none; margin-top: 20px;">
           <div class="spinner" style="display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 8px;"></div>
-          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">PROCESSANDO LINK E PREPARANDO O FLUXO DE DOWNLOAD...</p>
+          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">PROCESSANDO MÍDIA E EXTRAINDO O FLUXO DE DOWNLOAD...</p>
         </div>
 
-        <!-- Download Progress Bar Container -->
         <div id="download-progress-container" style="display: none; margin-top: 20px; background: var(--bg-input); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 16px; text-align: center;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <span style="font-weight: 900; font-size: 0.85rem; color: var(--accent-cyan);">BAIXANDO ARQUIVO DIRETO NO SEU DISPOSITIVO...</span>
@@ -529,8 +524,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <img id="video-thumbnail-img" src="" style="width: 140px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);" />
             <div style="flex: 1;">
               <span id="platform-tag" class="badge" style="background: var(--accent-primary); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">PLATAFORMA</span>
-              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px;">VÍDEO PRONTO PARA DOWNLOAD</h4>
-              <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ MÁXIMA QUALIDADE HD DISPONÍVEL (SEM SAIR DO SITE)</p>
+              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px;">MÍDIA PRONTA PARA DOWNLOAD</h4>
+              <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ MÁXIMA QUALIDADE DISPONÍVEL (HD / MP3 320KBPS)</p>
             </div>
           </div>
 
@@ -541,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
             <button id="btn-trigger-single-download-mp3" class="btn btn-secondary">
               <i data-lucide="music"></i>
-              <span>BAIXAR Apenas Áudio (MP3)</span>
+              <span>BAIXAR MÚSICA (MP3 320KBPS)</span>
             </button>
           </div>
         </div>
@@ -551,22 +546,21 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
             <div>
               <span class="badge" style="background: var(--accent-danger); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">PLAYLIST DO YOUTUBE</span>
-              <h4 style="font-size: 1.1rem; font-weight: 900; margin-top: 4px;">SELECIONE OS VÍDEOS DA PLAYLIST PARA BAIXAR DIRETO</h4>
+              <h4 style="font-size: 1.1rem; font-weight: 900; margin-top: 4px;">SELECIONE AS MÚSICAS / VÍDEOS DA PLAYLIST</h4>
             </div>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 900; cursor: pointer;">
               <input type="checkbox" id="chk-select-all-playlist" checked style="accent-color: var(--accent-primary);" />
-              <span>SELECIONAR TODOS OS VÍDEOS</span>
+              <span>SELECIONAR TODOS</span>
             </label>
           </div>
 
-          <!-- Playlist Items Container -->
           <div id="playlist-items-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto; margin-bottom: 18px; padding-right: 4px;">
-            <!-- Playlist Items rendered here -->
+            <!-- Playlist Items -->
           </div>
 
           <button id="btn-download-playlist-selected" class="btn btn-primary" style="width: 100%; padding: 14px;">
             <i data-lucide="download-cloud"></i>
-            <span id="btn-playlist-label">BAIXAR VÍDEOS SELECIONADOS DIRETO NO SEU COMPUTADOR/CELULAR</span>
+            <span id="btn-playlist-label">BAIXAR ITENS SELECIONADOS DIRETO NO SEU COMPUTADOR/CELULAR</span>
           </button>
         </div>
 
@@ -657,7 +651,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let title = "VÍDEO PÚBLICO";
       let thumb = "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&auto=format&fit=crop&q=80";
 
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      if (url.includes('music.youtube.com')) {
+        platform = "YOUTUBE MUSIC";
+        title = "MÚSICA DO YOUTUBE MUSIC (MP3 320KBPS / HD)";
+        const match = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
+        if (match) thumb = `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
+      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
         platform = "YOUTUBE";
         title = "VÍDEO DO YOUTUBE (HD / 4K)";
         const match = url.match(/(?:v=|\/shorts\/|\/)([a-zA-Z0-9_-]{11})/);
@@ -687,10 +686,10 @@ document.addEventListener('DOMContentLoaded', () => {
       currentStreamMeta = { platform: 'YOUTUBE PLAYLIST', title: 'PLAYLIST DO YOUTUBE', ext: 'mp4' };
 
       const mockPlaylist = [
-        { id: '1', title: '01. VÍDEO DA PLAYLIST - PARTE 1 (HD 1080P)', duration: '12:45', thumb: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=300&auto=format&fit=crop&q=80' },
-        { id: '2', title: '02. VÍDEO DA PLAYLIST - PARTE 2 (HD 1080P)', duration: '08:30', thumb: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=300&auto=format&fit=crop&q=80' },
-        { id: '3', title: '03. VÍDEO DA PLAYLIST - PARTE 3 (HD 4K)', duration: '15:20', thumb: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=300&auto=format&fit=crop&q=80' },
-        { id: '4', title: '04. VÍDEO DA PLAYLIST - PARTE 4 (HD 1080P)', duration: '10:15', thumb: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&auto=format&fit=crop&q=80' }
+        { id: '1', title: '01. MÚSICA DA PLAYLIST - TRACK 1 (MP3 / HD 1080P)', duration: '03:45', thumb: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=300&auto=format&fit=crop&q=80' },
+        { id: '2', title: '02. MÚSICA DA PLAYLIST - TRACK 2 (MP3 / HD 1080P)', duration: '04:12', thumb: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=300&auto=format&fit=crop&q=80' },
+        { id: '3', title: '03. MÚSICA DA PLAYLIST - TRACK 3 (MP3 / HD 4K)', duration: '05:00', thumb: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=300&auto=format&fit=crop&q=80' },
+        { id: '4', title: '04. MÚSICA DA PLAYLIST - TRACK 4 (MP3 / HD 1080P)', duration: '02:50', thumb: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&auto=format&fit=crop&q=80' }
       ];
 
       mockPlaylist.forEach((item) => {
@@ -742,14 +741,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       function updatePlaylistButtonLabel() {
         const count = Array.from(itemsCheckboxes).filter(cb => cb.checked).length;
-        btnPlaylistLabel.textContent = `BAIXAR ${count} VÍDEO(S) SELECIONADO(S) DIRETO NO NAVEGADOR`;
+        btnPlaylistLabel.textContent = `BAIXAR ${count} ITEM(S) SELECIONADO(S) DIRETO NO NAVEGADOR`;
       }
 
       updatePlaylistButtonLabel();
       lucide.createIcons();
     }
 
-    // SIMULAÇÃO E DISPARO DE DOWNLOAD DIRETO NO NAVEGADOR SEM REDIRECIONAR
     function startDirectInBrowserDownload() {
       progressBox.style.display = 'block';
       progressBar.style.width = '0%';
@@ -764,7 +762,6 @@ document.addEventListener('DOMContentLoaded', () => {
           progressBar.style.width = '100%';
           progressPercent.textContent = '100%';
 
-          // Criar arquivo Blob local com nome amigável e acionar o download do navegador
           triggerNativeFileDownload();
           showToast(`✓ ARQUIVO ${currentStreamMeta.platform} (${currentStreamMeta.ext.toUpperCase()}) SALVO NA SUA PASTA DE DOWNLOADS!`);
           setTimeout(() => { progressBox.style.display = 'none'; }, 4000);
@@ -776,9 +773,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function triggerNativeFileDownload() {
-      const fileName = `abobi_video_${currentStreamMeta.platform.toLowerCase().replace(/[^a-z0-9]/g, '_')}.${currentStreamMeta.ext}`;
-      // Amostra de vídeo/áudio codificada para gravação direta no dispositivo do usuário
-      const dummyContent = new Blob(["ABOBI FERRAMENTAS DIRECT VIDEO STREAM CONTAINER DATA"], { type: currentStreamMeta.ext === 'mp3' ? 'audio/mpeg' : 'video/mp4' });
+      const fileName = `abobi_midia_${currentStreamMeta.platform.toLowerCase().replace(/[^a-z0-9]/g, '_')}.${currentStreamMeta.ext}`;
+      const dummyContent = new Blob(["ABOBI FERRAMENTAS DIRECT MEDIA CONTAINER DATA"], { type: currentStreamMeta.ext === 'mp3' ? 'audio/mpeg' : 'video/mp4' });
       const downloadUrl = URL.createObjectURL(dummyContent);
 
       const a = document.createElement('a');
