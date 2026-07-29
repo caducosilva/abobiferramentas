@@ -1,4 +1,5 @@
 const { streamMedia } = require('./_lib/extract');
+const { getBaseUrl } = require('./_lib/base-url');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -14,7 +15,13 @@ module.exports = async (req, res) => {
       return;
     }
 
-    await streamMedia(url, kind, res);
+    try {
+      await streamMedia(url, kind, res);
+    } catch (primaryErr) {
+      if (res.headersSent) { res.end(); return; }
+      const streamed = await tryYtdlpDownloadFallback(url, kind, getBaseUrl(req), res);
+      if (!streamed) throw primaryErr;
+    }
   } catch (err) {
     if (!res.headersSent) {
       res.status(500).json({ ok: false, error: String(err.message || err) });
@@ -23,3 +30,28 @@ module.exports = async (req, res) => {
     }
   }
 };
+
+async function tryYtdlpDownloadFallback(url, kind, baseUrl, res) {
+  let upstream;
+  try {
+    upstream = await fetch(`${baseUrl}/api/ytdlp?url=${encodeURIComponent(url)}&kind=${kind}`);
+  } catch (err) {
+    return false;
+  }
+  if (!upstream.ok || !upstream.body) return false;
+
+  res.setHeader('Content-Type', upstream.headers.get('content-type') || 'video/mp4');
+  const disposition = upstream.headers.get('content-disposition');
+  if (disposition) res.setHeader('Content-Disposition', disposition);
+  const len = upstream.headers.get('content-length');
+  if (len) res.setHeader('Content-Length', len);
+
+  const reader = upstream.body.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    res.write(Buffer.from(value));
+  }
+  res.end();
+  return true;
+}

@@ -3,3 +3,5 @@ node_modules/
 *.log
 *-player-script.js
 *-watch.html
+__pycache__/
+*.pyc
