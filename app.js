@@ -1,11 +1,10 @@
 /**
- * ABOBI FERRAMENTAS - LÓGICA PRINCIPAL COM ROTEAMENTO DE URLS AMIGÁVEIS (2026)
- * Suporte a URLs diretas:
- * - /horario-de-onibus-mogi
- * - /baixador-de-videos (ou /video-downloader)
- * - /gerador-de-senha
- * - /gerador-de-cpf
- * - /gerador-de-cnpj
+ * ABOBI FERRAMENTAS - LÓGICA PRINCIPAL COM ROTEAMENTO E BAIXADOR MULTI-PLATAFORMA (2026)
+ * - YouTube (Vídeos e Shorts)
+ * - Instagram (Reels e Posts)
+ * - TikTok (Sem Marca d'Água)
+ * - Twitter / X
+ * - Kwai & Vídeos Públicos
  * 
  * Desenvolvido por Carlos Eduardo.
  */
@@ -201,11 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   renderGrid();
   attachEvents();
-
-  // ROTEAMENTO INICIAL BASEADO NA URL DO NAVEGADOR
   handleInitialRoute();
 
-  // Roteamento ao clicar no voltar/avançar do navegador
   window.addEventListener('popstate', (e) => {
     if (e.state && e.state.toolId) {
       openTool(e.state.toolId, false);
@@ -323,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     el.activeToolContainer.innerHTML = '';
     tool.render(el.activeToolContainer);
 
-    // ATUALIZAR URL NO NAVEGADOR (Ex: /gerador-de-cpf, /baixador-de-videos)
     if (updateHistory) {
       history.pushState({ toolId: tool.id }, tool.name, `/${tool.slug}`);
     }
@@ -410,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">PESQUISE POR CÓDIGO, BAIRRO OU NOME DA LINHA MUNICIPAL OU INTERMUNICIPAL.</p>
         </div>
 
-        <!-- Bus Search Bar -->
         <div class="form-group" style="margin-bottom: 24px;">
           <div style="position: relative;">
             <input type="text" id="mogi-bus-search" class="form-input case-normal" placeholder="BUSCAR POR CÓDIGO OU BAIRRO (EX: C001, JUNDIAPEBA, BRÁS CUBAS, SABAÚNA)..." style="padding-left: 42px; font-weight: 700;" />
@@ -489,19 +483,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     2. BAIXADOR DE VÍDEOS DA INTERNET (AUTO-DOWNLOAD + POP-UP ADSENSE)
+     2. BAIXADOR DE VÍDEOS DA INTERNET (PROCESSAMENTO UNIVERSAL MULTI-PLATAFORMA)
      ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 680px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEO EM MÁXIMA QUALIDADE</h3>
-          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">COLE O LINK DO YOUTUBE, INSTAGRAM, TIKTOK SEM MARCA D'ÁGUA OU TWITTER.</p>
+          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEO EM MÁXIMA QUALIDADE (HD / 4K / MP3)</h3>
+          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">SUPORTE A YOUTUBE, INSTAGRAM REELS, TIKTOK (SEM MARCA D'ÁGUA), TWITTER/X, KWAI E VÍDEOS PÚBLICOS.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
           <div style="position: relative;">
-            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO AQUI..." style="padding-right: 120px;" />
+            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO AQUI (EX: YOUTUBE, REELS, TIKTOK, TWITTER)..." style="padding-right: 120px;" />
             <button id="btn-paste-link" class="btn btn-outline" style="position: absolute; right: 6px; top: 5px; padding: 6px 12px; font-size: 0.75rem;">
               COLAR LINK
             </button>
@@ -510,21 +504,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <button id="btn-process-video" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 0.95rem;">
           <i data-lucide="search"></i>
-          <span>BUSCAR VÍDEO E BAIXAR NA MELHOR QUALIDADE</span>
+          <span>BUSCAR VÍDEO E INICIAR DOWNLOAD EM MÁXIMA QUALIDADE</span>
         </button>
 
         <div id="video-status" style="text-align: center; display: none; margin-top: 20px;">
           <div class="spinner" style="display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 8px;"></div>
-          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">LOCALIZANDO VÍDEO E PREPARANDO O DOWNLOAD...</p>
+          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">CONECTANDO E GERANDO O LINK DE DOWNLOAD NA MELHOR QUALIDADE...</p>
         </div>
 
         <div id="video-result-box" style="display: none; margin-top: 24px; background: var(--bg-input); border: 1px solid var(--accent-green); border-radius: var(--radius-md); padding: 20px;">
           <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
             <img id="video-thumbnail-img" src="" style="width: 140px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);" />
             <div style="flex: 1;">
-              <span id="platform-tag" class="badge" style="background: var(--accent-primary); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">INSTAGRAM</span>
-              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px;">VÍDEO ENCONTRADO</h4>
-              <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ PRONTO EM MÁXIMA QUALIDADE (HD / 4K)</p>
+              <span id="platform-tag" class="badge" style="background: var(--accent-primary); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">PLATAFORMA</span>
+              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px;">VÍDEO PRONTO PARA DOWNLOAD</h4>
+              <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ MÁXIMA QUALIDADE DISPONÍVEL (HD / FULL HD / 4K)</p>
             </div>
           </div>
 
@@ -581,18 +575,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (url.includes('youtube.com') || url.includes('youtu.be')) {
         platform = "YOUTUBE";
-        title = "VÍDEO DO YOUTUBE (HD 1080P)";
-        const match = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
+        title = "VÍDEO / SHORTS DO YOUTUBE (HD / 4K)";
+        const match = url.match(/(?:v=|\/shorts\/|\/)([a-zA-Z0-9_-]{11})/);
         if (match) thumb = `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
         downloadUrl = `https://ssyoutube.com/pt132/youtube-video-downloader?url=${encodeURIComponent(url)}`;
       } else if (url.includes('instagram.com')) {
         platform = "INSTAGRAM";
-        title = "REELS / POST DO INSTAGRAM";
+        title = "REELS / POST DO INSTAGRAM (HD)";
         downloadUrl = `https://snapinsta.app/pt?url=${encodeURIComponent(url)}`;
       } else if (url.includes('tiktok.com')) {
         platform = "TIKTOK";
         title = "TIKTOK (SEM MARCA D'ÁGUA)";
         downloadUrl = `https://snaptik.app/pt?url=${encodeURIComponent(url)}`;
+      } else if (url.includes('twitter.com') || url.includes('x.com')) {
+        platform = "TWITTER / X";
+        title = "VÍDEO DO TWITTER / X";
+        downloadUrl = `https://ssstwitter.com/pt?url=${encodeURIComponent(url)}`;
+      } else if (url.includes('kwai.com')) {
+        platform = "KWAI";
+        title = "VÍDEO DO KWAI (SEM MARCA D'ÁGUA)";
+        downloadUrl = `https://savefrom.net/?url=${encodeURIComponent(url)}`;
       }
 
       pendingUrl = downloadUrl;
@@ -606,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
         platformTag.textContent = platform;
         directLink.href = downloadUrl;
 
+        // Disparar Modal de Anúncio AdSense Intersticial (Monetização Obrigatória)
         el.modalAdInterstitial.classList.remove('hidden');
         try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
       }, 900);
