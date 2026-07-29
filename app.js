@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 'cnpj',
-      name: 'Gerador e Validador de CNPJ',
-      description: 'Gere CNPJs válidos com ou sem pontuação com auto-cópia no clipboard.',
+      name: 'Gerador e Validador de CNPJ (Com e Sem Pontuação)',
+      description: 'Gere CNPJs válidos com ou sem pontuação instantaneamente com auto-cópia no clipboard.',
       category: 'documentos',
       icon: 'building-2',
       render: renderCNPJTool
@@ -420,13 +420,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 760px; margin: 0 auto;">
-        
         <div style="text-align: center; margin-bottom: 24px;">
           <h3 style="font-size: 1.4rem; font-weight: 800;">Baixar Vídeos em Máxima Qualidade</h3>
           <p class="text-muted" style="font-size: 0.95rem;">Insira o link e o vídeo será <strong>encontrado com miniatura, nome e baixado na melhor qualidade disponível</strong>.</p>
         </div>
 
-        <!-- Input Box -->
         <div class="form-group" style="margin-bottom: 20px;">
           <div style="position: relative;">
             <input type="text" id="video-url-input" class="form-input" placeholder="Cole o link do vídeo (YouTube, Instagram, TikTok, Twitter)..." style="padding-right: 110px; font-size: 1rem;" />
@@ -441,15 +439,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>Buscar Vídeo e Baixar na Melhor Qualidade</span>
         </button>
 
-        <!-- Loader / Status -->
         <div id="video-status" style="text-align: center; display: none; margin-bottom: 24px;">
           <div class="spinner" style="display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;"></div>
           <p id="video-status-text" style="font-weight: 600; color: var(--accent-cyan);">Localizando vídeo e preparando o download automático na máxima qualidade...</p>
         </div>
 
-        <!-- Result Card with Thumbnail & Title -->
         <div id="video-result-box" style="display: none; background: var(--bg-primary); border: 2px solid var(--accent-green); border-radius: var(--radius-lg); padding: 24px;">
-          
           <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
             <div style="position: relative; width: 180px; height: 110px; border-radius: var(--radius-md); overflow: hidden; background: #000; flex-shrink: 0; border: 1px solid var(--border-color);">
               <img id="video-thumbnail-img" src="" alt="Miniatura do Vídeo" style="width: 100%; height: 100%; object-fit: cover;" />
@@ -470,7 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <i data-lucide="download-cloud"></i>
             <span>Baixar Vídeo Agora na Melhor Qualidade</span>
           </a>
-
         </div>
 
       </div>
@@ -503,7 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnProcess.addEventListener('click', processVideoDownload);
 
-    // Evento de fechar o pop-up de anúncio e disparar o download
     if (el.btnCloseAdPopup) {
       el.btnCloseAdPopup.onclick = () => {
         el.modalAdInterstitial.classList.add('hidden');
@@ -565,7 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
         platformTag.textContent = platform;
         directLink.href = downloadServiceUrl;
 
-        // POP-UP DE ANÚNCIO ADSENSE É EXIBIDO OBRIGATORIAMENTE ANTES DO DOWNLOAD
         el.modalAdInterstitial.classList.remove('hidden');
         try {
           (adsbygoogle = window.adsbygoogle || []).push({});
@@ -740,31 +732,22 @@ document.addEventListener('DOMContentLoaded', () => {
     generateAndAutoCopy(true);
   }
 
-  // 2. CPF TOOL
+  // 2. CPF TOOL COM FORMATO EXPLÍCITO (COM E SEM PONTUAÇÃO)
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <div>
           <h3>Gerar CPF Válido</h3>
-          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes. É copiado automaticamente ao clicar em Gerar.</p>
+          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes. Copia automaticamente para a área de transferência.</p>
           
-          <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
-            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatação:</label>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <input type="radio" name="cpf-format-opt" value="with-format" checked style="accent-color: var(--accent-primary);" />
-                <span>Com Pontuação (Ex: <strong>000.000.000-00</strong>)</span>
-              </label>
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <input type="radio" name="cpf-format-opt" value="no-format" style="accent-color: var(--accent-primary);" />
-                <span>Sem Pontuação (Apenas Números: <strong>00000000000</strong>)</span>
-              </label>
-            </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <button id="btn-gen-cpf-formatted" class="btn btn-primary" style="padding: 12px;">
+              <i data-lucide="sparkles"></i> <span>Com Pontuação (000.000.000-00)</span>
+            </button>
+            <button id="btn-gen-cpf-raw" class="btn btn-secondary" style="padding: 12px;">
+              <i data-lucide="hash"></i> <span>Sem Pontuação (00000000000)</span>
+            </button>
           </div>
-
-          <button id="btn-generate-cpf" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
-            <i data-lucide="sparkles"></i> <span>Gerar Novo CPF e Copiar</span>
-          </button>
 
           <div class="output-box">
             <div id="cpf-output" class="output-content font-mono" style="font-size: 1.25rem;">Clique em Gerar</div>
@@ -784,14 +767,14 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    const btnGenerate = container.querySelector('#btn-generate-cpf');
+    const btnFormatted = container.querySelector('#btn-gen-cpf-formatted');
+    const btnRaw = container.querySelector('#btn-gen-cpf-raw');
     const cpfOutput = container.querySelector('#cpf-output');
     const btnCopy = container.querySelector('#btn-copy-cpf');
     const validateInput = container.querySelector('#cpf-validate-input');
     const validateResult = container.querySelector('#cpf-validate-result');
 
-    function generateCPF() {
-      const selectedFormat = container.querySelector('input[name="cpf-format-opt"]:checked').value;
+    function generateCPF(formatted = true) {
       let n = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
       
       let d1 = n.reduce((acc, val, i) => acc + val * (10 - i), 0) % 11;
@@ -803,13 +786,19 @@ document.addEventListener('DOMContentLoaded', () => {
       n.push(d2);
 
       const raw = n.join('');
-      return selectedFormat === 'with-format' ? raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : raw;
+      return formatted ? raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : raw;
     }
 
-    btnGenerate.addEventListener('click', () => {
-      const val = generateCPF();
+    btnFormatted.addEventListener('click', () => {
+      const val = generateCPF(true);
       cpfOutput.textContent = val;
-      copyToClipboard(val, 'CPF gerado e copiado para colar (Ctrl+V)!');
+      copyToClipboard(val, 'CPF com pontuação gerado e copiado!');
+    });
+
+    btnRaw.addEventListener('click', () => {
+      const val = generateCPF(false);
+      cpfOutput.textContent = val;
+      copyToClipboard(val, 'CPF sem pontuação gerado e copiado!');
     });
 
     btnCopy.addEventListener('click', () => {
@@ -850,36 +839,27 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     }
 
-    const initial = generateCPF();
+    const initial = generateCPF(true);
     cpfOutput.textContent = initial;
   }
 
-  // 3. GERADOR DE CNPJ
+  // 3. GERADOR DE CNPJ COM BOTÕES COM E SEM PONTUAÇÃO
   function renderCNPJTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <div>
           <h3>Gerar CNPJ Válido</h3>
-          <p class="text-muted" style="margin-bottom: 16px;">Gere um CNPJ para testes corporativos. Copia automaticamente ao gerar.</p>
+          <p class="text-muted" style="margin-bottom: 16px;">Gere um CNPJ para testes corporativos. Copia automaticamente para a área de transferência.</p>
           
-          <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
-            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatação:</label>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <input type="radio" name="cnpj-format-opt" value="with-format" checked style="accent-color: var(--accent-primary);" />
-                <span>Com Pontuação (Ex: <strong>00.000.000/0001-00</strong>)</span>
-              </label>
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <input type="radio" name="cnpj-format-opt" value="no-format" style="accent-color: var(--accent-primary);" />
-                <span>Sem Pontuação (Apenas Números: <strong>00000000000100</strong>)</span>
-              </label>
-            </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <button id="btn-gen-cnpj-formatted" class="btn btn-primary" style="padding: 12px;">
+              <i data-lucide="sparkles"></i> <span>Com Pontuação (00.000.000/0001-00)</span>
+            </button>
+            <button id="btn-gen-cnpj-raw" class="btn btn-secondary" style="padding: 12px;">
+              <i data-lucide="hash"></i> <span>Sem Pontuação (00000000000100)</span>
+            </button>
           </div>
 
-          <button id="btn-generate-cnpj" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
-            <i data-lucide="sparkles"></i> <span>Gerar Novo CNPJ e Copiar</span>
-          </button>
-          
           <div class="output-box">
             <div id="cnpj-output" class="output-content font-mono" style="font-size: 1.2rem;">Clique em Gerar</div>
             <button id="btn-copy-cnpj" class="btn btn-outline" style="position: absolute; right: 12px; top: 12px;">Copiar</button>
@@ -888,12 +868,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    const btnGenerate = container.querySelector('#btn-generate-cnpj');
+    const btnFormatted = container.querySelector('#btn-gen-cnpj-formatted');
+    const btnRaw = container.querySelector('#btn-gen-cnpj-raw');
     const cnpjOutput = container.querySelector('#cnpj-output');
     const btnCopy = container.querySelector('#btn-copy-cnpj');
 
-    function generateCNPJ() {
-      const selectedFormat = container.querySelector('input[name="cnpj-format-opt"]:checked').value;
+    function generateCNPJ(formatted = true) {
       let n = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).concat([0, 0, 0, 1]);
       
       let m1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -907,20 +887,26 @@ document.addEventListener('DOMContentLoaded', () => {
       n.push(d2);
 
       const raw = n.join('');
-      return selectedFormat === 'with-format' ? raw.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : raw;
+      return formatted ? raw.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : raw;
     }
 
-    btnGenerate.addEventListener('click', () => {
-      const val = generateCNPJ();
+    btnFormatted.addEventListener('click', () => {
+      const val = generateCNPJ(true);
       cnpjOutput.textContent = val;
-      copyToClipboard(val, 'CNPJ gerado e copiado para colar (Ctrl+V)!');
+      copyToClipboard(val, 'CNPJ com pontuação gerado e copiado!');
+    });
+
+    btnRaw.addEventListener('click', () => {
+      const val = generateCNPJ(false);
+      cnpjOutput.textContent = val;
+      copyToClipboard(val, 'CNPJ sem pontuação gerado e copiado!');
     });
 
     btnCopy.addEventListener('click', () => {
       if (cnpjOutput.textContent !== 'Clique em Gerar') copyToClipboard(cnpjOutput.textContent);
     });
 
-    cnpjOutput.textContent = generateCNPJ();
+    cnpjOutput.textContent = generateCNPJ(true);
   }
 
   // 4. JSON TOOL
