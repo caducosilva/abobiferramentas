@@ -62,13 +62,18 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   min-height: 100vh;
-  text-transform: uppercase; /* TODA A UI EM MAIÚSCULAS */
-  letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Permitir maiúsculas/minúsculas no campo de busca ou senhas */
-.case-normal, input, textarea, pre, code {
+/* Maiúsculas só na navegação/títulos/botões (identidade visual "direta").
+   Texto corrido (descrições, dados gerados, mensagens) fica em caixa normal
+   para não cansar a leitura em blocos longos de texto. */
+h1, h2, h3, h4 {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+input, textarea, pre, code {
   text-transform: none;
 }
 
@@ -455,4 +460,15 @@ body {
   .header-container { flex-wrap: wrap; }
   .search-wrapper { order: 3; max-width: 100%; }
   .tool-view-card { padding: 18px; }
+  .brand-badge { display: none; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 16px 14px 40px 14px; }
+  .tools-grid { grid-template-columns: 1fr; }
+  #video-download-buttons,
+  .tool-view-card div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .btn { font-size: 0.82rem; padding: 11px 16px; }
 }

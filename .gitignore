@@ -1,0 +1,5 @@
+node_modules/
+.vercel/
+*.log
+*-player-script.js
+*-watch.html

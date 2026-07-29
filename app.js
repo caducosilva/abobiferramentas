@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
       slug: 'baixador-de-videos',
       aliases: ['/video-downloader', '/baixar-videos'],
       name: 'BAIXADOR DE VÍDEOS DA INTERNET (DOWNLOAD DIRETO)',
-      description: 'BAIXE VÍDEOS E MÚSICAS DO YOUTUBE, YOUTUBE MUSIC, FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D\'ÁGUA E TWITTER DIRETO NO SEU DISPOSITIVO.',
+      description: 'BAIXE VÍDEOS PÚBLICOS DO YOUTUBE, YOUTUBE MUSIC, TIKTOK SEM MARCA D\'ÁGUA, INSTAGRAM, FACEBOOK E TWITTER/X SEMPRE NA MAIOR QUALIDADE DISPONÍVEL.',
       category: 'midia',
       icon: 'video',
       render: renderVideoDownloaderTool
@@ -194,9 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeIcon: document.getElementById('theme-icon'),
     toastContainer: document.getElementById('toast-container'),
     modalPrivacy: document.getElementById('modal-privacy'),
-    modalTerms: document.getElementById('modal-terms'),
-    modalAdInterstitial: document.getElementById('modal-ad-interstitial'),
-    btnCloseAdPopup: document.getElementById('btn-close-ad-popup')
+    modalTerms: document.getElementById('modal-terms')
   };
 
   initTheme();
@@ -339,13 +337,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function showToast(message) {
+  function showToast(message, title = 'COPIADO PARA O CLIPBOARD!', variant = 'success') {
+    const color = variant === 'error' ? 'var(--accent-danger)' : 'var(--accent-green)';
+    const icon = variant === 'error' ? 'alert-triangle' : 'check-circle-2';
     const toast = document.createElement('div');
     toast.className = 'toast';
+    toast.style.borderColor = color;
     toast.innerHTML = `
-      <i data-lucide="check-circle-2" style="color: var(--accent-green); width: 24px; height: 24px;"></i>
+      <i data-lucide="${icon}" style="color: ${color}; width: 24px; height: 24px; flex-shrink: 0;"></i>
       <div>
-        <div style="font-weight: 900; color: var(--accent-green); font-size: 0.85rem; letter-spacing: 0.05em;">COPIADO PARA O CLIPBOARD!</div>
+        <div style="font-weight: 900; color: ${color}; font-size: 0.85rem; letter-spacing: 0.05em;">${title}</div>
         <div style="font-size: 0.85rem; color: var(--text-primary); font-weight: 700;">${message}</div>
       </div>
     `;
@@ -485,19 +486,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     2. BAIXADOR DE VÍDEOS DA INTERNET E YOUTUBE MUSIC (SNAPTICK & MP3)
+     2. BAIXADOR DE VÍDEOS DA INTERNET (EXTRAÇÃO REAL, SEM DADOS FALSOS)
      ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 780px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS E MÚSICAS DIRETO NO SEU DISPOSITIVO</h3>
-          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">SUPORTE COMPLETO A YOUTUBE, YOUTUBE MUSIC (MP3 320KBPS), PLAYLISTS, FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D'ÁGUA (SNAPTIK) E TWITTER.</p>
+          <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS DIRETO NO SEU DISPOSITIVO</h3>
+          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">YOUTUBE, YOUTUBE MUSIC, TIKTOK SEM MARCA D'ÁGUA, INSTAGRAM, FACEBOOK E TWITTER/X. SEMPRE NA MAIOR QUALIDADE DISPONÍVEL — SEM ESCOLHA MANUAL.</p>
+          <p class="text-muted" style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">FUNCIONA APENAS COM CONTEÚDO PÚBLICO. O YOUTUBE E O INSTAGRAM ÀS VEZES BLOQUEIAM ESSE TIPO DE ACESSO — QUANDO ISSO ACONTECE, MOSTRAMOS O ERRO REAL EM VEZ DE FINGIR QUE FUNCIONOU.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
           <div style="position: relative;">
-            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO, MÚSICA OU PLAYLIST AQUI..." style="padding-right: 120px;" />
+            <input type="text" id="video-url-input" class="form-input case-normal" placeholder="COLE O LINK DO VÍDEO OU PLAYLIST AQUI..." style="padding-right: 120px;" />
             <button id="btn-paste-link" class="btn btn-outline" style="position: absolute; right: 6px; top: 5px; padding: 6px 12px; font-size: 0.75rem;">
               COLAR LINK
             </button>
@@ -506,17 +508,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <button id="btn-process-video" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 0.95rem;">
           <i data-lucide="search"></i>
-          <span>ANALISAR LINK E INICIAR DOWNLOAD DIRETO NO SITE</span>
+          <span>BUSCAR VÍDEO</span>
         </button>
 
         <div id="video-status" style="text-align: center; display: none; margin-top: 20px;">
           <div class="spinner" style="display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 8px;"></div>
-          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">PROCESSANDO MÍDIA E EXTRAINDO O FLUXO DE DOWNLOAD...</p>
+          <p style="font-weight: 900; color: var(--accent-cyan); font-size: 0.85rem;">BUSCANDO O VÍDEO NA PLATAFORMA DE ORIGEM...</p>
         </div>
+
+        <div id="video-error-box" style="display: none; margin-top: 20px; background: var(--bg-input); border: 1px solid var(--accent-danger); border-radius: var(--radius-md); padding: 16px; color: var(--accent-danger); font-weight: 800; font-size: 0.85rem;"></div>
 
         <div id="download-progress-container" style="display: none; margin-top: 20px; background: var(--bg-input); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 16px; text-align: center;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-weight: 900; font-size: 0.85rem; color: var(--accent-cyan);">BAIXANDO ARQUIVO DIRETO NO SEU DISPOSITIVO...</span>
+            <span style="font-weight: 900; font-size: 0.85rem; color: var(--accent-cyan);">BAIXANDO ARQUIVO REAL...</span>
             <span id="download-progress-percent" class="font-mono" style="font-weight: 900; color: var(--accent-green);">0%</span>
           </div>
           <div style="width: 100%; background: var(--bg-card); height: 12px; border-radius: var(--radius-full); overflow: hidden; border: 1px solid var(--border-color);">
@@ -527,24 +531,35 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Single Video Result Box -->
         <div id="video-result-box" style="display: none; margin-top: 24px; background: var(--bg-input); border: 1px solid var(--accent-green); border-radius: var(--radius-md); padding: 20px;">
           <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
-            <img id="video-thumbnail-img" src="" style="width: 140px; height: 90px; object-fit: cover; border-radius: var(--radius-sm);" />
+            <img id="video-thumbnail-img" src="" style="width: 140px; height: 90px; object-fit: cover; border-radius: var(--radius-sm); background: var(--bg-card);" />
             <div style="flex: 1;">
               <span id="platform-tag" class="badge" style="background: var(--accent-primary); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">PLATAFORMA</span>
-              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px;">MÍDIA PRONTA PARA DOWNLOAD</h4>
-              <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ MÁXIMA QUALIDADE DISPONÍVEL (HD / MP3 320KBPS)</p>
+              <h4 id="video-title-display" style="font-size: 1.05rem; font-weight: 900; margin-top: 4px; text-transform: none;">MÍDIA PRONTA PARA DOWNLOAD</h4>
+              <p id="video-quality-display" style="font-size: 0.8rem; color: var(--accent-green); font-weight: 800;">✓ MAIOR QUALIDADE DISPONÍVEL</p>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div id="video-download-buttons" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <button id="btn-trigger-single-download-mp4" class="btn btn-primary">
               <i data-lucide="film"></i>
-              <span>BAIXAR VÍDEO MP4 (HD)</span>
+              <span>BAIXAR VÍDEO</span>
             </button>
-            <button id="btn-trigger-single-download-mp3" class="btn btn-secondary">
+            <button id="btn-trigger-single-download-mp3" class="btn btn-secondary hidden">
               <i data-lucide="music"></i>
-              <span>BAIXAR MÚSICA (MP3 320KBPS)</span>
+              <span>BAIXAR ÁUDIO (MP3)</span>
             </button>
           </div>
+        </div>
+
+        <!-- Ad slot não-bloqueante (não impede nenhum download) -->
+        <div class="ad-container" style="margin-top: 24px;">
+          <span class="ad-label">PUBLICIDADE PARCEIRA</span>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-7169685901436487"
+               data-ad-slot="auto"
+               data-ad-format="rectangle"
+               data-full-width-responsive="true"></ins>
         </div>
 
         <!-- YouTube Playlist Result Box -->
@@ -552,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
             <div>
               <span class="badge" style="background: var(--accent-danger); color: #fff; font-size: 0.7rem; padding: 2px 6px; font-weight: 900;">PLAYLIST DO YOUTUBE</span>
-              <h4 style="font-size: 1.1rem; font-weight: 900; margin-top: 4px;">SELECIONE AS MÚSICAS / VÍDEOS DA PLAYLIST</h4>
+              <h4 style="font-size: 1.1rem; font-weight: 900; margin-top: 4px;">SELECIONE OS VÍDEOS DA PLAYLIST</h4>
             </div>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 900; cursor: pointer;">
               <input type="checkbox" id="chk-select-all-playlist" checked style="accent-color: var(--accent-primary);" />
@@ -561,12 +576,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div id="playlist-items-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto; margin-bottom: 18px; padding-right: 4px;">
-            <!-- Playlist Items -->
+            <!-- Itens reais da playlist -->
           </div>
 
           <button id="btn-download-playlist-selected" class="btn btn-primary" style="width: 100%; padding: 14px;">
             <i data-lucide="download-cloud"></i>
-            <span id="btn-playlist-label">BAIXAR ITENS SELECIONADOS DIRETO NO SEU COMPUTADOR/CELULAR</span>
+            <span id="btn-playlist-label">BAIXAR ITENS SELECIONADOS</span>
           </button>
         </div>
 
@@ -577,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnPaste = container.querySelector('#btn-paste-link');
     const btnProcess = container.querySelector('#btn-process-video');
     const statusBox = container.querySelector('#video-status');
+    const errorBox = container.querySelector('#video-error-box');
     const progressBox = container.querySelector('#download-progress-container');
     const progressBar = container.querySelector('#download-progress-bar');
     const progressPercent = container.querySelector('#download-progress-percent');
@@ -584,6 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const playlistBox = container.querySelector('#playlist-result-box');
     const thumbImg = container.querySelector('#video-thumbnail-img');
     const titleDisplay = container.querySelector('#video-title-display');
+    const qualityDisplay = container.querySelector('#video-quality-display');
     const platformTag = container.querySelector('#platform-tag');
     const btnDownloadMp4 = container.querySelector('#btn-trigger-single-download-mp4');
     const btnDownloadMp3 = container.querySelector('#btn-trigger-single-download-mp3');
@@ -592,7 +609,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnDownloadPlaylist = container.querySelector('#btn-download-playlist-selected');
     const btnPlaylistLabel = container.querySelector('#btn-playlist-label');
 
-    let currentStreamMeta = { platform: '', title: '', ext: 'mp4' };
+    let currentSourceUrl = '';
+    let currentTitle = '';
 
     btnPaste.addEventListener('click', async () => {
       try {
@@ -602,103 +620,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnProcess.addEventListener('click', process);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') process(); });
 
-    if (el.btnCloseAdPopup) {
-      el.btnCloseAdPopup.onclick = () => {
-        el.modalAdInterstitial.classList.add('hidden');
-        startDirectInBrowserDownload();
-      };
-    }
+    btnDownloadMp4.addEventListener('click', () => triggerRealDownload(currentSourceUrl, 'video', currentTitle));
+    btnDownloadMp3.addEventListener('click', () => triggerRealDownload(currentSourceUrl, 'audio', currentTitle));
 
-    btnDownloadMp4.addEventListener('click', () => {
-      currentStreamMeta.ext = 'mp4';
-      el.modalAdInterstitial.classList.remove('hidden');
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    });
-
-    btnDownloadMp3.addEventListener('click', () => {
-      currentStreamMeta.ext = 'mp3';
-      el.modalAdInterstitial.classList.remove('hidden');
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    });
-
-    btnDownloadPlaylist.addEventListener('click', () => {
-      currentStreamMeta.ext = 'mp4';
-      el.modalAdInterstitial.classList.remove('hidden');
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    });
-
-    function process() {
+    async function process() {
       const url = input.value.trim();
       if (!url) return;
 
       statusBox.style.display = 'block';
+      errorBox.style.display = 'none';
       resultBox.style.display = 'none';
       playlistBox.style.display = 'none';
       progressBox.style.display = 'none';
 
-      const isYouTubePlaylist = (url.includes('youtube.com') || url.includes('youtu.be')) && (url.includes('list=') || url.includes('playlist'));
-
-      setTimeout(() => {
+      try {
+        const resp = await fetch('/api/resolve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await resp.json();
         statusBox.style.display = 'none';
 
-        if (isYouTubePlaylist) {
-          renderPlaylistItems(url);
+        if (!data.ok) {
+          showError(data.error || 'NÃO FOI POSSÍVEL PROCESSAR ESTE LINK.');
+          return;
+        }
+
+        if (data.kind === 'playlist') {
+          renderPlaylistItems(data);
           playlistBox.style.display = 'block';
         } else {
-          renderSingleVideo(url);
+          renderSingleVideo(data);
           resultBox.style.display = 'block';
         }
-      }, 800);
-    }
-
-    function renderSingleVideo(url) {
-      let platform = "INTERNET";
-      let title = "VÍDEO PÚBLICO";
-      let thumb = "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&auto=format&fit=crop&q=80";
-
-      if (url.includes('music.youtube.com')) {
-        platform = "YOUTUBE MUSIC";
-        title = "MÚSICA DO YOUTUBE MUSIC (MP3 320KBPS / HD)";
-        const match = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
-        if (match) thumb = `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
-      } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        platform = "YOUTUBE";
-        title = "VÍDEO DO YOUTUBE (HD / 4K)";
-        const match = url.match(/(?:v=|\/shorts\/|\/)([a-zA-Z0-9_-]{11})/);
-        if (match) thumb = `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
-      } else if (url.includes('facebook.com') || url.includes('fb.watch')) {
-        platform = "FACEBOOK";
-        title = "VÍDEO DO FACEBOOK (HD / REELS)";
-      } else if (url.includes('instagram.com')) {
-        platform = "INSTAGRAM";
-        title = "REELS / POST DO INSTAGRAM (HD)";
-      } else if (url.includes('tiktok.com')) {
-        platform = "TIKTOK";
-        title = "TIKTOK (SEM MARCA D'ÁGUA - SNAPTIK)";
-      } else if (url.includes('twitter.com') || url.includes('x.com')) {
-        platform = "TWITTER / X";
-        title = "VÍDEO DO TWITTER / X";
+      } catch (err) {
+        statusBox.style.display = 'none';
+        showError('ERRO DE CONEXÃO AO PROCESSAR ESTE LINK. TENTE NOVAMENTE.');
       }
-
-      currentStreamMeta = { platform, title, ext: 'mp4' };
-      thumbImg.src = thumb;
-      titleDisplay.textContent = title;
-      platformTag.textContent = platform;
     }
 
-    function renderPlaylistItems(playlistUrl) {
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    }
+
+    function renderSingleVideo(data) {
+      currentSourceUrl = data.sourceUrl;
+      currentTitle = data.title;
+
+      thumbImg.src = data.thumbnail || '';
+      titleDisplay.textContent = data.title || 'MÍDIA PRONTA PARA DOWNLOAD';
+      platformTag.textContent = data.platform.replace('_', ' ');
+      qualityDisplay.textContent = data.qualityLabel ? `✓ QUALIDADE: ${data.qualityLabel}` : '✓ MAIOR QUALIDADE DISPONÍVEL';
+
+      const isYouTube = data.platform === 'YOUTUBE' || data.platform === 'YOUTUBE_MUSIC';
+      btnDownloadMp3.classList.toggle('hidden', !isYouTube || !data.hasAudio);
+      btnDownloadMp4.classList.toggle('hidden', !(data.hasVideo !== false));
+    }
+
+    function renderPlaylistItems(data) {
       playlistList.innerHTML = '';
-      currentStreamMeta = { platform: 'YOUTUBE PLAYLIST', title: 'PLAYLIST DO YOUTUBE', ext: 'mp4' };
 
-      const mockPlaylist = [
-        { id: '1', title: '01. MÚSICA DA PLAYLIST - TRACK 1 (MP3 / HD 1080P)', duration: '03:45', thumb: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=300&auto=format&fit=crop&q=80' },
-        { id: '2', title: '02. MÚSICA DA PLAYLIST - TRACK 2 (MP3 / HD 1080P)', duration: '04:12', thumb: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=300&auto=format&fit=crop&q=80' },
-        { id: '3', title: '03. MÚSICA DA PLAYLIST - TRACK 3 (MP3 / HD 4K)', duration: '05:00', thumb: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=300&auto=format&fit=crop&q=80' },
-        { id: '4', title: '04. MÚSICA DA PLAYLIST - TRACK 4 (MP3 / HD 1080P)', duration: '02:50', thumb: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&auto=format&fit=crop&q=80' }
-      ];
-
-      mockPlaylist.forEach((item) => {
+      data.items.forEach((item, idx) => {
         const row = document.createElement('div');
         row.style.cssText = `
           display: flex;
@@ -710,13 +696,13 @@ document.addEventListener('DOMContentLoaded', () => {
           padding: 10px 14px;
         `;
         row.innerHTML = `
-          <input type="checkbox" class="chk-playlist-item" data-id="${item.id}" checked style="accent-color: var(--accent-primary); width: 18px; height: 18px; cursor: pointer;" />
-          <img src="${item.thumb}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px;" />
+          <input type="checkbox" class="chk-playlist-item" data-idx="${idx}" checked style="accent-color: var(--accent-primary); width: 18px; height: 18px; cursor: pointer;" />
+          <img src="${item.thumbnail || ''}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; background: var(--bg-input);" />
           <div style="flex: 1;">
-            <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-primary);">${item.title}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">DURAÇÃO: ${item.duration} • MÁXIMA QUALIDADE</div>
+            <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-primary); text-transform: none;">${item.title}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">${item.duration ? 'DURAÇÃO: ' + item.duration : ''}</div>
           </div>
-          <button class="btn btn-outline btn-download-single-item" style="padding: 4px 8px; font-size: 0.75rem;">
+          <button class="btn btn-outline btn-download-single-item" data-idx="${idx}" style="padding: 4px 8px; font-size: 0.75rem;">
             <i data-lucide="download" style="width: 14px; height: 14px;"></i>
           </button>
         `;
@@ -740,56 +726,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
       playlistList.querySelectorAll('.btn-download-single-item').forEach(b => {
         b.onclick = () => {
-          el.modalAdInterstitial.classList.remove('hidden');
-          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+          const item = data.items[Number(b.dataset.idx)];
+          triggerRealDownload(item.sourceUrl, 'video', item.title);
         };
       });
 
+      btnDownloadPlaylist.onclick = async () => {
+        const selected = Array.from(itemsCheckboxes).filter(c => c.checked).map(c => data.items[Number(c.dataset.idx)]);
+        for (const item of selected) {
+          await triggerRealDownload(item.sourceUrl, 'video', item.title);
+        }
+      };
+
       function updatePlaylistButtonLabel() {
         const count = Array.from(itemsCheckboxes).filter(cb => cb.checked).length;
-        btnPlaylistLabel.textContent = `BAIXAR ${count} ITEM(S) SELECIONADO(S) DIRETO NO NAVEGADOR`;
+        btnPlaylistLabel.textContent = `BAIXAR ${count} ITEM(S) SELECIONADO(S)`;
       }
 
       updatePlaylistButtonLabel();
       lucide.createIcons();
     }
 
-    function startDirectInBrowserDownload() {
+    async function triggerRealDownload(sourceUrl, kind, titleHint) {
       progressBox.style.display = 'block';
       progressBar.style.width = '0%';
       progressPercent.textContent = '0%';
 
-      let current = 0;
-      const timer = setInterval(() => {
-        current += Math.floor(Math.random() * 15) + 10;
-        if (current >= 100) {
-          current = 100;
-          clearInterval(timer);
-          progressBar.style.width = '100%';
-          progressPercent.textContent = '100%';
+      try {
+        const resp = await fetch(`/api/download?url=${encodeURIComponent(sourceUrl)}&kind=${kind}`);
 
-          triggerNativeFileDownload();
-          showToast(`✓ ARQUIVO ${currentStreamMeta.platform} (${currentStreamMeta.ext.toUpperCase()}) SALVO NA SUA PASTA DE DOWNLOADS!`);
-          setTimeout(() => { progressBox.style.display = 'none'; }, 4000);
-        } else {
-          progressBar.style.width = `${current}%`;
-          progressPercent.textContent = `${current}%`;
+        if (!resp.ok || !resp.body) {
+          let msg = 'FALHA AO BAIXAR ESTE ARQUIVO.';
+          try { const j = await resp.json(); if (j.error) msg = j.error; } catch (e) {}
+          throw new Error(msg);
         }
-      }, 180);
-    }
 
-    function triggerNativeFileDownload() {
-      const fileName = `abobi_midia_${currentStreamMeta.platform.toLowerCase().replace(/[^a-z0-9]/g, '_')}.${currentStreamMeta.ext}`;
-      const dummyContent = new Blob(["ABOBI FERRAMENTAS DIRECT MEDIA CONTAINER DATA"], { type: currentStreamMeta.ext === 'mp3' ? 'audio/mpeg' : 'video/mp4' });
-      const downloadUrl = URL.createObjectURL(dummyContent);
+        const total = Number(resp.headers.get('content-length')) || 0;
+        const disposition = resp.headers.get('content-disposition') || '';
+        const fnMatch = disposition.match(/filename="([^"]+)"/);
+        const fileName = fnMatch ? fnMatch[1] : `${titleHint || 'abobi-video'}.${kind === 'audio' ? 'mp3' : 'mp4'}`;
 
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(downloadUrl);
+        const reader = resp.body.getReader();
+        const chunks = [];
+        let received = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          received += value.length;
+          if (total > 0) {
+            const pct = Math.min(100, Math.round((received / total) * 100));
+            progressBar.style.width = pct + '%';
+            progressPercent.textContent = pct + '%';
+          } else {
+            progressPercent.textContent = `${(received / 1024 / 1024).toFixed(1)} MB`;
+          }
+        }
+
+        progressBar.style.width = '100%';
+        progressPercent.textContent = '100%';
+
+        const blob = new Blob(chunks);
+        const objUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(objUrl);
+
+        showToast(fileName, 'DOWNLOAD CONCLUÍDO!', 'success');
+      } catch (err) {
+        showToast(err.message || 'ERRO AO BAIXAR ESTE ARQUIVO.', 'FALHA NO DOWNLOAD', 'error');
+      } finally {
+        setTimeout(() => { progressBox.style.display = 'none'; }, 2000);
+      }
     }
   }
 
