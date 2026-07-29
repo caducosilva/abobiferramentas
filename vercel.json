@@ -5,6 +5,7 @@
     "api/*.py": { "maxDuration": 60 }
   },
   "rewrites": [
+    { "source": "/baixar-video-instagram", "destination": "/baixar-video-instagram.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
