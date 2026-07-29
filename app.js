@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cpf',
       name: 'Gerador e Validador de CPF',
-      description: 'Gere CPFs válidos para testes ou valide números existentes instantaneamente.',
+      description: 'Gere CPFs válidos com ou sem pontuação para testes, e valide números existentes.',
       category: 'documentos',
       icon: 'file-check',
       render: renderCPFTool
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cnpj',
       name: 'Gerador e Validador de CNPJ',
-      description: 'Gere CNPJs válidos para testes ou valide números empresariais.',
+      description: 'Gere CNPJs válidos com ou sem pontuação para testes empresariais.',
       category: 'documentos',
       icon: 'building-2',
       render: renderCNPJTool
@@ -168,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         item.classList.add('active');
         state.currentCategory = item.dataset.category;
         
-        // Return to grid if currently viewing a single tool
         showGridView();
         renderGrid();
       });
@@ -206,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return matchesCategory && matchesSearch;
     });
 
-    // Update Section Header Title & Count
     const categoryNames = {
       all: 'Todas as Ferramentas',
       favorites: 'Ferramentas Favoritas',
@@ -254,13 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Open Tool View on Card Click
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.tool-card-fav')) return; // Ignore fav button click
+        if (e.target.closest('.tool-card-fav')) return;
         openTool(tool.id);
       });
 
-      // Fav Button Click Inside Card
       card.querySelector('.tool-card-fav').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleFavorite(tool.id);
@@ -274,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
   }
 
-  // Open Tool Active View
   function openTool(toolId) {
     const tool = tools.find(t => t.id === toolId);
     if (!tool) return;
@@ -290,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateFavButtonState(tool.id);
 
-    // Render Component View
     el.activeToolContainer.innerHTML = '';
     tool.render(el.activeToolContainer);
 
@@ -305,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
     el.heroBanner.classList.remove('hidden');
   }
 
-  // Favorites Management
   function toggleFavorite(toolId) {
     if (state.favorites.includes(toolId)) {
       state.favorites = state.favorites.filter(id => id !== toolId);
@@ -329,8 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.countFavorites.textContent = state.favorites.length;
   }
 
-  // Toast Notification
-  function showToast(message, type = 'info') {
+  function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
@@ -347,7 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2500);
   }
 
-  // Copy to Clipboard Utility
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
       showToast('Copiado para a área de transferência!');
@@ -356,7 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Theme Toggle
   function toggleTheme() {
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.className = state.theme;
@@ -374,29 +364,37 @@ document.addEventListener('DOMContentLoaded', () => {
      INDIVIDUAL TOOL RENDER FUNCTIONS
      ======================================================== */
 
-  // 1. CPF TOOL
+  // 1. GERADOR E VALIDADOR DE CPF (COM / SEM PONTUAÇÃO)
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <!-- Gerador -->
         <div>
           <h3>Gerar CPF Válido</h3>
-          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes de formulários e software.</p>
+          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes com a opção de formato desejada.</p>
           
-          <div class="form-group">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-              <input type="checkbox" id="cpf-format-check" checked />
-              <span>Com pontuação (Ex: 000.000.000-00)</span>
-            </label>
+          <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatacão:</label>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="radio" name="cpf-format-opt" value="with-format" checked style="accent-color: var(--accent-primary);" />
+                <span>Com Pontuação (Ex: <strong>000.000.000-00</strong>)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="radio" name="cpf-format-opt" value="no-format" style="accent-color: var(--accent-primary);" />
+                <span>Sem Pontuação (Apenas Números: <strong>00000000000</strong>)</span>
+              </label>
+            </div>
           </div>
 
-          <button id="btn-generate-cpf" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
-            <i data-lucide="sparkles"></i>
-            <span>Gerar CPF</span>
-          </button>
+          <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button id="btn-generate-cpf" class="btn btn-primary" style="flex: 1;">
+              <i data-lucide="sparkles"></i> <span>Gerar Novo CPF</span>
+            </button>
+          </div>
 
           <div class="output-box">
-            <div id="cpf-output" class="output-content font-mono">Clique em Gerar</div>
+            <div id="cpf-output" class="output-content font-mono" style="font-size: 1.25rem;">Clique em Gerar</div>
             <button id="btn-copy-cpf" class="btn btn-outline" style="position: absolute; right: 12px; top: 12px;">Copiar</button>
           </div>
         </div>
@@ -407,8 +405,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-muted" style="margin-bottom: 16px;">Insira um CPF para checar se ele é matematicamente válido.</p>
           
           <div class="form-group">
-            <label class="form-label">Digite o CPF:</label>
-            <input type="text" id="cpf-validate-input" class="form-input font-mono" placeholder="000.000.000-00" />
+            <label class="form-label">Digite o CPF (com ou sem pontos):</label>
+            <input type="text" id="cpf-validate-input" class="form-input font-mono" placeholder="000.000.000-00 ou 00000000000" />
           </div>
 
           <div id="cpf-validate-result" style="padding: 16px; border-radius: var(--radius-md); font-weight: 600; text-align: center; display: none;"></div>
@@ -423,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const validateResult = container.querySelector('#cpf-validate-result');
 
     function generateCPF() {
-      const format = container.querySelector('#cpf-format-check').checked;
+      const selectedFormat = container.querySelector('input[name="cpf-format-opt"]:checked').value;
       let n = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
       
       let d1 = n.reduce((acc, val, i) => acc + val * (10 - i), 0) % 11;
@@ -435,12 +433,11 @@ document.addEventListener('DOMContentLoaded', () => {
       n.push(d2);
 
       const raw = n.join('');
-      return format ? raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : raw;
+      return selectedFormat === 'with-format' ? raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : raw;
     }
 
     btnGenerate.addEventListener('click', () => {
-      const val = generateCPF();
-      cpfOutput.textContent = val;
+      cpfOutput.textContent = generateCPF();
     });
 
     btnCopy.addEventListener('click', () => {
@@ -481,27 +478,38 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     }
 
-    generateCPF();
+    // Auto Generate initial
+    cpfOutput.textContent = generateCPF();
   }
 
-  // 2. CNPJ TOOL
+  // 2. GERADOR E VALIDADOR DE CNPJ (COM / SEM PONTUAÇÃO)
   function renderCNPJTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <div>
           <h3>Gerar CNPJ Válido</h3>
           <p class="text-muted" style="margin-bottom: 16px;">Gere um CNPJ para testes corporativos.</p>
-          <div class="form-group">
-            <label style="display: flex; align-items: center; gap: 8px;">
-              <input type="checkbox" id="cnpj-format-check" checked />
-              <span>Com pontuação (Ex: 00.000.000/0001-00)</span>
-            </label>
+          
+          <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatação:</label>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="radio" name="cnpj-format-opt" value="with-format" checked style="accent-color: var(--accent-primary);" />
+                <span>Com Pontuação (Ex: <strong>00.000.000/0001-00</strong>)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="radio" name="cnpj-format-opt" value="no-format" style="accent-color: var(--accent-primary);" />
+                <span>Sem Pontuação (Apenas Números: <strong>00000000000100</strong>)</span>
+              </label>
+            </div>
           </div>
+
           <button id="btn-generate-cnpj" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
-            <i data-lucide="sparkles"></i> <span>Gerar CNPJ</span>
+            <i data-lucide="sparkles"></i> <span>Gerar Novo CNPJ</span>
           </button>
+          
           <div class="output-box">
-            <div id="cnpj-output" class="output-content font-mono">Clique em Gerar</div>
+            <div id="cnpj-output" class="output-content font-mono" style="font-size: 1.2rem;">Clique em Gerar</div>
             <button id="btn-copy-cnpj" class="btn btn-outline" style="position: absolute; right: 12px; top: 12px;">Copiar</button>
           </div>
         </div>
@@ -513,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCopy = container.querySelector('#btn-copy-cnpj');
 
     function generateCNPJ() {
-      const format = container.querySelector('#cnpj-format-check').checked;
+      const selectedFormat = container.querySelector('input[name="cnpj-format-opt"]:checked').value;
       let n = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).concat([0, 0, 0, 1]);
       
       let m1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -527,7 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
       n.push(d2);
 
       const raw = n.join('');
-      return format ? raw.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : raw;
+      return selectedFormat === 'with-format' ? raw.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : raw;
     }
 
     btnGenerate.addEventListener('click', () => {
@@ -537,6 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCopy.addEventListener('click', () => {
       if (cnpjOutput.textContent !== 'Clique em Gerar') copyToClipboard(cnpjOutput.textContent);
     });
+
+    cnpjOutput.textContent = generateCNPJ();
   }
 
   // 3. JSON TOOL
