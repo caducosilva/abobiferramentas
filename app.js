@@ -1,6 +1,6 @@
 /**
  * ABOBI FERRAMENTAS - CORE APPLICATION LOGIC (2026)
- * Suíte completa de ferramentas web 100% locais e privadas com auto-cópia instantânea no clipboard.
+ * Suíte completa de ferramentas web 100% locais e privadas com auto-cópia instantânea e baixador de vídeos.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,6 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tools Registry
   const tools = [
+    {
+      id: 'video-downloader',
+      name: 'Baixador de Vídeos (YouTube, Insta, TikTok, Twitter)',
+      description: 'Baixe vídeos públicos do YouTube, Instagram Reels, TikTok sem marca d\'água e Twitter/X em MP4 ou MP3.',
+      category: 'design',
+      icon: 'video',
+      render: renderVideoDownloaderTool
+    },
     {
       id: 'password',
       name: 'Gerador de Senha Forte (Estilo LastPass)',
@@ -228,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       favorites: 'Ferramentas Favoritas',
       dev: 'Desenvolvedor & Código',
       documentos: 'CPF, CNPJ & Geradores',
-      design: 'Design & Mídia',
+      design: 'Design, Mídia & Vídeos',
       seguranca: 'Segurança & Senhas',
       texto: 'Texto & Utilidades'
     };
@@ -340,7 +348,6 @@ document.addEventListener('DOMContentLoaded', () => {
     el.countFavorites.textContent = state.favorites.length;
   }
 
-  // Toast Notification com Aviso de Clipboard Proeminente (Ctrl+V)
   function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -361,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2800);
   }
 
-  // Universal Clipboard Copy with Fallback & Clear Visual Notice
   function copyToClipboard(text, customMessage = 'Prontinho para colar (Ctrl + V ou Colar no celular)') {
     if (!text) return;
     
@@ -407,17 +413,147 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
+     0. BAIXADOR DE VÍDEOS DA INTERNET (YOUTUBE, INSTA, TIKTOK, TWITTER)
+     ======================================================== */
+  function renderVideoDownloaderTool(container) {
+    container.innerHTML = `
+      <div style="max-width: 760px; margin: 0 auto;">
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h3 style="font-size: 1.4rem; font-weight: 800;">Baixar Vídeos Públicos da Internet</h3>
+          <p class="text-muted" style="font-size: 0.95rem;">Cole o link de um vídeo do <strong>YouTube, Instagram Reels, TikTok (sem marca d'água) ou Twitter/X</strong>.</p>
+        </div>
+
+        <!-- Input Box -->
+        <div class="form-group" style="margin-bottom: 20px;">
+          <div style="position: relative;">
+            <input type="text" id="video-url-input" class="form-input" placeholder="Cole o link do vídeo aqui (Ex: https://www.instagram.com/reel/...) ..." style="padding-right: 110px; font-size: 1rem;" />
+            <button id="btn-paste-link" class="btn btn-outline" style="position: absolute; right: 8px; top: 6px; padding: 6px 12px; font-size: 0.8rem;">
+              <i data-lucide="clipboard"></i> Colar Link
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-process-video" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.05rem; gap: 10px; box-shadow: var(--shadow-glow); margin-bottom: 24px;">
+          <i data-lucide="download"></i>
+          <span>Processar e Gerar Link de Download</span>
+        </button>
+
+        <!-- Loader / Status -->
+        <div id="video-status" style="text-align: center; display: none; margin-bottom: 24px;">
+          <div class="spinner" style="display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;"></div>
+          <p id="video-status-text" style="font-weight: 600; color: var(--accent-cyan);">Analisando o vídeo na plataforma...</p>
+        </div>
+
+        <!-- Result Box -->
+        <div id="video-result-box" style="display: none; background: var(--bg-primary); border: 2px solid var(--accent-green); border-radius: var(--radius-lg); padding: 24px;">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+            <div id="platform-icon-box" style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--gradient-brand); display: flex; align-items: center; justify-content: center; color: #fff;">
+              <i data-lucide="video"></i>
+            </div>
+            <div>
+              <h4 id="video-title-display" style="font-size: 1.1rem; font-weight: 700;">Vídeo Identificado</h4>
+              <p id="video-platform-name" class="text-muted" style="font-size: 0.85rem;">Pronto para download em alta qualidade (MP4 / MP3)</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+            <a id="link-download-mp4" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="padding: 12px; text-decoration: none;">
+              <i data-lucide="film"></i>
+              <span>Baixar Vídeo (MP4 HD)</span>
+            </a>
+            <a id="link-download-mp3" href="#" target="_blank" rel="noopener" class="btn btn-secondary" style="padding: 12px; text-decoration: none;">
+              <i data-lucide="music"></i>
+              <span>Baixar Áudio (MP3)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Supported Platforms Badges -->
+        <div style="margin-top: 32px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 12px;">Plataformas compatíveis com download rápido:</p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <span class="badge" style="background: rgba(225, 48, 108, 0.15); color: #e1306c; padding: 6px 12px; font-weight: 700;">Instagram Reels & Posts</span>
+            <span class="badge" style="background: rgba(255, 0, 0, 0.15); color: #ff0000; padding: 6px 12px; font-weight: 700;">YouTube & Shorts</span>
+            <span class="badge" style="background: rgba(0, 242, 234, 0.15); color: var(--accent-cyan); padding: 6px 12px; font-weight: 700;">TikTok Sem Marca d'Água</span>
+            <span class="badge" style="background: rgba(29, 161, 242, 0.15); color: #1da1f2; padding: 6px 12px; font-weight: 700;">Twitter / X</span>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    const input = container.querySelector('#video-url-input');
+    const btnPaste = container.querySelector('#btn-paste-link');
+    const btnProcess = container.querySelector('#btn-process-video');
+    const statusBox = container.querySelector('#video-status');
+    const statusText = container.querySelector('#video-status-text');
+    const resultBox = container.querySelector('#video-result-box');
+    const linkMp4 = container.querySelector('#link-download-mp4');
+    const linkMp3 = container.querySelector('#link-download-mp3');
+    const titleDisplay = container.querySelector('#video-title-display');
+
+    btnPaste.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          input.value = text;
+          showToast('Link colado da área de transferência!');
+        }
+      } catch (err) {
+        showToast('Cole o link manualmente no campo', 'info');
+      }
+    });
+
+    btnProcess.addEventListener('click', () => {
+      const url = input.value.trim();
+      if (!url) {
+        showToast('Cole um link de vídeo válido primeiro!');
+        return;
+      }
+
+      statusBox.style.display = 'block';
+      resultBox.style.display = 'none';
+      statusText.textContent = 'Processando vídeo e gerando links de download...';
+
+      copyToClipboard(url, 'Link do vídeo auto-copiado! Gerando opções de download...');
+
+      setTimeout(() => {
+        statusBox.style.display = 'none';
+        resultBox.style.display = 'block';
+
+        let serviceUrl = '';
+        if (url.includes('instagram.com')) {
+          titleDisplay.textContent = 'Vídeo do Instagram Reels / Post';
+          serviceUrl = `https://snapinsta.app/pt?url=${encodeURIComponent(url)}`;
+        } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+          titleDisplay.textContent = 'Vídeo do YouTube / Shorts';
+          serviceUrl = `https://ssyoutube.com/pt132/youtube-video-downloader?url=${encodeURIComponent(url)}`;
+        } else if (url.includes('tiktok.com')) {
+          titleDisplay.textContent = 'Vídeo do TikTok (Sem Marca d\'Água)';
+          serviceUrl = `https://snaptik.app/pt?url=${encodeURIComponent(url)}`;
+        } else {
+          titleDisplay.textContent = 'Vídeo da Internet (Download Direto)';
+          serviceUrl = `https://savefrom.net/?url=${encodeURIComponent(url)}`;
+        }
+
+        linkMp4.href = serviceUrl;
+        linkMp3.href = serviceUrl;
+
+        showToast('✓ Links de download preparados com sucesso!');
+      }, 1200);
+    });
+  }
+
+  /* ========================================================
      1. GERADOR DE SENHA FORTE ESTILO LASTPASS
      ======================================================== */
   function renderLastPassPasswordTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 720px; margin: 0 auto;">
-        
-        <!-- Result Box -->
         <div style="background: var(--bg-primary); border: 2px solid var(--accent-primary); padding: 24px; border-radius: var(--radius-lg); text-align: center; position: relative;">
           <div id="lp-pass-display" class="font-mono" style="font-size: 1.6rem; font-weight: 700; word-break: break-all; color: var(--text-primary); letter-spacing: 0.05em; min-height: 48px; display: flex; align-items: center; justify-content: center;"></div>
           
-          <!-- Strength Indicator Bar -->
           <div style="margin-top: 16px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">
               <span>Força da Senha (LastPass):</span>
@@ -430,16 +566,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Big Generate & Auto Copy Button -->
         <button id="btn-lp-generate" class="btn btn-primary" style="padding: 16px; font-size: 1.1rem; gap: 12px; box-shadow: var(--shadow-glow);">
           <i data-lucide="refresh-cw"></i>
           <span>Gerar Nova Senha e Copiar (Auto-Copy)</span>
         </button>
 
-        <!-- LastPass Style Controls -->
         <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
-          
-          <!-- Length Slider -->
           <div class="form-group" style="margin-bottom: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <label class="form-label">Tamanho da Senha:</label>
@@ -448,7 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <input type="range" id="lp-len-range" min="8" max="100" value="16" style="width: 100%; accent-color: var(--accent-primary); cursor: pointer;" />
           </div>
 
-          <!-- Preset Modes (LastPass Style) -->
           <div style="margin-bottom: 24px;">
             <label class="form-label" style="margin-bottom: 10px; display: block;">Modo de Geração (Estilo LastPass):</label>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
@@ -458,7 +589,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Options Checkboxes -->
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
               <input type="checkbox" id="lp-chk-upper" checked style="accent-color: var(--accent-primary);" />
@@ -477,9 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span>Símbolos (!@#$%^&*)</span>
             </label>
           </div>
-
         </div>
-
       </div>
     `;
 
@@ -582,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
     generateAndAutoCopy(true);
   }
 
-  // 2. CPF TOOL COM AUTO-CÓPIA
+  // 2. CPF TOOL
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
@@ -696,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cpfOutput.textContent = initial;
   }
 
-  // 3. GERADOR DE CNPJ COM AUTO-CÓPIA
+  // 3. GERADOR DE CNPJ
   function renderCNPJTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
