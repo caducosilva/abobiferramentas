@@ -131,6 +131,72 @@ async function resolveTikTok(url) {
   };
 }
 
+function extractInstagramShortcode(url) {
+  const m = url.match(/instagram\.com\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+function unescapeEmbedJson(str) {
+  // Os dados vêm com escape em camadas (JSON serializado dentro de outro JSON/JS
+  // dentro do HTML), então repetimos até estabilizar em vez de assumir 1 camada.
+  let prev;
+  do {
+    prev = str;
+    str = str
+      .replace(/\\+u0025/g, '%')
+      .replace(/\\+\//g, '/')
+      .replace(/\\+"/g, '"')
+      .replace(/\\+u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
+  } while (str !== prev);
+  return str;
+}
+
+/** Extrai vídeo/imagem público do Instagram via a página oficial de embed
+ *  (a mesma que o botão "Incorporar" do Instagram gera — pública, sem login).
+ *  Esta é a técnica usada por ferramentas conhecidas do gênero. */
+async function resolveInstagramEmbed(url) {
+  const shortcode = extractInstagramShortcode(url);
+  if (!shortcode) throw new Error('LINK DO INSTAGRAM INVÁLIDO (ESPERADO UM POST, REEL OU TV).');
+
+  let html;
+  try {
+    const r = await fetch(`https://www.instagram.com/p/${shortcode}/embed/captioned/`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+        'Accept-Language': 'pt-BR,pt;q=0.9'
+      }
+    });
+    html = await r.text();
+  } catch (err) {
+    throw new Error('NÃO FOI POSSÍVEL ACESSAR O INSTAGRAM AGORA.');
+  }
+
+  const videoMatch = html.match(/\\"video_url\\":\\"([^"\\]+(?:\\.[^"\\]*)*)\\"/);
+  const imageMatch = html.match(/\\"display_url\\":\\"([^"\\]+(?:\\.[^"\\]*)*)\\"/);
+  const ownerMatch = html.match(/\\"owner\\":\{\\"id\\":\\"[^"]+\\",\\"username\\":\\"([^"\\]+)\\"/);
+  const isVideo = /\\"is_video\\":true/.test(html);
+
+  if (!videoMatch && !imageMatch) {
+    throw new Error('NÃO ENCONTRAMOS ESTE POST. O LINK PODE SER DE UMA CONTA PRIVADA OU TER SIDO REMOVIDO.');
+  }
+
+  const directUrl = videoMatch ? unescapeEmbedJson(videoMatch[1]) : unescapeEmbedJson(imageMatch[1]);
+  const owner = ownerMatch ? ownerMatch[1] : 'INSTAGRAM';
+
+  return {
+    ok: true,
+    kind: 'video',
+    platform: 'INSTAGRAM',
+    title: `POST DE @${owner.toUpperCase()}`,
+    thumbnail: imageMatch ? unescapeEmbedJson(imageMatch[1]) : null,
+    duration: null,
+    qualityLabel: isVideo ? 'MELHOR QUALIDADE DISPONÍVEL' : 'IMAGEM ORIGINAL',
+    sourceUrl: url,
+    directUrl,
+    isImage: !videoMatch
+  };
+}
+
 const OG_LABELS = { INSTAGRAM: 'INSTAGRAM', FACEBOOK: 'FACEBOOK', TWITTER: 'TWITTER / X' };
 
 async function resolveGenericOG(url, platform) {
@@ -183,7 +249,9 @@ async function resolveMeta(url) {
     case 'YOUTUBE': return resolveYouTubeMeta(url, { music: false });
     case 'YOUTUBE_MUSIC': return resolveYouTubeMeta(url, { music: true });
     case 'TIKTOK': return resolveTikTok(url);
-    case 'INSTAGRAM': return resolveGenericOG(url, 'INSTAGRAM');
+    case 'INSTAGRAM':
+      try { return await resolveInstagramEmbed(url); }
+      catch (err) { return resolveGenericOG(url, 'INSTAGRAM'); }
     case 'FACEBOOK': return resolveGenericOG(url, 'FACEBOOK');
     case 'TWITTER': return resolveGenericOG(url, 'TWITTER');
     default: throw new Error('PLATAFORMA NÃO SUPORTADA.');
@@ -260,21 +328,30 @@ async function streamMedia(url, kind, res) {
   }
 
   // TikTok / Instagram / Facebook / Twitter: resolve a URL direta real e faz proxy dos bytes
-  const meta = platform === 'TIKTOK'
-    ? await resolveTikTok(url)
-    : await resolveGenericOG(url, platform);
+  let meta;
+  if (platform === 'TIKTOK') {
+    meta = await resolveTikTok(url);
+  } else if (platform === 'INSTAGRAM') {
+    try { meta = await resolveInstagramEmbed(url); }
+    catch (err) { meta = await resolveGenericOG(url, platform); }
+  } else {
+    meta = await resolveGenericOG(url, platform);
+  }
 
   if (!meta.directUrl) throw new Error('NÃO FOI POSSÍVEL OBTER O ARQUIVO DE MÍDIA REAL DESTE LINK.');
 
-  const upstream = await fetch(meta.directUrl);
+  const upstream = await fetch(meta.directUrl, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15' }
+  });
   if (!upstream.ok || !upstream.body) {
     throw new Error('O SERVIDOR DE ORIGEM RECUSOU O DOWNLOAD DESTE ARQUIVO.');
   }
 
   const fileTitle = safeFileName(meta.title);
-  const ext = kind === 'audio' ? 'mp3' : 'mp4';
+  const ext = meta.isImage ? 'jpg' : (kind === 'audio' ? 'mp3' : 'mp4');
+  const contentType = meta.isImage ? 'image/jpeg' : (kind === 'audio' ? 'audio/mpeg' : 'video/mp4');
   res.setHeader('Content-Disposition', `attachment; filename="${fileTitle}.${ext}"`);
-  res.setHeader('Content-Type', kind === 'audio' ? 'audio/mpeg' : 'video/mp4');
+  res.setHeader('Content-Type', contentType);
   const len = upstream.headers.get('content-length');
   if (len) res.setHeader('Content-Length', len);
 

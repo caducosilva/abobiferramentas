@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="text-align: center; margin-bottom: 24px;">
           <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS DIRETO NO SEU DISPOSITIVO</h3>
           <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">YOUTUBE, YOUTUBE MUSIC, TIKTOK SEM MARCA D'ÁGUA, INSTAGRAM, FACEBOOK E TWITTER/X. SEMPRE NA MAIOR QUALIDADE DISPONÍVEL — SEM ESCOLHA MANUAL.</p>
-          <p class="text-muted" style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">FUNCIONA APENAS COM CONTEÚDO PÚBLICO. O YOUTUBE E O INSTAGRAM ÀS VEZES BLOQUEIAM ESSE TIPO DE ACESSO — QUANDO ISSO ACONTECE, MOSTRAMOS O ERRO REAL EM VEZ DE FINGIR QUE FUNCIONOU.</p>
+          <p class="text-muted" style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">FUNCIONA APENAS COM CONTEÚDO PÚBLICO. O YOUTUBE ÀS VEZES BLOQUEIA ESSE TIPO DE ACESSO (COMUM EM QUALQUER SITE NA NUVEM) — QUANDO ISSO ACONTECE, MOSTRAMOS O ERRO REAL EM VEZ DE FINGIR QUE FUNCIONOU.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
