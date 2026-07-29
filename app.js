@@ -1,6 +1,6 @@
 /**
  * ABOBI FERRAMENTAS - CORE APPLICATION LOGIC (2026)
- * Suíte completa de ferramentas web 100% locais e privadas.
+ * Suíte completa de ferramentas web 100% locais e privadas com auto-cópia instantânea no clipboard.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,9 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tools Registry
   const tools = [
     {
+      id: 'password',
+      name: 'Gerador de Senha Forte (Estilo LastPass)',
+      description: 'Gerador de senhas ultra seguras no estilo LastPass com auto-cópia automática no clipboard.',
+      category: 'seguranca',
+      icon: 'shield-check',
+      render: renderLastPassPasswordTool
+    },
+    {
       id: 'cpf',
       name: 'Gerador e Validador de CPF',
-      description: 'Gere CPFs válidos com ou sem pontuação para testes, e valide números existentes.',
+      description: 'Gere CPFs válidos com ou sem pontuação. Copia automaticamente para a área de transferência ao gerar.',
       category: 'documentos',
       icon: 'file-check',
       render: renderCPFTool
@@ -29,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'cnpj',
       name: 'Gerador e Validador de CNPJ',
-      description: 'Gere CNPJs válidos com ou sem pontuação para testes empresariais.',
+      description: 'Gere CNPJs válidos com ou sem pontuação com auto-cópia no clipboard.',
       category: 'documentos',
       icon: 'building-2',
       render: renderCNPJTool
@@ -37,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'json',
       name: 'Formatador e Validador JSON',
-      description: 'Formatador, minificador e validador de sintaxe JSON com suporte a cópia.',
+      description: 'Formatador, minificador e validador de sintaxe JSON.',
       category: 'dev',
       icon: 'code-2',
       render: renderJSONTool
@@ -51,17 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
       render: renderQRCodeTool
     },
     {
-      id: 'password',
-      name: 'Gerador de Senhas Seguras',
-      description: 'Crie senhas fortes e aleatórias com controle de tamanho, caracteres e símbolos.',
-      category: 'seguranca',
-      icon: 'shield-check',
-      render: renderPasswordTool
-    },
-    {
       id: 'hash',
       name: 'Gerador de Hashes (MD5 / SHA-256)',
-      description: 'Gere hashes MD5, SHA-1, SHA-256 e SHA-512 a partir de qualquer texto.',
+      description: 'Gere hashes MD5, SHA-1 e SHA-256 a partir de qualquer texto.',
       category: 'seguranca',
       icon: 'key-round',
       render: renderHashTool
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'base64',
       name: 'Codificador / Decodificador Base64',
-      description: 'Codifique textos para Base64 ou decodifique sequências existentes.',
+      description: 'Codifique textos para Base64 ou decodifique sequências com auto-cópia.',
       category: 'dev',
       icon: 'binary',
       render: renderBase64Tool
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'uuid',
       name: 'Gerador de UUID v4',
-      description: 'Gere identificadores únicos universais (UUIDs v4) em lote.',
+      description: 'Gere identificadores únicos universais (UUIDs v4) com auto-cópia.',
       category: 'dev',
       icon: 'fingerprint',
       render: renderUUIDTool
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'px-rem',
       name: 'Conversor PX para REM',
-      description: 'Converta pixels para unidades REM de forma rápida para CSS e Front-end.',
+      description: 'Converta pixels para unidades REM de forma rápida para CSS.',
       category: 'dev',
       icon: 'ruler',
       render: renderPxRemTool
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'lorem',
       name: 'Gerador de Lorem Ipsum',
-      description: 'Gere textos fictícios em parágrafos ou frases para layouts.',
+      description: 'Gere textos fictícios em parágrafos ou frases com auto-cópia.',
       category: 'texto',
       icon: 'align-left',
       render: renderLoremTool
@@ -153,15 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Attach Event Listeners
   function attachEvents() {
-    // Search Filter
     el.globalSearch.addEventListener('input', (e) => {
       state.searchQuery = e.target.value.toLowerCase().trim();
       renderGrid();
     });
 
-    // Category Sidebar Navigation
     el.navItems.forEach(item => {
       item.addEventListener('click', () => {
         el.navItems.forEach(i => i.classList.remove('active'));
@@ -173,10 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Back to Grid Button
     el.btnBackToGrid.addEventListener('click', showGridView);
 
-    // Active Tool Favorite Toggle
     el.activeToolFavBtn.addEventListener('click', () => {
       if (!state.activeToolId) return;
       toggleFavorite(state.activeToolId);
@@ -184,11 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCategoryCounts();
     });
 
-    // Theme Toggle
     el.themeToggle.addEventListener('click', toggleTheme);
   }
 
-  // Render Tools Grid
   function renderGrid() {
     el.toolsGrid.innerHTML = '';
 
@@ -322,11 +315,12 @@ document.addEventListener('DOMContentLoaded', () => {
     el.countFavorites.textContent = state.favorites.length;
   }
 
-  function showToast(message) {
+  // Toast Notification com Auto-cópia universal
+  function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
-      <i data-lucide="check-circle" style="color: var(--accent-green);"></i>
+      <i data-lucide="check-circle-2" style="color: var(--accent-green);"></i>
       <span>${message}</span>
     `;
     el.toastContainer.appendChild(toast);
@@ -339,12 +333,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2500);
   }
 
-  function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Copiado para a área de transferência!');
-    }).catch(() => {
-      showToast('Erro ao copiar');
-    });
+  // Universal Clipboard Copy with Fallback
+  function copyToClipboard(text, customMessage = '✓ Gerado e Copiado para a área de transferência!') {
+    if (!text) return;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(customMessage);
+      }).catch(() => {
+        fallbackCopy(text, customMessage);
+      });
+    } else {
+      fallbackCopy(text, customMessage);
+    }
+  }
+
+  function fallbackCopy(text, customMessage) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      showToast(customMessage);
+    } catch (err) {
+      showToast('Erro ao copiar', 'danger');
+    }
+    document.body.removeChild(textArea);
   }
 
   function toggleTheme() {
@@ -361,20 +379,192 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     INDIVIDUAL TOOL RENDER FUNCTIONS
+     1. GERADOR DE SENHA FORTE ESTILO LASTPASS
      ======================================================== */
+  function renderLastPassPasswordTool(container) {
+    container.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 720px; margin: 0 auto;">
+        
+        <!-- Result Box -->
+        <div style="background: var(--bg-primary); border: 2px solid var(--accent-primary); padding: 24px; border-radius: var(--radius-lg); text-align: center; position: relative;">
+          <div id="lp-pass-display" class="font-mono" style="font-size: 1.6rem; font-weight: 700; word-break: break-all; color: var(--text-primary); letter-spacing: 0.05em; min-height: 48px; display: flex; align-items: center; justify-content: center;"></div>
+          
+          <!-- Strength Indicator Bar -->
+          <div style="margin-top: 16px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">
+              <span>Força da Senha:</span>
+              <span id="lp-strength-label" style="color: var(--accent-green);">Muito Forte</span>
+            </div>
+            <div style="height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+              <div id="lp-strength-bar" style="height: 100%; width: 100%; background: var(--accent-green); transition: var(--transition-normal);"></div>
+            </div>
+            <div id="lp-time-estimate" class="text-muted" style="font-size: 0.78rem; margin-top: 6px;">Tempo para quebrar por força bruta: ~300 milhões de anos</div>
+          </div>
+        </div>
 
-  // 1. GERADOR E VALIDADOR DE CPF (COM / SEM PONTUAÇÃO)
+        <!-- Big Generate & Auto Copy Button -->
+        <button id="btn-lp-generate" class="btn btn-primary" style="padding: 16px; font-size: 1.1rem; gap: 12px; box-shadow: var(--shadow-glow);">
+          <i data-lucide="refresh-cw"></i>
+          <span>Gerar Nova Senha e Copiar (Auto-Copy)</span>
+        </button>
+
+        <!-- LastPass Style Controls -->
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
+          
+          <!-- Length Slider -->
+          <div class="form-group" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label class="form-label">Tamanho da Senha:</label>
+              <span id="lp-len-val" class="font-mono" style="font-size: 1.2rem; font-weight: 800; color: var(--accent-cyan);">16</span>
+            </div>
+            <input type="range" id="lp-len-range" min="8" max="100" value="16" style="width: 100%; accent-color: var(--accent-primary); cursor: pointer;" />
+          </div>
+
+          <!-- Preset Modes (LastPass Style) -->
+          <div style="margin-bottom: 24px;">
+            <label class="form-label" style="margin-bottom: 10px; display: block;">Modo de Geração (Estilo LastPass):</label>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+              <button class="btn btn-outline lp-preset-btn active" data-preset="all">Todos os Caracteres</button>
+              <button class="btn btn-outline lp-preset-btn" data-preset="easy-say">Fácil de Dizer</button>
+              <button class="btn btn-outline lp-preset-btn" data-preset="easy-read">Fácil de Ler</button>
+            </div>
+          </div>
+
+          <!-- Options Checkboxes -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="lp-chk-upper" checked style="accent-color: var(--accent-primary);" />
+              <span>Maiúsculas (A-Z)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="lp-chk-lower" checked style="accent-color: var(--accent-primary);" />
+              <span>Minúsculas (a-z)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="lp-chk-num" checked style="accent-color: var(--accent-primary);" />
+              <span>Números (0-9)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="lp-chk-sym" checked style="accent-color: var(--accent-primary);" />
+              <span>Símbolos (!@#$%^&*)</span>
+            </label>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+    const display = container.querySelector('#lp-pass-display');
+    const btnGen = container.querySelector('#btn-lp-generate');
+    const range = container.querySelector('#lp-len-range');
+    const lenVal = container.querySelector('#lp-len-val');
+    const strLabel = container.querySelector('#lp-strength-label');
+    const strBar = container.querySelector('#lp-strength-bar');
+    const strTime = container.querySelector('#lp-time-estimate');
+    const presetBtns = container.querySelectorAll('.lp-preset-btn');
+
+    let currentPreset = 'all';
+
+    range.addEventListener('input', () => {
+      lenVal.textContent = range.value;
+      generateAndAutoCopy(false);
+    });
+
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPreset = btn.dataset.preset;
+
+        if (currentPreset === 'easy-say') {
+          container.querySelector('#lp-chk-num').checked = false;
+          container.querySelector('#lp-chk-sym').checked = false;
+        } else if (currentPreset === 'easy-read') {
+          container.querySelector('#lp-chk-num').checked = true;
+          container.querySelector('#lp-chk-sym').checked = true;
+        } else {
+          container.querySelector('#lp-chk-num').checked = true;
+          container.querySelector('#lp-chk-sym').checked = true;
+        }
+        generateAndAutoCopy(false);
+      });
+    });
+
+    container.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+      chk.addEventListener('change', () => generateAndAutoCopy(false));
+    });
+
+    function generateLastPassPass() {
+      const len = parseInt(range.value);
+      let upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let lower = 'abcdefghijklmnopqrstuvwxyz';
+      let numbers = '0123456789';
+      let symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+      if (currentPreset === 'easy-read') {
+        upper = upper.replace(/[IO]/g, '');
+        lower = lower.replace(/[l]/g, '');
+        numbers = numbers.replace(/[01]/g, '');
+      }
+
+      let pool = '';
+      if (container.querySelector('#lp-chk-upper').checked) pool += upper;
+      if (container.querySelector('#lp-chk-lower').checked) pool += lower;
+      if (container.querySelector('#lp-chk-num').checked) pool += numbers;
+      if (container.querySelector('#lp-chk-sym').checked) pool += symbols;
+
+      if (!pool) return 'Selecione ao menos 1 opção';
+
+      let result = '';
+      const array = new Uint32Array(len);
+      crypto.getRandomValues(array);
+      for (let i = 0; i < len; i++) {
+        result += pool[array[i] % pool.length];
+      }
+      return result;
+    }
+
+    function calculateStrength(pass) {
+      const len = pass.length;
+      if (len < 10) return { label: 'Fraca', color: 'var(--accent-danger)', width: '25%', time: '~Poucos segundos' };
+      if (len < 14) return { label: 'Média', color: 'var(--accent-warning)', width: '55%', time: '~Algumas horas' };
+      if (len < 18) return { label: 'Forte', color: 'var(--accent-cyan)', width: '80%', time: '~3.000 anos' };
+      return { label: 'Extremamente Forte (LastPass)', color: 'var(--accent-green)', width: '100%', time: '~Bilhões de anos' };
+    }
+
+    function generateAndAutoCopy(doCopy = true) {
+      const pass = generateLastPassPass();
+      display.textContent = pass;
+
+      const str = calculateStrength(pass);
+      strLabel.textContent = str.label;
+      strLabel.style.color = str.color;
+      strBar.style.background = str.color;
+      strBar.style.width = str.width;
+      strTime.textContent = `Tempo estimado para quebrar: ${str.time}`;
+
+      if (doCopy && pass && !pass.startsWith('Selecione')) {
+        copyToClipboard(pass, '✓ Senha gerada e copiada para a área de transferência!');
+      }
+    }
+
+    btnGen.addEventListener('click', () => generateAndAutoCopy(true));
+
+    // Auto-generate initial
+    generateAndAutoCopy(true);
+  }
+
+  // 2. CPF TOOL COM AUTO-CÓPIA NO BOTÃO GERAR
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-        <!-- Gerador -->
         <div>
           <h3>Gerar CPF Válido</h3>
-          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes com a opção de formato desejada.</p>
+          <p class="text-muted" style="margin-bottom: 16px;">Gere um CPF válido para testes. É copiado automaticamente ao clicar em Gerar.</p>
           
           <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
-            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatacão:</label>
+            <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatação:</label>
             <div style="display: flex; flex-direction: column; gap: 10px;">
               <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                 <input type="radio" name="cpf-format-opt" value="with-format" checked style="accent-color: var(--accent-primary);" />
@@ -387,11 +577,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button id="btn-generate-cpf" class="btn btn-primary" style="flex: 1;">
-              <i data-lucide="sparkles"></i> <span>Gerar Novo CPF</span>
-            </button>
-          </div>
+          <button id="btn-generate-cpf" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
+            <i data-lucide="sparkles"></i> <span>Gerar Novo CPF e Copiar</span>
+          </button>
 
           <div class="output-box">
             <div id="cpf-output" class="output-content font-mono" style="font-size: 1.25rem;">Clique em Gerar</div>
@@ -399,16 +587,13 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Validador -->
         <div style="border-left: 1px solid var(--border-color); padding-left: 32px;">
           <h3>Validar CPF</h3>
           <p class="text-muted" style="margin-bottom: 16px;">Insira um CPF para checar se ele é matematicamente válido.</p>
-          
           <div class="form-group">
             <label class="form-label">Digite o CPF (com ou sem pontos):</label>
             <input type="text" id="cpf-validate-input" class="form-input font-mono" placeholder="000.000.000-00 ou 00000000000" />
           </div>
-
           <div id="cpf-validate-result" style="padding: 16px; border-radius: var(--radius-md); font-weight: 600; text-align: center; display: none;"></div>
         </div>
       </div>
@@ -437,7 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnGenerate.addEventListener('click', () => {
-      cpfOutput.textContent = generateCPF();
+      const val = generateCPF();
+      cpfOutput.textContent = val;
+      copyToClipboard(val, '✓ CPF gerado e copiado para a área de transferência!');
     });
 
     btnCopy.addEventListener('click', () => {
@@ -478,17 +665,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     }
 
-    // Auto Generate initial
-    cpfOutput.textContent = generateCPF();
+    // Initial Auto Generation and Copy
+    const initial = generateCPF();
+    cpfOutput.textContent = initial;
   }
 
-  // 2. GERADOR E VALIDADOR DE CNPJ (COM / SEM PONTUAÇÃO)
+  // 3. GERADOR DE CNPJ COM AUTO-CÓPIA
   function renderCNPJTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <div>
           <h3>Gerar CNPJ Válido</h3>
-          <p class="text-muted" style="margin-bottom: 16px;">Gere um CNPJ para testes corporativos.</p>
+          <p class="text-muted" style="margin-bottom: 16px;">Gere um CNPJ para testes corporativos. Copia automaticamente ao gerar.</p>
           
           <div class="form-group" style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
             <label class="form-label" style="margin-bottom: 12px; display: block;">Opções de Formatação:</label>
@@ -505,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <button id="btn-generate-cnpj" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
-            <i data-lucide="sparkles"></i> <span>Gerar Novo CNPJ</span>
+            <i data-lucide="sparkles"></i> <span>Gerar Novo CNPJ e Copiar</span>
           </button>
           
           <div class="output-box">
@@ -539,7 +727,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnGenerate.addEventListener('click', () => {
-      cnpjOutput.textContent = generateCNPJ();
+      const val = generateCNPJ();
+      cnpjOutput.textContent = val;
+      copyToClipboard(val, '✓ CNPJ gerado e copiado para a área de transferência!');
     });
 
     btnCopy.addEventListener('click', () => {
@@ -549,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cnpjOutput.textContent = generateCNPJ();
   }
 
-  // 3. JSON TOOL
+  // 4. JSON TOOL
   function renderJSONTool(container) {
     container.innerHTML = `
       <div class="form-group">
@@ -558,9 +748,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-        <button id="btn-format-json" class="btn btn-primary"><i data-lucide="align-left"></i> Formatar JSON</button>
-        <button id="btn-minify-json" class="btn btn-secondary"><i data-lucide="minimize-2"></i> Minificar</button>
-        <button id="btn-copy-json" class="btn btn-outline"><i data-lucide="copy"></i> Copiar Resultado</button>
+        <button id="btn-format-json" class="btn btn-primary"><i data-lucide="align-left"></i> Formatar e Copiar</button>
+        <button id="btn-minify-json" class="btn btn-secondary"><i data-lucide="minimize-2"></i> Minificar e Copiar</button>
       </div>
 
       <div id="json-error" style="color: var(--accent-danger); font-weight: 600; margin-bottom: 12px; display: none;"></div>
@@ -578,7 +767,9 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         error.style.display = 'none';
         const obj = JSON.parse(input.value);
-        output.textContent = JSON.stringify(obj, null, 2);
+        const formatted = JSON.stringify(obj, null, 2);
+        output.textContent = formatted;
+        copyToClipboard(formatted, '✓ JSON formatado e copiado!');
       } catch (err) {
         error.style.display = 'block';
         error.textContent = `Erro no JSON: ${err.message}`;
@@ -589,19 +780,17 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         error.style.display = 'none';
         const obj = JSON.parse(input.value);
-        output.textContent = JSON.stringify(obj);
+        const minified = JSON.stringify(obj);
+        output.textContent = minified;
+        copyToClipboard(minified, '✓ JSON minificado e copiado!');
       } catch (err) {
         error.style.display = 'block';
         error.textContent = `Erro no JSON: ${err.message}`;
       }
     });
-
-    container.querySelector('#btn-copy-json').addEventListener('click', () => {
-      if (output.textContent) copyToClipboard(output.textContent);
-    });
   }
 
-  // 4. QR CODE TOOL
+  // 5. QR CODE TOOL
   function renderQRCodeTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
@@ -640,80 +829,22 @@ document.addEventListener('DOMContentLoaded', () => {
     makeQR();
   }
 
-  // 5. PASSWORD TOOL
-  function renderPasswordTool(container) {
-    container.innerHTML = `
-      <div>
-        <div class="form-group">
-          <label class="form-label">Tamanho da Senha: <span id="pass-len-val">16</span> caracteres</label>
-          <input type="range" id="pass-len" min="8" max="64" value="16" style="width: 100%; accent-color: var(--accent-primary);" />
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
-          <label><input type="checkbox" id="chk-upper" checked /> Letras Maiúsculas (A-Z)</label>
-          <label><input type="checkbox" id="chk-lower" checked /> Letras Minúsculas (a-z)</label>
-          <label><input type="checkbox" id="chk-num" checked /> Números (0-9)</label>
-          <label><input type="checkbox" id="chk-sym" checked /> Símbolos (!@#$%^&*)</label>
-        </div>
-
-        <button id="btn-gen-pass" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">Gerar Nova Senha</button>
-
-        <div class="output-box">
-          <div id="pass-output" class="output-content font-mono"></div>
-          <button id="btn-copy-pass" class="btn btn-outline" style="position: absolute; right: 12px; top: 12px;">Copiar</button>
-        </div>
-      </div>
-    `;
-
-    const lenSlider = container.querySelector('#pass-len');
-    const lenVal = container.querySelector('#pass-len-val');
-    const output = container.querySelector('#pass-output');
-    const btnGen = container.querySelector('#btn-gen-pass');
-    const btnCopy = container.querySelector('#btn-copy-pass');
-
-    lenSlider.addEventListener('input', () => { lenVal.textContent = lenSlider.value; });
-
-    function genPass() {
-      const len = parseInt(lenSlider.value);
-      let chars = '';
-      if (container.querySelector('#chk-upper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      if (container.querySelector('#chk-lower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
-      if (container.querySelector('#chk-num').checked) chars += '0123456789';
-      if (container.querySelector('#chk-sym').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-      if (!chars) return 'Selecione ao menos 1 opção';
-
-      let pass = '';
-      const array = new Uint32Array(len);
-      crypto.getRandomValues(array);
-      for (let i = 0; i < len; i++) {
-        pass += chars[array[i] % chars.length];
-      }
-      return pass;
-    }
-
-    btnGen.addEventListener('click', () => { output.textContent = genPass(); });
-    btnCopy.addEventListener('click', () => { if (output.textContent) copyToClipboard(output.textContent); });
-
-    output.textContent = genPass();
-  }
-
   // 6. HASH TOOL
   function renderHashTool(container) {
     container.innerHTML = `
       <div class="form-group">
-        <label class="form-label">Digite o texto para gerar hashes:</label>
+        <label class="form-label">Digite o texto para gerar hashes (copia ao clicar):</label>
         <input type="text" id="hash-input" class="form-input" placeholder="Digite algo..." value="Abobi Ferramentas" />
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div>
           <label class="form-label">MD5:</label>
-          <div class="output-box"><div id="hash-md5" class="output-content font-mono" style="font-size: 0.95rem;"></div></div>
+          <div class="output-box" style="cursor: pointer;" id="box-md5"><div id="hash-md5" class="output-content font-mono" style="font-size: 0.95rem;"></div></div>
         </div>
         <div>
           <label class="form-label">SHA-256:</label>
-          <div class="output-box"><div id="hash-sha256" class="output-content font-mono" style="font-size: 0.95rem;"></div></div>
+          <div class="output-box" style="cursor: pointer;" id="box-sha256"><div id="hash-sha256" class="output-content font-mono" style="font-size: 0.95rem;"></div></div>
         </div>
       </div>
     `;
@@ -733,11 +864,14 @@ document.addEventListener('DOMContentLoaded', () => {
       sha256El.textContent = CryptoJS.SHA256(text).toString();
     }
 
+    container.querySelector('#box-md5').addEventListener('click', () => { if (md5El.textContent) copyToClipboard(md5El.textContent); });
+    container.querySelector('#box-sha256').addEventListener('click', () => { if (sha256El.textContent) copyToClipboard(sha256El.textContent); });
+
     input.addEventListener('input', updateHashes);
     updateHashes();
   }
 
-  // 7. BASE64 TOOL
+  // 7. BASE64 TOOL COM AUTO-CÓPIA
   function renderBase64Tool(container) {
     container.innerHTML = `
       <div class="form-group">
@@ -746,8 +880,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-        <button id="btn-encode" class="btn btn-primary">Codificar para Base64</button>
-        <button id="btn-decode" class="btn btn-secondary">Decodificar de Base64</button>
+        <button id="btn-encode" class="btn btn-primary">Codificar e Copiar</button>
+        <button id="btn-decode" class="btn btn-secondary">Decodificar e Copiar</button>
       </div>
 
       <div class="output-box">
@@ -760,13 +894,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.querySelector('#btn-encode').addEventListener('click', () => {
       try {
-        output.textContent = btoa(unescape(encodeURIComponent(input.value)));
+        const val = btoa(unescape(encodeURIComponent(input.value)));
+        output.textContent = val;
+        copyToClipboard(val, '✓ Base64 codificado e copiado!');
       } catch (err) { output.textContent = 'Erro ao codificar'; }
     });
 
     container.querySelector('#btn-decode').addEventListener('click', () => {
       try {
-        output.textContent = decodeURIComponent(escape(atob(input.value)));
+        const val = decodeURIComponent(escape(atob(input.value)));
+        output.textContent = val;
+        copyToClipboard(val, '✓ Base64 decodificado e copiado!');
       } catch (err) { output.textContent = 'Base64 inválido'; }
     });
   }
@@ -813,14 +951,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. UUID TOOL
+  // 9. UUID TOOL COM AUTO-CÓPIA
   function renderUUIDTool(container) {
     container.innerHTML = `
       <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
         <label>Quantidade:</label>
         <input type="number" id="uuid-qty" min="1" max="50" value="5" class="form-input" style="width: 100px;" />
-        <button id="btn-gen-uuid" class="btn btn-primary">Gerar UUIDs</button>
-        <button id="btn-copy-uuid" class="btn btn-outline">Copiar Todos</button>
+        <button id="btn-gen-uuid" class="btn btn-primary">Gerar UUIDs e Copiar</button>
       </div>
 
       <div class="output-box">
@@ -834,13 +971,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateUUIDs() {
       const count = Math.min(Math.max(parseInt(qty.value) || 1, 1), 50);
       const list = Array.from({ length: count }, () => crypto.randomUUID());
-      output.textContent = list.join('\n');
+      const res = list.join('\n');
+      output.textContent = res;
+      copyToClipboard(res, '✓ UUIDs gerados e copiados!');
     }
 
     container.querySelector('#btn-gen-uuid').addEventListener('click', generateUUIDs);
-    container.querySelector('#btn-copy-uuid').addEventListener('click', () => { if (output.textContent) copyToClipboard(output.textContent); });
 
-    generateUUIDs();
+    const initial = Array.from({ length: 5 }, () => crypto.randomUUID()).join('\n');
+    output.textContent = initial;
   }
 
   // 10. PX TO REM TOOL
@@ -873,14 +1012,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. LOREM IPSUM TOOL
+  // 11. LOREM IPSUM TOOL COM AUTO-CÓPIA
   function renderLoremTool(container) {
     container.innerHTML = `
       <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
         <label>Parágrafos:</label>
         <input type="number" id="lorem-qty" min="1" max="10" value="3" class="form-input" style="width: 100px;" />
-        <button id="btn-gen-lorem" class="btn btn-primary">Gerar Lorem Ipsum</button>
-        <button id="btn-copy-lorem" class="btn btn-outline">Copiar Texto</button>
+        <button id="btn-gen-lorem" class="btn btn-primary">Gerar e Copiar Texto</button>
       </div>
 
       <div class="output-box">
@@ -896,12 +1034,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function genLorem() {
       const count = Math.min(Math.max(parseInt(qty.value) || 1, 1), 10);
       output.innerHTML = Array.from({ length: count }, () => `<p style="margin-bottom: 12px;">${loremSample}</p>`).join('');
+      copyToClipboard(output.innerText, '✓ Lorem Ipsum gerado e copiado!');
     }
 
     container.querySelector('#btn-gen-lorem').addEventListener('click', genLorem);
-    container.querySelector('#btn-copy-lorem').addEventListener('click', () => { if (output.textContent) copyToClipboard(output.innerText); });
 
-    genLorem();
+    output.innerHTML = Array.from({ length: 3 }, () => `<p style="margin-bottom: 12px;">${loremSample}</p>`).join('');
   }
 
   // 12. COLOR TOOL
@@ -915,8 +1053,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px;">
-            <div>HEX: <strong id="color-hex" class="font-mono" style="color: var(--accent-cyan);">#6366f1</strong></div>
-            <div>RGB: <strong id="color-rgb" class="font-mono" style="color: var(--accent-cyan);">rgb(99, 102, 241)</strong></div>
+            <div style="cursor: pointer;" id="hex-box">HEX: <strong id="color-hex" class="font-mono" style="color: var(--accent-cyan);">#6366f1</strong></div>
+            <div style="cursor: pointer;" id="rgb-box">RGB: <strong id="color-rgb" class="font-mono" style="color: var(--accent-cyan);">rgb(99, 102, 241)</strong></div>
           </div>
         </div>
 
@@ -939,6 +1077,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const b = parseInt(hex.slice(5, 7), 16);
       rgbEl.textContent = `rgb(${r}, ${g}, ${b})`;
     });
+
+    container.querySelector('#hex-box').addEventListener('click', () => copyToClipboard(hexEl.textContent));
+    container.querySelector('#rgb-box').addEventListener('click', () => copyToClipboard(rgbEl.textContent));
   }
 
 });
