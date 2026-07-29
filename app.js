@@ -1,10 +1,16 @@
 /**
- * ABOBI FERRAMENTAS - BAIXADOR COM SUPORTE A YOUTUBE MUSIC (2026)
- * - Suporte a YouTube Music (music.youtube.com) em MP3 320kbps
- * - Suporte a YouTube Vídeos, Shorts e Playlists
- * - Facebook Reels, Instagram, TikTok sem marca d'água e Twitter/X
+ * ABOBI FERRAMENTAS - BAIXADOR DIRETO MULTI-PLATAFORMA E PLAYLISTS (2026)
+ * - YouTube (Vídeos e Shorts)
+ * - YouTube Music (music.youtube.com em MP3 320kbps)
+ * - YouTube Playlists (Seleção individual ou todos os vídeos)
+ * - Facebook (Reels e Vídeos)
+ * - Instagram (Reels e Posts)
+ * - TikTok Sem Marca d'Água (Snaptik)
+ * - Twitter / X & Kwai
+ * - Progresso de Download e Salvamento NATIVO no Dispositivo do Usuário
+ * - Modal Intersticial AdSense Obrigatório antes do Download
  * 
- * Criado por Carlos Eduardo.
+ * Desenvolvido por Carlos Eduardo.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -479,14 +485,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ========================================================
-     2. BAIXADOR DE VÍDEOS DA INTERNET E YOUTUBE MUSIC
+     2. BAIXADOR DE VÍDEOS DA INTERNET E YOUTUBE MUSIC (SNAPTICK & MP3)
      ======================================================== */
   function renderVideoDownloaderTool(container) {
     container.innerHTML = `
       <div style="max-width: 780px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
           <h3 style="font-size: 1.3rem; font-weight: 900;">BAIXAR VÍDEOS E MÚSICAS DIRETO NO SEU DISPOSITIVO</h3>
-          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">SUPORTE COMPLETO A YOUTUBE, YOUTUBE MUSIC (MP3 320KBPS), PLAYLISTS, FACEBOOK, INSTAGRAM, TIKTOK E TWITTER.</p>
+          <p class="text-muted" style="font-size: 0.85rem; font-weight: 700;">SUPORTE COMPLETO A YOUTUBE, YOUTUBE MUSIC (MP3 320KBPS), PLAYLISTS, FACEBOOK, INSTAGRAM, TIKTOK SEM MARCA D'ÁGUA (SNAPTIK) E TWITTER.</p>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
@@ -541,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- YouTube Playlist Result Box (Seleção de Vídeos da Playlist) -->
+        <!-- YouTube Playlist Result Box -->
         <div id="playlist-result-box" style="display: none; margin-top: 24px; background: var(--bg-input); border: 1px solid var(--accent-primary); border-radius: var(--radius-md); padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
             <div>
@@ -669,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title = "REELS / POST DO INSTAGRAM (HD)";
       } else if (url.includes('tiktok.com')) {
         platform = "TIKTOK";
-        title = "TIKTOK (SEM MARCA D'ÁGUA)";
+        title = "TIKTOK (SEM MARCA D'ÁGUA - SNAPTIK)";
       } else if (url.includes('twitter.com') || url.includes('x.com')) {
         platform = "TWITTER / X";
         title = "VÍDEO DO TWITTER / X";
