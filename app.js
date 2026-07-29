@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'json',
       name: 'Formatador e Validador JSON',
-      description: 'Formatador, minificador e validador de sintaxe JSON.',
+      description: 'Formatador, minificador e validador de sintaxe JSON com auto-cópia.',
       category: 'dev',
       icon: 'code-2',
       render: renderJSONTool
@@ -136,7 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
     themeIcon: document.getElementById('theme-icon'),
     toastContainer: document.getElementById('toast-container'),
     countAll: document.getElementById('count-all'),
-    countFavorites: document.getElementById('count-favorites')
+    countFavorites: document.getElementById('count-favorites'),
+    modalPrivacy: document.getElementById('modal-privacy'),
+    modalTerms: document.getElementById('modal-terms')
   };
 
   // Initialize App
@@ -180,6 +182,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     el.themeToggle.addEventListener('click', toggleTheme);
+
+    // Modals
+    document.querySelectorAll('.btn-open-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.dataset.modal;
+        if (modalId === 'privacy') el.modalPrivacy.classList.remove('hidden');
+        if (modalId === 'terms') el.modalTerms.classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.btn-close-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.dataset.modal;
+        if (modalId === 'privacy') el.modalPrivacy.classList.add('hidden');
+        if (modalId === 'terms') el.modalTerms.classList.add('hidden');
+      });
+    });
+
+    [el.modalPrivacy, el.modalTerms].forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+      });
+    });
   }
 
   function renderGrid() {
@@ -202,9 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
       all: 'Todas as Ferramentas',
       favorites: 'Ferramentas Favoritas',
       dev: 'Desenvolvedor & Código',
-      documentos: 'Documentos & Geradores',
+      documentos: 'CPF, CNPJ & Geradores',
       design: 'Design & Mídia',
-      seguranca: 'Segurança & Cripto',
+      seguranca: 'Segurança & Senhas',
       texto: 'Texto & Utilidades'
     };
     el.currentCategoryTitle.textContent = categoryNames[state.currentCategory] || 'Ferramentas';
@@ -315,13 +340,16 @@ document.addEventListener('DOMContentLoaded', () => {
     el.countFavorites.textContent = state.favorites.length;
   }
 
-  // Toast Notification com Auto-cópia universal
+  // Toast Notification com Aviso de Clipboard Proeminente (Ctrl+V)
   function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
-      <i data-lucide="check-circle-2" style="color: var(--accent-green);"></i>
-      <span>${message}</span>
+      <i data-lucide="check-circle-2" style="color: var(--accent-green); width: 24px; height: 24px;"></i>
+      <div>
+        <div style="font-weight: 800; color: var(--accent-green); font-size: 0.85rem; letter-spacing: 0.05em;">COPIADO PARA O CLIPBOARD!</div>
+        <div style="font-size: 0.88rem; color: var(--text-primary);">${message}</div>
+      </div>
     `;
     el.toastContainer.appendChild(toast);
     lucide.createIcons();
@@ -330,11 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateY(10px)';
       setTimeout(() => toast.remove(), 250);
-    }, 2500);
+    }, 2800);
   }
 
-  // Universal Clipboard Copy with Fallback
-  function copyToClipboard(text, customMessage = '✓ Gerado e Copiado para a área de transferência!') {
+  // Universal Clipboard Copy with Fallback & Clear Visual Notice
+  function copyToClipboard(text, customMessage = 'Prontinho para colar (Ctrl + V ou Colar no celular)') {
     if (!text) return;
     
     if (navigator.clipboard && window.isSecureContext) {
@@ -392,8 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Strength Indicator Bar -->
           <div style="margin-top: 16px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">
-              <span>Força da Senha:</span>
-              <span id="lp-strength-label" style="color: var(--accent-green);">Muito Forte</span>
+              <span>Força da Senha (LastPass):</span>
+              <span id="lp-strength-label" style="color: var(--accent-green);">Extremamente Forte</span>
             </div>
             <div style="height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
               <div id="lp-strength-bar" style="height: 100%; width: 100%; background: var(--accent-green); transition: var(--transition-normal);"></div>
@@ -545,17 +573,16 @@ document.addEventListener('DOMContentLoaded', () => {
       strTime.textContent = `Tempo estimado para quebrar: ${str.time}`;
 
       if (doCopy && pass && !pass.startsWith('Selecione')) {
-        copyToClipboard(pass, '✓ Senha gerada e copiada para a área de transferência!');
+        copyToClipboard(pass, 'Senha gerada e copiada para colar (Ctrl+V)!');
       }
     }
 
     btnGen.addEventListener('click', () => generateAndAutoCopy(true));
 
-    // Auto-generate initial
     generateAndAutoCopy(true);
   }
 
-  // 2. CPF TOOL COM AUTO-CÓPIA NO BOTÃO GERAR
+  // 2. CPF TOOL COM AUTO-CÓPIA
   function renderCPFTool(container) {
     container.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
@@ -624,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnGenerate.addEventListener('click', () => {
       const val = generateCPF();
       cpfOutput.textContent = val;
-      copyToClipboard(val, '✓ CPF gerado e copiado para a área de transferência!');
+      copyToClipboard(val, 'CPF gerado e copiado para colar (Ctrl+V)!');
     });
 
     btnCopy.addEventListener('click', () => {
@@ -665,7 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     }
 
-    // Initial Auto Generation and Copy
     const initial = generateCPF();
     cpfOutput.textContent = initial;
   }
@@ -729,7 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnGenerate.addEventListener('click', () => {
       const val = generateCNPJ();
       cnpjOutput.textContent = val;
-      copyToClipboard(val, '✓ CNPJ gerado e copiado para a área de transferência!');
+      copyToClipboard(val, 'CNPJ gerado e copiado para colar (Ctrl+V)!');
     });
 
     btnCopy.addEventListener('click', () => {
@@ -769,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const obj = JSON.parse(input.value);
         const formatted = JSON.stringify(obj, null, 2);
         output.textContent = formatted;
-        copyToClipboard(formatted, '✓ JSON formatado e copiado!');
+        copyToClipboard(formatted, 'JSON formatado e copiado para colar (Ctrl+V)!');
       } catch (err) {
         error.style.display = 'block';
         error.textContent = `Erro no JSON: ${err.message}`;
@@ -782,7 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const obj = JSON.parse(input.value);
         const minified = JSON.stringify(obj);
         output.textContent = minified;
-        copyToClipboard(minified, '✓ JSON minificado e copiado!');
+        copyToClipboard(minified, 'JSON minificado e copiado para colar (Ctrl+V)!');
       } catch (err) {
         error.style.display = 'block';
         error.textContent = `Erro no JSON: ${err.message}`;
@@ -833,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderHashTool(container) {
     container.innerHTML = `
       <div class="form-group">
-        <label class="form-label">Digite o texto para gerar hashes (copia ao clicar):</label>
+        <label class="form-label">Digite o texto para gerar hashes (clique na caixa para copiar):</label>
         <input type="text" id="hash-input" class="form-input" placeholder="Digite algo..." value="Abobi Ferramentas" />
       </div>
 
@@ -871,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHashes();
   }
 
-  // 7. BASE64 TOOL COM AUTO-CÓPIA
+  // 7. BASE64 TOOL
   function renderBase64Tool(container) {
     container.innerHTML = `
       <div class="form-group">
@@ -896,7 +922,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const val = btoa(unescape(encodeURIComponent(input.value)));
         output.textContent = val;
-        copyToClipboard(val, '✓ Base64 codificado e copiado!');
+        copyToClipboard(val, 'Base64 codificado e copiado para colar (Ctrl+V)!');
       } catch (err) { output.textContent = 'Erro ao codificar'; }
     });
 
@@ -904,7 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const val = decodeURIComponent(escape(atob(input.value)));
         output.textContent = val;
-        copyToClipboard(val, '✓ Base64 decodificado e copiado!');
+        copyToClipboard(val, 'Base64 decodificado e copiado para colar (Ctrl+V)!');
       } catch (err) { output.textContent = 'Base64 inválido'; }
     });
   }
@@ -973,7 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const list = Array.from({ length: count }, () => crypto.randomUUID());
       const res = list.join('\n');
       output.textContent = res;
-      copyToClipboard(res, '✓ UUIDs gerados e copiados!');
+      copyToClipboard(res, 'UUIDs gerados e copiados para colar (Ctrl+V)!');
     }
 
     container.querySelector('#btn-gen-uuid').addEventListener('click', generateUUIDs);
@@ -1012,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. LOREM IPSUM TOOL COM AUTO-CÓPIA
+  // 11. LOREM IPSUM TOOL
   function renderLoremTool(container) {
     container.innerHTML = `
       <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
@@ -1034,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function genLorem() {
       const count = Math.min(Math.max(parseInt(qty.value) || 1, 1), 10);
       output.innerHTML = Array.from({ length: count }, () => `<p style="margin-bottom: 12px;">${loremSample}</p>`).join('');
-      copyToClipboard(output.innerText, '✓ Lorem Ipsum gerado e copiado!');
+      copyToClipboard(output.innerText, 'Lorem Ipsum gerado e copiado para colar (Ctrl+V)!');
     }
 
     container.querySelector('#btn-gen-lorem').addEventListener('click', genLorem);

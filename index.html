@@ -3,22 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Abobi Ferramentas | Suíte de Ferramentas Web Rápidas, Gratuitas e 100% Privadas</title>
-  <meta name="description" content="Ferramentas online para desenvolvedores e produtividade: Gerador de CPF/CNPJ, Formatador JSON, Gerador de QR Code, Hashes, Senhas, Base64 e muito mais. 100% local e seguro." />
-  <meta name="keywords" content="ferramentas dev, gerador cpf, gerador cnpj, formatador json, qr code generator, gerador de senha, hash md5 sha256, base64, abobi ferramentas" />
+  <title>Abobi Ferramentas | Gerador de Senhas, CPF, CNPJ e DevTools Grátis</title>
+  
+  <!-- Primary SEO Meta Tags -->
+  <meta name="description" content="Suíte de ferramentas web gratuitas, ultra rápidas e 100% privadas: Gerador de Senha Forte estilo LastPass, Gerador de CPF/CNPJ, Formatador JSON, QR Code, Hashes e muito mais." />
+  <meta name="keywords" content="gerador de senha, gerador de cpf, gerador de cnpj, formatador json, gerador de qr code, abobi ferramentas, ferramentas online grátis, devtools brasil" />
   <meta name="author" content="Abobi Ferramentas" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://abobiferramentas.com" />
 
-  <!-- Open Graph / Social Media -->
+  <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://abobiferramentas.com" />
-  <meta property="og:title" content="Abobi Ferramentas - Suíte de Ferramentas Web Gratuitas" />
-  <meta property="og:description" content="Ferramentas para devs, designers e produtividade. 100% grátis, rápido e processado localmente no seu navegador." />
+  <meta property="og:url" content="https://abobiferramentas.com/" />
+  <meta property="og:title" content="Abobi Ferramentas | Gerador de Senhas, CPF e Ferramentas Web" />
+  <meta property="og:description" content="Gerador de senhas estilo LastPass, CPF/CNPJ com auto-cópia no clipboard, formatador JSON, QR Code e muito mais. 100% grátis e seguro." />
   <meta property="og:image" content="https://abobiferramentas.com/og-image.png" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://abobiferramentas.com/" />
+  <meta name="twitter:title" content="Abobi Ferramentas - Suíte de Ferramentas Web" />
+  <meta name="twitter:description" content="Ferramentas online rápidas, 100% locais e sem cadastro." />
+
+  <!-- JSON-LD Structured Data for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Abobi Ferramentas",
+    "url": "https://abobiferramentas.com",
+    "description": "Suíte de ferramentas web rápidas, gratuitas e 100% privadas com auto-cópia para área de transferência.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    }
+  }
+  </script>
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -48,7 +76,7 @@
         <!-- Global Search Bar -->
         <div class="search-box">
           <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: CPF, JSON, QR Code)" autocomplete="off" />
+          <input type="text" id="global-search" placeholder="Buscar ferramenta... (Ex: Senha, CPF, JSON, QR)" autocomplete="off" />
           <kbd class="search-kbd">Ctrl K</kbd>
         </div>
 
@@ -56,7 +84,7 @@
           <button id="theme-toggle" class="btn-icon" title="Alternar Tema Claro/Escuro" aria-label="Alternar Tema">
             <i data-lucide="moon" id="theme-icon"></i>
           </button>
-          <a href="https://github.com/caducosilva/abobiferramentas" target="_blank" class="btn btn-outline" title="Repositório GitHub">
+          <a href="https://github.com/caducosilva/abobiferramentas" target="_blank" rel="noopener" class="btn btn-outline" title="Repositório GitHub">
             <i data-lucide="github"></i>
             <span>GitHub</span>
           </a>
@@ -83,21 +111,21 @@
           </button>
 
           <div class="nav-section-title">Categorias</div>
+          <button class="nav-item" data-category="seguranca">
+            <i data-lucide="shield-check"></i>
+            <span>Segurança & Senhas</span>
+          </button>
+          <button class="nav-item" data-category="documentos">
+            <i data-lucide="file-check"></i>
+            <span>CPF, CNPJ & Geradores</span>
+          </button>
           <button class="nav-item" data-category="dev">
             <i data-lucide="code-2"></i>
             <span>Desenvolvedor & Código</span>
           </button>
-          <button class="nav-item" data-category="documentos">
-            <i data-lucide="file-check"></i>
-            <span>Documentos & Geradores</span>
-          </button>
           <button class="nav-item" data-category="design">
             <i data-lucide="palette"></i>
             <span>Design & Mídia</span>
-          </button>
-          <button class="nav-item" data-category="seguranca">
-            <i data-lucide="shield-check"></i>
-            <span>Segurança & Cripto</span>
           </button>
           <button class="nav-item" data-category="texto">
             <i data-lucide="type"></i>
@@ -105,10 +133,17 @@
           </button>
         </nav>
 
+        <!-- Sidebar AdSpace Container (Google AdSense Ready) -->
+        <div class="ad-container ad-sidebar" id="ad-sidebar-slot">
+          <span class="ad-label">PUBLICIDADE</span>
+          <!-- Inserir Código do Google AdSense Aqui -->
+          <div class="ad-placeholder">Espaço de Anúncio AdSense</div>
+        </div>
+
         <div class="sidebar-footer">
           <div class="privacy-badge">
             <i data-lucide="shield-lock"></i>
-            <span>100% Processamento Local no Navegador</span>
+            <span>100% Processamento Local no Seu Navegador</span>
           </div>
         </div>
       </aside>
@@ -116,11 +151,17 @@
       <!-- Main Content Area -->
       <main class="content-area">
         
-        <!-- Hero Section (Visible on Grid View) -->
+        <!-- Top AdSpace Banner (Google AdSense Ready) -->
+        <div class="ad-container ad-banner" id="ad-banner-top">
+          <span class="ad-label">PUBLICIDADE</span>
+          <div class="ad-placeholder">Espaço Reservado para Anúncio Google AdSense (Banner Superior)</div>
+        </div>
+
+        <!-- Hero Section -->
         <section id="hero-banner" class="hero-banner">
           <div class="hero-content">
-            <h1 class="hero-title">Suíte de Ferramentas Web <span class="gradient-text">Gratuitas e Ultra Rápidas</span></h1>
-            <p class="hero-subtitle">Ferramentas essenciais para desenvolvedores, criadores e produtividade diária. Sem cadastros, sem rastreamento e sem limites.</p>
+            <h1 class="hero-title">Ferramentas Web Gratuitas com <span class="gradient-text">Auto-Cópia para o Clipboard</span></h1>
+            <p class="hero-subtitle">Gere senhas fortes estilo LastPass, CPFs, CNPJs, QR Codes e hashes de forma instantânea. Qualquer valor gerado é <strong>copiado automaticamente para colar (Ctrl+V)</strong> no seu dispositivo.</p>
           </div>
         </section>
 
@@ -132,11 +173,11 @@
           </div>
 
           <div class="tools-grid" id="tools-grid">
-            <!-- Dynamic Tool Cards will be injected by JavaScript -->
+            <!-- Dynamic Tool Cards -->
           </div>
         </section>
 
-        <!-- Single Tool Workspace (Hidden by Default) -->
+        <!-- Single Tool Workspace -->
         <section id="tool-active-view" class="tool-active-view hidden">
           <div class="tool-view-header">
             <button id="btn-back-to-grid" class="btn btn-secondary">
@@ -157,23 +198,59 @@
             </button>
           </div>
 
-          <!-- Dynamic Active Tool Container -->
+          <!-- Active Tool Container -->
           <div id="active-tool-container" class="active-tool-card">
-            <!-- Dynamic Tool Interface Component -->
+            <!-- Dynamic Component -->
           </div>
         </section>
 
       </main>
     </div>
 
-    <!-- Toast Notification Container -->
+    <!-- Persistent Copy Banner / Toast Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modals for Terms & Privacy (AdSense Requirement) -->
+    <div id="modal-privacy" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Política de Privacidade</h3>
+          <button class="btn-icon btn-close-modal" data-modal="privacy"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body">
+          <p>O <strong>Abobi Ferramentas</strong> respeita integralmente a sua privacidade. Todas as operações de geração de senhas, validação de documentos (CPF/CNPJ), formatação de código e geração de hashes ocorrem <strong>exclusivamente de forma local no seu navegador</strong>.</p>
+          <p style="margin-top: 12px;">Nenhum dado digitado ou gerado é transmitido, armazenado ou coletado em nossos servidores. Utilizamos apenas o `localStorage` do seu navegador para guardar suas preferências de tema (Claro/Escuro) e suas ferramentas favoritas.</p>
+          <p style="margin-top: 12px;">Exibimos anúncios de parceiros como o Google AdSense que podem utilizar cookies não invasivos para personalizar anúncios relevantes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-terms" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Termos de Uso</h3>
+          <button class="btn-icon btn-close-modal" data-modal="terms"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body">
+          <p>Ao utilizar o <strong>Abobi Ferramentas</strong>, você concorda com os seguintes termos:</p>
+          <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>As ferramentas de geração de CPF e CNPJ destinam-se exclusivamente para testes de sistemas e desenvolvimento de software.</li>
+            <li>Não nos responsabilizamos pelo uso indevido dos dados gerados por terceiros.</li>
+            <li>Todas as ferramentas são fornecidas gratuitamente 'como estão'.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
-        <p>© 2026 Abobi Ferramentas (<a href="https://abobiferramentas.com" class="link">abobiferramentas.com</a>). Código Aberto sob a Licença MIT.</p>
-        <p class="footer-subtext">Desenvolvido com foco em velocidade, privacidade e experiência do usuário.</p>
+        <p>© 2026 Abobi Ferramentas (<a href="https://abobiferramentas.com" class="link">abobiferramentas.com</a>). Todos os direitos reservados.</p>
+        <div class="footer-links" style="margin-top: 8px; display: flex; gap: 16px; justify-content: center; font-size: 0.85rem;">
+          <button class="link-button btn-open-modal" data-modal="privacy">Política de Privacidade</button>
+          <span>•</span>
+          <button class="link-button btn-open-modal" data-modal="terms">Termos de Uso</button>
+        </div>
       </div>
     </footer>
 
