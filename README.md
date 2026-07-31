@@ -41,3 +41,11 @@ git clone https://github.com/caducosilva/abobiferramentas.git
 ## 📄 Licença
 
 Este projeto está licenciado sob a licença MIT - consulte o arquivo LICENSE para obter mais detalhes.
+
+## Contato
+
+Autor: Carlos Eduardo
+
+- LinkedIn: https://www.linkedin.com/in/carlos-da-silva20ba5740a
+- Instagram: https://www.instagram.com/caducosilva
+- GitHub: https://github.com/caducosilva
