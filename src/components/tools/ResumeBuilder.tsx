@@ -10,58 +10,35 @@ interface ToolProps {
 
 const INITIAL_RESUME: ResumeData = {
   personalInfo: {
-    fullName: 'Carlos Eduardo Costa Lima da Silva',
-    title: 'Analista de Dados | Analytics Engineer | BI & Automação Financeira',
-    email: 'abobicarlo@gmail.com',
-    phone: '+55 (11) 96354-4223',
-    location: 'Mogi das Cruzes, SP (08761-100)',
-    linkedin: 'linkedin.com/in/carlos-da-silva20ba5740a',
-    website: 'github.com/caducosilva',
+    fullName: 'João da Silva',
+    title: 'Cargo ou Título Profissional Desejado',
+    email: 'joao.silva@exemplo.com',
+    phone: '(11) 98765-4321',
+    location: 'São Paulo, SP',
+    linkedin: 'linkedin.com/in/joaodasilva',
+    website: '',
   },
   summary:
-    'OBJETIVO: Atuar como Analista de Dados, Analista de Dados Pleno, Analista de BI, Analytics Engineer ou Analista de Automação Financeira.\n\nRESUMO: Profissional prático e resolutivo, com mais de 4 anos de experiência como Analista de Dados no C6 Bank. Atuação direta em conciliação financeira e contábil de entradas e saídas por produto, handover financeiro (HF) de aplicações e resgates, e conciliação com relatórios e extratos de parceiros externos e bandeiras (Mastercard, TechBan, Serasa, Salesforce). Diferencial em Python, SQL, BigQuery e Power BI aplicados à automação financeira, com cerca de 116 automações desenvolvidas ao longo da passagem pelo banco, eliminando rotinas manuais e reduzindo erro humano.',
+    'Breve resumo profissional com suas principais qualificações, anos de experiência e áreas de atuação. Edite este texto com suas informações reais.',
   experience: [
     {
       id: '1',
-      company: 'C6 Bank (São Paulo, SP - Presencial)',
-      position: 'Analista de Dados',
-      period: 'Fevereiro de 2022 – Junho de 2026',
-      description:
-        '• Conciliação financeira e contábil de entradas e saídas por produto, com apuração de divergências até regularização.\n• HF financeiro: handover financeiro de aplicações e resgates, com conferência de valores, status e evidências entre áreas e sistemas.\n• Conciliação com relatórios e extratos de parceiros externos e bandeiras (Mastercard, TechBan, Serasa, Salesforce).\n• Consultas SQL e BigQuery em bases financeiras para localizar inconsistências com rapidez e rastreabilidade.\n• Análise de desempenho e custo operacional das operações financeiras do banco.\n• Automação financeira com Python (Pandas, PyArrow) e SQL/BigQuery para eliminar rotinas manuais de conciliação (cerca de 116 automações desenvolvidas e mantidas).\n• Relatórios e painéis em Power BI, Data Studio e Splunk, com foco em zero erro humano nas entregas recorrentes.',
-    },
-    {
-      id: '2',
-      company: 'Sanofi (Suzano, SP - Presencial)',
-      position: 'Assistente de Operações Financeiras',
-      period: '2018 – 2022 (3 anos e 6 meses)',
-      description:
-        '• Conferência de notas fiscais, lançamentos e apoio a rotinas de fluxo de caixa e pagamentos.\n• Organização de processos, conferência documental e controle de prazos.\n• Apoio operacional a diferentes áreas internas, base sólida para rotinas financeiras, administrativas e de backoffice.',
+      company: 'Nome da Empresa',
+      position: 'Cargo Ocupado',
+      period: 'Jan/2022 – Atual',
+      description: '• Descreva suas principais responsabilidades e conquistas neste cargo.',
     },
   ],
   education: [
     {
       id: '1',
-      institution: 'Universidade de Mogi das Cruzes (UMC)',
-      degree: 'Ciências Contábeis',
-      period: 'Fev/2024 – Dez/2027 (Em andamento)',
-    },
-    {
-      id: '2',
-      institution: 'Universidade Presbiteriana Mackenzie',
-      degree: 'Engenharia de Produção',
-      period: 'Fev/2024 – Dez/2028 (Em andamento)',
-    },
-    {
-      id: '3',
-      institution: 'Universidade de Mogi das Cruzes (UMC)',
-      degree: 'Tecnólogo em Ciência de Dados',
-      period: 'Jan/2020 – Dez/2021 (Concluído)',
+      institution: 'Nome da Instituição de Ensino',
+      degree: 'Curso / Grau',
+      period: '2018 – 2022',
     },
   ],
-  skills:
-    'Python (Pandas, PyArrow), SQL, BigQuery, Playwright, Power BI, Data Studio / Looker Studio, Splunk, Conciliação Financeira, SAP, Matera, Cetip, Salesforce, Excel Avançado, Power Query, VBA',
-  languages:
-    'Português (Nativo), Inglês (Intermediário) | Cursos: BigQuery, Python, SQL, Excel avançado, Power Query, SAP, Salesforce',
+  skills: 'Ex: Excel, Comunicação, Gestão de Projetos',
+  languages: 'Ex: Português (Nativo), Inglês (Intermediário)',
 };
 
 export function ResumeBuilder({ onCopyToast }: ToolProps) {
@@ -69,12 +46,7 @@ export function ResumeBuilder({ onCopyToast }: ToolProps) {
     const saved = localStorage.getItem('abobi_resume_data');
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
-        // If old mock data was saved, replace with Carlos's real resume
-        if (parsed?.personalInfo?.fullName === 'Carlos Eduardo Silva' || !parsed?.personalInfo?.fullName?.includes('Costa Lima')) {
-          return INITIAL_RESUME;
-        }
-        return parsed;
+        return JSON.parse(saved);
       } catch (e) {
         console.error('Failed to parse saved resume', e);
       }
