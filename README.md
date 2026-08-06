@@ -1,46 +1,51 @@
-# 🛠️ Abobi Ferramentas (abobiferramentas.com)
+# abobiferramentas (abobiferramentas.com)
 
-> Suíte completa de ferramentas web modernas, ultra rápidas, gratuitas e 100% privadas.
+Suíte completa de ferramentas web gratuitas, rápidas e privadas.
 
-![Abobi Ferramentas](https://img.shields.io/badge/Status-Ativo-success?style=for-the-badge)
-![License](https://img.shields.io/badge/Licen%C3%A7a-MIT-blue?style=for-the-badge)
+## Ferramentas
 
-## ⚡ Recursos e Ferramentas Incluídas
+- Baixador de vídeos (YouTube, YouTube Music, TikTok, Instagram, Facebook, Twitter/X) com download real via `/api/resolve` e `/api/download`
+- Horários de ônibus de Mogi das Cruzes (SIM Mogi / EMTU)
+- Gerador e validador de CPF / CNPJ
+- Gerador de senhas fortes
+- Compressor de imagem
+- Contador e utilitários de texto
+- Gerador de currículo ATS
+- Gerador de QR Code
+- Formatador e validador de JSON
+- Gerador de UUID v4
+- Gerador de link do WhatsApp
+- Calculadora de porcentagem e IMC
+- Conversor de unidades
+- Base64 e gerador de hash (MD5/SHA-1/SHA-256)
 
-- 📄 **Gerador e Validador de CPF / CNPJ**: Algoritmo matemático real com opção de formatação.
-- 💻 **Formatador e Validador JSON**: Formatação bonita, minificação e detecção de erros de sintaxe.
-- 📱 **Gerador de QR Code**: Geração instantânea para links, textos, redes e PIX.
-- 🔒 **Gerador de Senhas Seguras**: Senhas criptograficamente seguras com aleatoriedade nativa (`crypto.getRandomValues`).
-- 🔑 **Gerador de Hashes**: Criação imediata de hashes **MD5** e **SHA-256**.
-- 🔤 **Codificador & Decodificador Base64**: Suporte a UTF-8 completo.
-- 📝 **Contador de Palavras e Texto**: Contagem de palavras, caracteres, linhas e estimativa de leitura.
-- 🆔 **Gerador de UUID v4**: Geração de UUIDs únicos em lote.
-- 📐 **Conversor PX para REM**: Para desenvolvedores e designers de interface.
-- 🎨 **Seletor de Cores & Gradientes**: Conversão HEX, RGB e visualização ao vivo.
-- 🌐 **Gerador de Lorem Ipsum**: Parágrafos customizados para protótipos.
+Todas as ferramentas client-side rodam inteiramente no navegador — nenhum dado é enviado a servidores. O baixador de vídeos é a exceção: o link informado é processado por funções serverless (`/api`) para localizar e transmitir o arquivo de mídia pública diretamente ao seu dispositivo; o arquivo não fica armazenado no servidor.
 
----
+## Stack
 
-## 🔒 Privacidade e Segurança em Primeiro Lugar
+- Frontend: [Vite](https://vitejs.dev/) + [React 19](https://react.dev/) + TypeScript + [Tailwind CSS 4](https://tailwindcss.com/)
+- Backend: funções serverless da Vercel (`/api`) em Node.js (`@distube/ytdl-core`, `@distube/ytpl`, `fluent-ffmpeg`) com fallback em Python (`yt-dlp`)
+- Página estática dedicada de SEO em `/baixar-video-instagram`
 
-Todas as ferramentas funcionam **100% no navegador do usuário (Client-side)**. Nenhum dado digitado ou gerado é enviado para servidores externos.
+## Rodando localmente
 
----
+Pré-requisito: Node.js 18+
 
-## 🚀 Como Executar Localmente
-
-1. Clone o repositório:
 ```bash
-git clone https://github.com/caducosilva/abobiferramentas.git
+npm install
+npm run dev
 ```
 
-2. Abra o arquivo `index.html` em qualquer navegador (ou use um servidor local simples como `npx serve` ou Live Server).
+As funções em `/api` só rodam em ambiente Vercel (`vercel dev`) ou em produção — o `npm run dev` sobe apenas o frontend.
 
----
+## Build de produção
 
-## 📄 Licença
+```bash
+npm run build
+npm run preview
+```
 
-Este projeto está licenciado sob a licença MIT - consulte o arquivo LICENSE para obter mais detalhes.
+O deploy é feito automaticamente pela Vercel a cada push na branch `main`.
 
 ## Contato
 
