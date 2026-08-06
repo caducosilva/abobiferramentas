@@ -94,6 +94,19 @@ export default function App() {
 
   // Search & Navigation
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Cmd/Ctrl+K opens the search modal from anywhere (no dedicated navbar button anymore)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<ToolCategory>('todos');
@@ -190,7 +203,6 @@ export default function App() {
       <Navbar
         darkMode={darkMode}
         onToggleDarkMode={() => setDarkMode(!darkMode)}
-        onOpenSearch={() => setIsSearchOpen(true)}
         onOpenScratchpad={() => setIsScratchpadOpen(true)}
         onOpenPwaModal={() => setIsPwaModalOpen(true)}
         activeCategory={activeCategory}

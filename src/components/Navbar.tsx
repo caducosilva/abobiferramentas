@@ -1,10 +1,9 @@
-import { Sun, Moon, Search, Star, ShieldCheck, Notebook, Smartphone } from 'lucide-react';
+import { Sun, Moon, Star, Notebook, Smartphone } from 'lucide-react';
 import { ToolCategory } from '../types';
 
 interface NavbarProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
-  onOpenSearch: () => void;
   onOpenScratchpad: () => void;
   onOpenPwaModal: () => void;
   activeCategory: ToolCategory;
@@ -19,7 +18,6 @@ interface NavbarProps {
 export function Navbar({
   darkMode,
   onToggleDarkMode,
-  onOpenSearch,
   onOpenScratchpad,
   onOpenPwaModal,
   onSelectCategory,
@@ -30,11 +28,11 @@ export function Navbar({
 }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 h-20 flex items-center justify-between gap-6">
         {/* Brand Logo */}
         <button
           onClick={onHomeClick}
-          className="flex items-center gap-3 group cursor-pointer focus:outline-none"
+          className="flex items-center gap-3 group cursor-pointer focus:outline-none shrink-0"
         >
           <div className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
             A
@@ -45,7 +43,7 @@ export function Navbar({
         </button>
 
         {/* Category Quick Links (Desktop) */}
-        <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400">
+        <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-500 dark:text-slate-400">
           <button
             onClick={() => onSelectCategory('midia')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
@@ -82,22 +80,10 @@ export function Navbar({
           >
             Matemática
           </button>
-        </div>
+        </nav>
 
-        {/* Action Controls & Dashboard Badge */}
-        <div className="flex items-center gap-3">
-          {/* Search Trigger */}
-          <button
-            onClick={onOpenSearch}
-            className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-slate-200 dark:border-slate-700 transition cursor-pointer"
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Buscar...</span>
-            <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded">
-              ⌘K
-            </kbd>
-          </button>
-
+        {/* Action Controls */}
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Favorites Badge Button */}
           <button
             onClick={onShowFavoritesOnly}
@@ -120,11 +106,11 @@ export function Navbar({
           {/* Local Scratchpad / Quick Notes Button */}
           <button
             onClick={onOpenScratchpad}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition cursor-pointer"
             title="Bloco Rápido e Privacidade Local"
           >
             <Notebook className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-            <span className="hidden sm:inline">Bloco Rápido</span>
+            <span>Bloco Rápido</span>
           </button>
 
           {/* PWA Install Button */}
@@ -134,17 +120,8 @@ export function Navbar({
             title="Instalar App no Celular ou PC (PWA)"
           >
             <Smartphone className="w-3.5 h-3.5" />
-            <span>Instalar App</span>
+            <span className="hidden sm:inline">Instalar App</span>
           </button>
-
-          {/* Security Shield Badge */}
-          <div
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80"
-            title="Proteção Anti-Spam e Rate Limit Ativos na Aplicação"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Rate Limit Ativo</span>
-          </div>
 
           {/* Dark Mode Toggle */}
           <button
