@@ -1,0 +1,184 @@
+{
+  "home": {
+    "title": "abobiferramentas | Ônibus Mogi, Baixador de Vídeos, CPF, CNPJ & Senhas",
+    "description": "Suíte completa de ferramentas online gratuitas: baixador de vídeos (YouTube, TikTok, Instagram), horários de ônibus de Mogi das Cruzes, gerador de senha forte, CPF/CNPJ, QR Code, JSON, hashes, compressor de imagem e mais.",
+    "howItWorks": [
+      "Escolha uma ferramenta na grade ou use a busca (Ctrl/Cmd+K) para encontrar pelo nome.",
+      "Cada ferramenta roda inteiramente no seu navegador ou por uma chamada direta e pontual ao servidor — sem cadastro, sem e-mail, sem senha de conta.",
+      "Favorite as que você mais usa (ícone de estrela) para encontrá-las mais rápido da próxima vez — isso fica salvo só no seu navegador."
+    ],
+    "faq": [
+      { "q": "Preciso me cadastrar para usar as ferramentas?", "a": "Não. Nenhuma ferramenta do abobiferramentas exige conta, e-mail ou login. Você abre e usa direto." },
+      { "q": "Os dados que eu digito são enviados para algum servidor?", "a": "Depende da ferramenta: geradores, validadores, calculadoras, JSON, senha, UUID e Base64/hash processam tudo localmente no seu navegador. Só o baixador de vídeos faz uma chamada ao servidor, necessária para buscar o link real do arquivo." },
+      { "q": "O site funciona sem internet?", "a": "Depois da primeira visita, o site funciona como um aplicativo instalável (PWA) com boa parte das ferramentas disponíveis offline, graças ao cache local do navegador." }
+    ]
+  },
+  "baixador-video": {
+    "howItWorks": [
+      "Cole o link do vídeo, Reel, Short ou playlist pública (YouTube, TikTok, Instagram, Facebook ou Twitter/X).",
+      "O servidor resolve o link e retorna a prévia (miniatura, título e qualidade disponível) — nada é baixado nesse passo.",
+      "Escolha baixar o vídeo ou, no caso do YouTube, apenas o áudio em MP3, e o arquivo real é transferido direto para o seu dispositivo."
+    ],
+    "faq": [
+      { "q": "Funciona com vídeos privados?", "a": "Não. Só conteúdo público pode ser processado — contas privadas e vídeos com áudio licenciado bloqueiam até ferramentas oficiais de terceiros, e mostramos o erro real em vez de fingir que funcionou." },
+      { "q": "O vídeo baixado tem marca d'água?", "a": "Vídeos do TikTok são baixados sem a marca d'água padrão do app, sempre na maior qualidade disponibilizada pela plataforma de origem." },
+      { "q": "Posso baixar uma playlist inteira do YouTube?", "a": "Sim. Cole o link da playlist, selecione quais vídeos quer (ou todos) e baixe em lote." }
+    ]
+  },
+  "onibus-mogi": {
+    "howItWorks": [
+      "Busque por código da linha (ex: C001) ou por bairro/terminal (ex: Jundiapeba, Brás Cubas, Sabaúna).",
+      "Abra a linha para ver o itinerário e o terminal de referência.",
+      "Escolha o dia — Segunda a Sexta, Sábado ou Domingo — para ver os horários corretos daquele dia."
+    ],
+    "faq": [
+      { "q": "Os horários são oficiais da EMTU/SIM Mogi?", "a": "São horários informativos, compilados das tabelas públicas das operadoras (SIM Mogi para linhas municipais e EMTU para intermunicipais). Elas podem mudar sem aviso prévio, então em datas críticas vale confirmar no ponto ou com a operadora." },
+      { "q": "Funciona sem internet?", "a": "Sim — depois de carregar a página uma vez, os horários ficam salvos no seu dispositivo (o app é instalável como PWA) e continuam consultáveis mesmo offline, já que os dados não dependem de uma chamada ao vivo ao servidor." }
+    ]
+  },
+  "gerador-cpf": {
+    "howItWorks": [
+      "Escolha se quer o CPF formatado (com pontos e traço) ou só números.",
+      "Opcionalmente selecione um estado para gerar o CPF com a região fiscal correspondente.",
+      "Clique em gerar: o número é criado no seu navegador com o algoritmo oficial de dígitos verificadores, pronto para copiar."
+    ],
+    "faq": [
+      { "q": "Esse CPF é de uma pessoa real?", "a": "Não. É um número matematicamente válido (passa na validação de dígitos verificadores), mas gerado aleatoriamente — não pertence a ninguém. Serve para testar formulários, sistemas e cadastros de desenvolvimento." },
+      { "q": "É seguro usar isso em produção?", "a": "Não. Use apenas para testes, QA e ambientes de desenvolvimento. Nunca em bases de dados reais ou processos que exijam identificação verdadeira." }
+    ]
+  },
+  "validador-cpf": {
+    "howItWorks": [
+      "Digite o CPF, com ou sem pontuação.",
+      "A ferramenta recalcula os dois dígitos verificadores usando o algoritmo oficial da Receita Federal.",
+      "Você vê o resultado (válido ou inválido) e o passo a passo do cálculo, útil para conferir manualmente ou entender o algoritmo."
+    ],
+    "faq": [
+      { "q": "Validar aqui confirma que o CPF existe de verdade?", "a": "Não. A validação é só matemática (confere se os dígitos verificadores batem com o algoritmo). Ela não consulta a Receita Federal, então não garante que o número foi realmente emitido ou está ativo." }
+    ]
+  },
+  "gerador-cnpj": {
+    "howItWorks": [
+      "Escolha entre gerar um CNPJ novo ou validar um que você já tem.",
+      "Para gerar, defina se quer matriz (0001) ou uma filial específica, e o formato (com ou sem pontuação).",
+      "Para validar, cole o CNPJ e veja na hora se os dígitos verificadores conferem."
+    ],
+    "faq": [
+      { "q": "Esse CNPJ pertence a uma empresa real?", "a": "Não. É gerado aleatoriamente seguindo o algoritmo oficial de validação — útil para testar sistemas e cadastros, mas não corresponde a nenhuma empresa registrada." },
+      { "q": "Qual a diferença entre matriz e filial no CNPJ?", "a": "Os quatro dígitos depois da raiz (os 8 primeiros números) indicam a ordem: 0001 é sempre a matriz, e 0002, 0003 etc. são filiais da mesma empresa." }
+    ]
+  },
+  "gerador-senhas": {
+    "howItWorks": [
+      "Escolha o tamanho da senha e quais tipos de caractere incluir: maiúsculas, minúsculas, números e símbolos.",
+      "A senha é gerada localmente no seu navegador usando um gerador de números aleatórios criptográfico — nunca é enviada para nenhum servidor.",
+      "O medidor de força mostra o quão resistente ela é a ataques de força bruta antes de você copiar e usar."
+    ],
+    "faq": [
+      { "q": "A senha gerada fica salva em algum lugar?", "a": "Não. Ela existe só na tela do seu navegador enquanto a página está aberta. Nada é armazenado ou enviado para fora do seu dispositivo." },
+      { "q": "Qual tamanho de senha é seguro?", "a": "Recomenda-se pelo menos 12 caracteres misturando os quatro tipos. Para contas críticas (e-mail principal, banco), 16+ caracteres é mais seguro ainda." }
+    ]
+  },
+  "compressor-imagem": {
+    "howItWorks": [
+      "Envie uma imagem PNG, JPG ou WebP arrastando o arquivo ou selecionando do seu dispositivo.",
+      "Ajuste a qualidade de compressão e veja o tamanho final estimado em tempo real, comparando com o original.",
+      "Baixe a imagem comprimida — todo o processamento acontece no seu navegador, o arquivo nunca sai do seu dispositivo."
+    ],
+    "faq": [
+      { "q": "Minhas fotos são enviadas para algum servidor?", "a": "Não. A compressão usa APIs nativas do navegador (Canvas). A imagem nunca deixa o seu dispositivo, o que também torna o processo mais rápido." },
+      { "q": "Tem limite de tamanho de arquivo?", "a": "Como o processamento é local, o limite prático é a memória do seu dispositivo — imagens muito grandes (dezenas de MB) podem demorar mais para processar em aparelhos mais fracos." }
+    ]
+  },
+  "contador-texto": {
+    "howItWorks": [
+      "Cole ou digite o texto na caixa — a contagem de palavras, caracteres e linhas atualiza em tempo real.",
+      "Use os conversores rápidos para transformar o texto em MAIÚSCULAS, minúsculas, Capitalizado, camelCase ou slug-de-url.",
+      "O rascunho fica salvo automaticamente no seu navegador, então se você fechar a aba sem querer, o texto continua lá quando voltar."
+    ],
+    "faq": [
+      { "q": "O texto que eu digito é enviado para algum lugar?", "a": "Não. Toda contagem e conversão acontece localmente no seu navegador via JavaScript. Nada é transmitido." }
+    ]
+  },
+  "gerador-curriculo": {
+    "howItWorks": [
+      "Preencha seus dados, experiências e formação nos campos do formulário.",
+      "Escolha a cor de destaque e acompanhe a pré-visualização do currículo em tempo real.",
+      "Exporte em PDF pronto para enviar — o layout é otimizado para passar por sistemas de triagem automática (ATS) usados por recrutadores."
+    ],
+    "faq": [
+      { "q": "Meus dados de currículo ficam salvos em algum servidor?", "a": "Não. Tudo o que você digita fica salvo apenas no localStorage do seu próprio navegador, para você poder continuar editando depois — nada é enviado para fora do seu dispositivo." },
+      { "q": "O que é um currículo 'otimizado para ATS'?", "a": "ATS (Applicant Tracking System) é o software que muitas empresas usam para escanear currículos antes de um humano ler. Um layout otimizado evita colunas, tabelas e elementos gráficos que confundem esses sistemas e podem descartar seu currículo automaticamente." }
+    ]
+  },
+  "gerador-qrcode": {
+    "howItWorks": [
+      "Escolha o tipo de conteúdo: link, texto simples, rede Wi-Fi ou mensagem de WhatsApp.",
+      "Personalize as cores do QR Code para combinar com sua marca ou material.",
+      "Baixe a imagem gerada — tudo é criado localmente no navegador, sem depender de um serviço externo."
+    ],
+    "faq": [
+      { "q": "O QR Code expira ou tem limite de leituras?", "a": "Não. É um QR Code estático gerado localmente, sem serviço de encurtamento por trás — funciona para sempre e sem limite de escaneamentos." }
+    ]
+  },
+  "formatador-json": {
+    "howItWorks": [
+      "Cole o JSON na caixa de entrada — a formatação e a validação de sintaxe rodam automaticamente.",
+      "Use o modo árvore para explorar objetos e arrays grandes de forma organizada, expandindo só o que interessa.",
+      "Alterne entre indentar (para leitura) e minificar (para produção) com um clique."
+    ],
+    "faq": [
+      { "q": "Meu JSON é enviado para algum servidor ao colar aqui?", "a": "Não. A validação e formatação usam o parser nativo do JavaScript, direto no seu navegador — útil inclusive para colar dados sensíveis sem risco de vazamento." }
+    ]
+  },
+  "gerador-uuid": {
+    "howItWorks": [
+      "Escolha quantos UUIDs você precisa gerar de uma vez.",
+      "Cada identificador é gerado no padrão UUID v4 (aleatório), usando a API criptográfica nativa do navegador.",
+      "Copie um único ID ou a lista inteira de uma vez para usar no seu código ou banco de dados."
+    ],
+    "faq": [
+      { "q": "Qual a chance de dois UUIDs v4 serem iguais?", "a": "Estatisticamente desprezível — com 122 bits aleatórios, seriam necessários bilhões de IDs gerados por segundo por séculos para haver risco real de colisão." }
+    ]
+  },
+  "link-whatsapp": {
+    "howItWorks": [
+      "Digite o número de telefone com DDD (o código do país é preenchido automaticamente para o Brasil).",
+      "Opcionalmente, escreva uma mensagem que já vai aparecer pronta na conversa.",
+      "Copie o link gerado (wa.me) ou o QR Code para compartilhar em redes sociais, cartão de visita ou bio."
+    ],
+    "faq": [
+      { "q": "Preciso ter o número salvo nos contatos para o link funcionar?", "a": "Não. Links wa.me abrem a conversa direto, mesmo que o número não esteja salvo — funciona tanto no WhatsApp do celular quanto no WhatsApp Web." }
+    ]
+  },
+  "calculadoras": {
+    "howItWorks": [
+      "Escolha a calculadora: porcentagem (de quanto é X% de Y, ou qual % um valor representa) ou IMC.",
+      "Preencha os campos — o resultado atualiza automaticamente conforme você digita.",
+      "Para o IMC, veja também a faixa de classificação (abaixo do peso, normal, sobrepeso etc.) segundo os parâmetros da OMS."
+    ],
+    "faq": [
+      { "q": "O cálculo de IMC substitui uma avaliação médica?", "a": "Não. O IMC é um indicador geral e não considera composição corporal (massa muscular vs. gordura), idade ou outros fatores de saúde. Use como referência, não como diagnóstico." }
+    ]
+  },
+  "conversor-unidades": {
+    "howItWorks": [
+      "Escolha a categoria: comprimento, peso, temperatura ou tamanho de arquivo (bytes, KB, MB, GB).",
+      "Digite o valor em uma unidade e veja a conversão instantânea para as outras da mesma categoria.",
+      "Troque a unidade de origem a qualquer momento sem perder o valor digitado."
+    ],
+    "faq": [
+      { "q": "As conversões usam fatores oficiais do SI?", "a": "Sim, os fatores de conversão seguem o Sistema Internacional de Unidades (SI) e as definições padrão para bytes binários." }
+    ]
+  },
+  "base64-hash": {
+    "howItWorks": [
+      "Para Base64: digite um texto para codificar, ou cole um Base64 para decodificar de volta ao texto original.",
+      "Para hash: digite qualquer texto e veja instantaneamente os hashes MD5, SHA-1 e SHA-256 correspondentes.",
+      "Tudo roda localmente com a Web Crypto API nativa do navegador — nenhum dado é enviado para fora."
+    ],
+    "faq": [
+      { "q": "MD5 e SHA-1 são seguros para senhas?", "a": "Não. Ambos são considerados criptograficamente quebrados para uso em senhas — servem bem para checar integridade de arquivos, mas não para proteger dados sensíveis. Para senhas, use algoritmos como bcrypt ou Argon2 no seu backend." }
+    ]
+  }
+}

@@ -6,6 +6,8 @@ import { LocalScratchpadModal } from './components/LocalScratchpadModal';
 import { PwaInstallModal } from './components/PwaInstallModal';
 import { ToastContainer } from './components/Toast';
 import { Footer } from './components/Footer';
+import { ToolInfoSection } from './components/ToolInfoSection';
+import seoContent from './data/seoContent.json';
 
 // Tool Views
 import { VideoDownloader } from './components/tools/VideoDownloader';
@@ -37,6 +39,14 @@ function resolveToolIdFromPath(pathname: string): string | null {
 }
 
 export default function App() {
+  // Static SEO content is baked into the pre-rendered HTML (outside #root) so crawlers with
+  // weak JS support see real content immediately. Once React mounts, its own interactive
+  // version (ToolInfoSection / BentoGrid teaser) takes over, so the static copy is removed
+  // to avoid showing the same content twice to real users.
+  useEffect(() => {
+    document.getElementById('prerendered-seo-content')?.remove();
+  }, []);
+
   // Dark mode setup
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('abobi_dark');
@@ -128,6 +138,18 @@ export default function App() {
   useEffect(() => {
     const tool = TOOLS.find((t) => t.id === activeToolId);
     document.title = tool ? `${tool.name} | abobiferramentas` : SITE_TITLE;
+
+    const description =
+      (tool ? tool.description : (seoContent as any).home?.description) ?? (seoContent as any).home?.description;
+    if (description) {
+      let tag = document.querySelector('meta[name="description"]');
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', 'description');
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', description);
+    }
   }, [activeToolId]);
 
   const closeTool = () => {
@@ -274,19 +296,27 @@ export default function App() {
 
             {/* Render Tool View */}
             {renderActiveToolComponent()}
+
+            {/* Real, unique text content per tool — helps search & ad-review crawlers see this isn't a blank screen */}
+            <ToolInfoSection toolId={currentTool.id} />
           </div>
         ) : (
           /* HOMEPAGE BENTO GRID DASHBOARD */
-          <BentoGrid
-            activeCategory={activeCategory}
-            onSelectCategory={setActiveCategory}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onOpenTool={handleOpenTool}
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
-            showingFavoritesOnly={showingFavoritesOnly}
-          />
+          <>
+            <BentoGrid
+              activeCategory={activeCategory}
+              onSelectCategory={setActiveCategory}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onOpenTool={handleOpenTool}
+              favorites={favorites}
+              onToggleFavorite={toggleFavorite}
+              showingFavoritesOnly={showingFavoritesOnly}
+            />
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-12">
+              <ToolInfoSection toolId="home" />
+            </div>
+          </>
         )}
       </main>
 

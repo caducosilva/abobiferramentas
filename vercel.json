@@ -8,6 +8,22 @@
   },
   "rewrites": [
     { "source": "/baixar-video-instagram", "destination": "/baixar-video-instagram.html" },
+    { "source": "/baixador-de-videos", "destination": "/baixador-de-videos/index.html" },
+    { "source": "/horarios-de-onibus-mogi", "destination": "/horarios-de-onibus-mogi/index.html" },
+    { "source": "/gerador-de-cpf", "destination": "/gerador-de-cpf/index.html" },
+    { "source": "/validador-de-cpf", "destination": "/validador-de-cpf/index.html" },
+    { "source": "/gerador-de-cnpj", "destination": "/gerador-de-cnpj/index.html" },
+    { "source": "/gerador-de-senha", "destination": "/gerador-de-senha/index.html" },
+    { "source": "/compressor-de-imagem", "destination": "/compressor-de-imagem/index.html" },
+    { "source": "/contador-de-texto", "destination": "/contador-de-texto/index.html" },
+    { "source": "/gerador-de-curriculo", "destination": "/gerador-de-curriculo/index.html" },
+    { "source": "/gerador-de-qr-code", "destination": "/gerador-de-qr-code/index.html" },
+    { "source": "/formatador-de-json", "destination": "/formatador-de-json/index.html" },
+    { "source": "/gerador-de-uuid", "destination": "/gerador-de-uuid/index.html" },
+    { "source": "/gerador-de-link-whatsapp", "destination": "/gerador-de-link-whatsapp/index.html" },
+    { "source": "/calculadora-de-porcentagem-e-imc", "destination": "/calculadora-de-porcentagem-e-imc/index.html" },
+    { "source": "/conversor-de-unidades", "destination": "/conversor-de-unidades/index.html" },
+    { "source": "/base64-e-hash", "destination": "/base64-e-hash/index.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

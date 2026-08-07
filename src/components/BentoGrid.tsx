@@ -139,10 +139,13 @@ export function BentoGrid({
         </div>
       </header>
 
-      {/* TOP AD BANNER (passive, never blocks any action) */}
-      <div className="max-w-3xl mx-auto px-4">
-        <AdSlot format="horizontal" />
-      </div>
+      {/* TOP AD BANNER (passive, never blocks any action) — hidden on empty search results so
+          Google never sees an ad sitting above a screen with no real content below it. */}
+      {filteredTools.length > 0 && (
+        <div className="max-w-3xl mx-auto px-4">
+          <AdSlot format="horizontal" />
+        </div>
+      )}
 
       {/* CATEGORY FILTER PILLS */}
       <div className="flex flex-wrap items-center justify-center gap-3 px-4 sm:px-10 pb-6 max-w-7xl mx-auto">
