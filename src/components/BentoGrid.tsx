@@ -22,6 +22,8 @@ import {
   Sparkles,
   Video,
   Bus,
+  Lock,
+  ImageOff,
 } from 'lucide-react';
 
 interface BentoGridProps {
@@ -46,6 +48,7 @@ const CATEGORIES: { id: ToolCategory; label: string }[] = [
   { id: 'desenvolvimento', label: 'Dev & JSON' },
   { id: 'imagem', label: 'Imagem' },
   { id: 'matematica', label: 'Matemática' },
+  { id: 'privacidade', label: 'Privacidade 🔒' },
 ];
 
 export function BentoGrid({
@@ -92,6 +95,10 @@ export function BentoGrid({
         return <ArrowLeftRight className="w-6 h-6" />;
       case 'base64-hash':
         return <Binary className="w-6 h-6" />;
+      case 'cofre-notas-local':
+        return <Lock className="w-6 h-6" />;
+      case 'limpador-exif':
+        return <ImageOff className="w-6 h-6" />;
       default:
         return <Sparkles className="w-6 h-6" />;
     }

@@ -22,8 +22,8 @@ export function MogiBusSchedule() {
       (line) =>
         line.code.toLowerCase().includes(q) ||
         line.name.toLowerCase().includes(q) ||
-        line.terminal.toLowerCase().includes(q) ||
-        line.type.toLowerCase().includes(q)
+        line.pontoA.toLowerCase().includes(q) ||
+        line.pontoB.toLowerCase().includes(q)
     );
   }, [query]);
 
@@ -34,8 +34,8 @@ export function MogiBusSchedule() {
           Horários de Ônibus de Mogi das Cruzes
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Linhas municipais (SIM Mogi) e intermunicipais (EMTU). Horários informativos — podem mudar sem aviso das
-          operadoras.
+          Linhas municipais SIM Mogi, com dados do portal oficial da prefeitura. Horários informativos — podem mudar
+          sem aviso das operadoras.
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export function MogiBusSchedule() {
           filtered.map((line) => {
             const isExpanded = expandedCode === line.code;
             const activeDay = dayByCode[line.code] ?? 'weekdays';
-            const times = line[activeDay];
+            const schedule = line[activeDay];
 
             return (
               <div
@@ -75,9 +75,9 @@ export function MogiBusSchedule() {
                     <p className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">{line.name}</p>
                     <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-400 flex-wrap">
                       <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {line.terminal}
+                        <MapPin className="w-3 h-3" /> {line.pontoA} ↔ {line.pontoB}
                       </span>
-                      <span>{line.type}</span>
+                      <span>{line.empresa}</span>
                     </div>
                   </div>
                   {isExpanded ? (
@@ -105,17 +105,48 @@ export function MogiBusSchedule() {
                       ))}
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {times.map((time, idx) => (
-                        <span
-                          key={idx}
-                          className="flex items-center gap-1 px-2.5 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono font-semibold text-slate-700 dark:text-slate-300"
-                        >
-                          <Clock className="w-3 h-3 text-slate-400" />
-                          {time}
-                        </span>
-                      ))}
-                    </div>
+                    {schedule.ida.length === 0 && schedule.volta.length === 0 ? (
+                      <p className="text-xs text-slate-400 py-2">Sem horários cadastrados para este dia.</p>
+                    ) : (
+                      <>
+                        {schedule.ida.length > 0 && (
+                          <div className="space-y-1.5">
+                            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                              {line.pontoA} → {line.pontoB} (Ida)
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {schedule.ida.map((time, idx) => (
+                                <span
+                                  key={idx}
+                                  className="flex items-center gap-1 px-2.5 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono font-semibold text-slate-700 dark:text-slate-300"
+                                >
+                                  <Clock className="w-3 h-3 text-slate-400" />
+                                  {time.slice(0, 5)}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {schedule.volta.length > 0 && (
+                          <div className="space-y-1.5">
+                            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                              {line.pontoB} → {line.pontoA} (Volta)
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {schedule.volta.map((time, idx) => (
+                                <span
+                                  key={idx}
+                                  className="flex items-center gap-1 px-2.5 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono font-semibold text-slate-700 dark:text-slate-300"
+                                >
+                                  <Clock className="w-3 h-3 text-slate-400" />
+                                  {time.slice(0, 5)}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               </div>

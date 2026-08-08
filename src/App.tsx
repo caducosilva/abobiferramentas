@@ -25,6 +25,8 @@ import { WhatsappLinkGenerator } from './components/tools/WhatsappLinkGenerator'
 import { Calculators } from './components/tools/Calculators';
 import { UnitConverter } from './components/tools/UnitConverter';
 import { Base64HashTools } from './components/tools/Base64HashTools';
+import { LocalNotesVault } from './components/tools/LocalNotesVault';
+import { ExifCleaner } from './components/tools/ExifCleaner';
 
 import { ToolCategory, ToastMessage } from './types';
 import { TOOLS } from './data/toolsData';
@@ -214,6 +216,10 @@ export default function App() {
         return <UnitConverter onCopyToast={addToast} />;
       case 'base64-hash':
         return <Base64HashTools onCopyToast={addToast} />;
+      case 'cofre-notas-local':
+        return <LocalNotesVault onCopyToast={addToast} />;
+      case 'limpador-exif':
+        return <ExifCleaner onCopyToast={addToast} />;
       default:
         return null;
     }

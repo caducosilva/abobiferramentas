@@ -32,7 +32,7 @@
       "Escolha o dia — Segunda a Sexta, Sábado ou Domingo — para ver os horários corretos daquele dia."
     ],
     "faq": [
-      { "q": "Os horários são oficiais da EMTU/SIM Mogi?", "a": "São horários informativos, compilados das tabelas públicas das operadoras (SIM Mogi para linhas municipais e EMTU para intermunicipais). Elas podem mudar sem aviso prévio, então em datas críticas vale confirmar no ponto ou com a operadora." },
+      { "q": "Os horários são oficiais do SIM Mogi?", "a": "São horários informativos, obtidos do portal oficial de mobilidade da Prefeitura de Mogi das Cruzes. Eles podem mudar sem aviso prévio das operadoras, então em datas críticas vale confirmar no ponto ou no portal da prefeitura." },
       { "q": "Funciona sem internet?", "a": "Sim — depois de carregar a página uma vez, os horários ficam salvos no seu dispositivo (o app é instalável como PWA) e continuam consultáveis mesmo offline, já que os dados não dependem de uma chamada ao vivo ao servidor." }
     ]
   },
@@ -174,7 +174,8 @@
   "base64-hash": {
     "howItWorks": [
       "Para Base64: digite um texto para codificar, ou cole um Base64 para decodificar de volta ao texto original.",
-      "Para hash: digite qualquer texto e veja instantaneamente os hashes MD5, SHA-1 e SHA-256 correspondentes.",
+      "Para hash: digite qualquer texto e veja instantaneamente os hashes SHA-1 e SHA-256 correspondentes.",
+      "No modo Arquivo, envie um arquivo para calcular SHA-1, SHA-256 e SHA-512 e comparar com um hash esperado — o arquivo nunca sai do seu navegador.",
       "Tudo roda localmente com a Web Crypto API nativa do navegador — nenhum dado é enviado para fora."
     ],
     "faq": [

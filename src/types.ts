@@ -8,7 +8,8 @@ export type ToolCategory =
   | 'imagem'
   | 'matematica'
   | 'midia'
-  | 'transportes';
+  | 'transportes'
+  | 'privacidade';
 
 export interface Tool {
   id: string;
@@ -34,14 +35,22 @@ export interface Tool {
   keywords: string[];
 }
 
+export interface MogiBusDaySchedule {
+  ida: string[];
+  volta: string[];
+}
+
 export interface MogiBusLine {
   code: string;
   name: string;
-  type: string;
-  terminal: string;
-  weekdays: string[];
-  saturdays: string[];
-  sundays: string[];
+  pontoA: string;
+  pontoB: string;
+  sentido: string;
+  diasAtendidos: string;
+  empresa: string;
+  weekdays: MogiBusDaySchedule;
+  saturdays: MogiBusDaySchedule;
+  sundays: MogiBusDaySchedule;
 }
 
 export interface ToastMessage {

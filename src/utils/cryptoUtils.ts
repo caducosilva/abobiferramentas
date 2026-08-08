@@ -112,6 +112,16 @@ export async function computeHash(text: string, algorithm: 'SHA-256' | 'SHA-1' |
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+export async function computeFileHash(
+  file: File,
+  algorithm: 'SHA-256' | 'SHA-1' | 'SHA-512'
+): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await window.crypto.subtle.digest(algorithm, buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 export function generateUUIDs(count: number = 1, uppercase = false, hyphens = true): string[] {
   const list: string[] = [];
   for (let i = 0; i < count; i++) {
