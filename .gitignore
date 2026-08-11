@@ -1,8 +1,33 @@
+# Credenciais e sessões — NUNCA versionar
+*.env
+.env*
+credentials*.json
+*token*.json
+*api*key*.json
+cookies/
+*.cookies
+cookies.txt
+*-profile/
+
+# Dados pessoais
+*.db
+*.sqlite*
+config.json
+logs/
+
+# Python / Node / Flutter / Android
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 node_modules/
 dist/
-.vercel/
-*.log
-*-player-script.js
-*-watch.html
-__pycache__/
-*.pyc
+.next/
+.idea/
+.gradle/
+build/
+
+# Sistema
+desktop.ini
+Thumbs.db
+.DS_Store
