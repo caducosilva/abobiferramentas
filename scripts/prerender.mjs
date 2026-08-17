@@ -22,7 +22,7 @@ const distDir = path.join(rootDir, 'dist');
 const seoContent = JSON.parse(await readFile(path.join(rootDir, 'src/data/seoContent.json'), 'utf-8'));
 
 const ROUTES = [
-  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Baixe o APK de apps de código aberto direto do GitHub Releases e do F-Droid, com a versão mais recente conferida na hora.' },
+  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Catálogo com mil apps de código aberto e link direto do APK, tirado dos índices oficiais do F-Droid, do IzzyOnDroid e do GitHub Releases.' },
   { id: 'onibus-mogi', slug: 'horarios-de-onibus-mogi', name: 'Horários de Ônibus de Mogi das Cruzes', description: 'Consulte horários, sentidos e itinerários de todas as linhas municipais SIM Mogi de Mogi das Cruzes.' },
   { id: 'gerador-cpf', slug: 'gerador-de-cpf', name: 'Gerador de CPF', description: 'Gere CPFs válidos com ou sem pontuação para testes de software.' },
   { id: 'validador-cpf', slug: 'validador-de-cpf', name: 'Validador de CPF', description: 'Verifique a validade matemática do CPF com análise passo a passo.' },
@@ -100,13 +100,43 @@ function injectContentAfterRoot(html, contentBlock) {
   return html.replace('<div id="root"></div>', `<div id="root"></div>\n${contentBlock}`);
 }
 
+// Marcação FAQPage do schema.org. O Google só aceita quando as mesmas perguntas e respostas estão
+// visíveis na página, e estão: são as mesmas do bloco <details> gerado acima e do ToolInfoSection.
+// Vale porque é o tipo de dado estruturado que rende resultado expandido na busca.
+function buildFaqJsonLd(entry) {
+  const faq = entry?.faq ?? [];
+  if (faq.length === 0) return '';
+
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  };
+
+  // Uma resposta que contivesse "</script>" fecharia a tag antes da hora e quebraria o HTML.
+  const json = JSON.stringify(data).replace(/<\//g, '<\\/');
+  return `<script type="application/ld+json">${json}</script>`;
+}
+
+function injectIntoHead(html, tag) {
+  if (!tag) return html;
+  return html.replace('</head>', `  ${tag}\n  </head>`);
+}
+
 async function main() {
   const template = await readFile(path.join(distDir, 'index.html'), 'utf-8');
 
   // Homepage: inject a static teaser too, so "/" itself isn't blank pre-hydration.
   const homeEntry = seoContent.home;
   const homeBlock = buildContentBlock('abobiferramentas', homeEntry?.description ?? '', homeEntry);
-  const homeHtml = injectContentAfterRoot(template, homeBlock);
+  const homeHtml = injectIntoHead(
+    injectContentAfterRoot(template, homeBlock),
+    buildFaqJsonLd(homeEntry)
+  );
   await writeFile(path.join(distDir, 'index.html'), homeHtml, 'utf-8');
 
   for (const route of ROUTES) {
@@ -117,7 +147,10 @@ async function main() {
       description: route.description,
       canonicalPath: `/${route.slug}`,
     });
-    const html = injectContentAfterRoot(patched, contentBlock);
+    const html = injectIntoHead(
+      injectContentAfterRoot(patched, contentBlock),
+      buildFaqJsonLd(entry)
+    );
 
     const outDir = path.join(distDir, route.slug);
     await mkdir(outDir, { recursive: true });

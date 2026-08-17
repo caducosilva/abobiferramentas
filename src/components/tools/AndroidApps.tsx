@@ -15,6 +15,7 @@ import {
   AndroidApp,
   AndroidAppCategory,
 } from '../../data/androidApps';
+import { FdroidCatalog } from './FdroidCatalog';
 
 interface ToolProps {
   onCopyToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
@@ -135,8 +136,16 @@ export function AndroidApps({ onCopyToast }: ToolProps) {
         </div>
       </div>
 
-      {/* Busca e filtro */}
+      {/* Busca e filtro dos destaques */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+        <div className="space-y-1">
+          <h2 className="font-bold text-slate-900 dark:text-white">Destaques</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+            Seleção comentada, com a versão conferida na hora no GitHub e no F-Droid. O catálogo
+            completo, com mil apps, fica logo abaixo desta lista.
+          </p>
+        </div>
+
         <div className="relative">
           <input
             type="text"
@@ -295,6 +304,9 @@ export function AndroidApps({ onCopyToast }: ToolProps) {
           })}
         </div>
       )}
+
+      {/* Catálogo grande, carregado sob demanda */}
+      <FdroidCatalog onCopyToast={onCopyToast} />
 
       {/* Guia do ReVanced */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">

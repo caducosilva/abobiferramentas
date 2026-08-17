@@ -16,7 +16,7 @@ Conjunto de utilitários e ferramentas web para automação de tarefas cotidiana
 ## Recursos
 
 - ✅ **Ferramentas Integradas:** Geradores (CPF, CNPJ, senha, UUID, QR Code, Pix Copia e Cola), validadores, calculadoras, utilitários de texto, comparador de textos, conversor e compressor de imagem, formatador de JSON, Base64 e hashes.
-- ✅ **Catálogo de Apps Android Open Source:** Lista de aplicativos de código aberto com o link direto do APK na fonte oficial (GitHub Releases do desenvolvedor ou repositório do F-Droid), com a versão atual consultada em tempo real.
+- ✅ **Catálogo de Apps Android Open Source:** Mil aplicativos de código aberto com link direto do APK na fonte oficial, divididos em destaques comentados (versão consultada em tempo real no GitHub Releases e no F-Droid) e catálogo completo com busca e filtro por categoria.
 - ✅ **Privacidade por padrão:** A maioria das ferramentas roda inteiramente no navegador. Cofre de notas com criptografia AES-GCM e limpador de metadados EXIF nunca enviam nada para fora.
 - ✅ **Dados locais de Mogi das Cruzes:** Horários e itinerários reais das linhas municipais SIM Mogi.
 - ✅ **Interface Limpa:** Anúncios sempre passivos, nunca bloqueando o uso de nenhuma ferramenta.
@@ -24,6 +24,24 @@ Conjunto de utilitários e ferramentas web para automação de tarefas cotidiana
 ### Sobre o catálogo de APK
 
 Só entra software de código aberto cuja licença permite a redistribuição, e o download aponta sempre para o servidor de origem: nenhum APK é hospedado, modificado ou intermediado por este projeto. Não há espelho de app pago desbloqueado nem de mod de aplicativo proprietário, tanto por ser distribuição ilegal quanto porque arquivo recompactado por terceiro é o vetor mais comum de malware no Android.
+
+As fontes são três, todas públicas e oficiais:
+
+| Fonte | O que fornece |
+| --- | --- |
+| GitHub Releases | Asset `.apk` publicado pelo próprio desenvolvedor, consultado em tempo real por `api/app-releases.js` |
+| F-Droid | Índice oficial do repositório, com URL de APK estável |
+| IzzyOnDroid | Repositório em formato F-Droid, cobre projetos que não estão no oficial |
+
+O catálogo grande é gerado por script e commitado, porque os índices dos dois repositórios somam quase 70 MB e não faria sentido baixar isso em runtime. Para atualizar:
+
+```bash
+npm run scrape:apps
+```
+
+O script reordena a lista por notoriedade. Como nenhum repositório F-Droid divulga número de downloads, o critério é a quantidade de idiomas em que cada app foi traduzido pela comunidade, que separa bem app conhecido de app obscuro (NewPipe tem 98 idiomas e Organic Maps 95, contra mediana de 2 no repositório inteiro), com empate decidido pela data da última atualização. Ele também descarta automaticamente app de conteúdo adulto, já que o site é de uso geral.
+
+Sobre ReVanced: o projeto não distribui o YouTube modificado pronto, porque o APK do YouTube é da Google e republicá-lo alterado seria violação de direito autoral. O que o catálogo traz é o ReVanced Manager e o GmsCore (microG), que é o caminho oficial: o app modificado é gerado no próprio aparelho do usuário, a partir do APK original.
 
 ---
 

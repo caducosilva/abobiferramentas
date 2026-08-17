@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, lazy, Suspense, MouseEvent } from 'react';
 import { Navbar } from './components/Navbar';
 import { BentoGrid } from './components/BentoGrid';
 import { SearchModal } from './components/SearchModal';
@@ -10,28 +10,83 @@ import { ToolInfoSection } from './components/ToolInfoSection';
 import seoContent from './data/seoContent.json';
 
 // Tool Views
-import { AndroidApps } from './components/tools/AndroidApps';
-import { MogiBusSchedule } from './components/tools/MogiBusSchedule';
-import { CpfGeneratorValidator } from './components/tools/CpfGeneratorValidator';
-import { CnpjGeneratorValidator } from './components/tools/CnpjGeneratorValidator';
-import { PasswordGenerator } from './components/tools/PasswordGenerator';
-import { ImageCompressor } from './components/tools/ImageCompressor';
-import { TextTools } from './components/tools/TextTools';
-import { ResumeBuilder } from './components/tools/ResumeBuilder';
-import { QrCodeGenerator } from './components/tools/QrCodeGenerator';
-import { JsonFormatter } from './components/tools/JsonFormatter';
-import { UuidGenerator } from './components/tools/UuidGenerator';
-import { WhatsappLinkGenerator } from './components/tools/WhatsappLinkGenerator';
-import { Calculators } from './components/tools/Calculators';
-import { UnitConverter } from './components/tools/UnitConverter';
-import { Base64HashTools } from './components/tools/Base64HashTools';
-import { LocalNotesVault } from './components/tools/LocalNotesVault';
-import { ExifCleaner } from './components/tools/ExifCleaner';
-import { PixQrGenerator } from './components/tools/PixQrGenerator';
-import { DateCalculator } from './components/tools/DateCalculator';
-import { ImageConverter } from './components/tools/ImageConverter';
-import { CepLookup } from './components/tools/CepLookup';
-import { TextDiff } from './components/tools/TextDiff';
+//
+// Carregadas sob demanda: cada ferramenta virou um chunk separado, então a home não paga mais
+// pelo peso de todas elas juntas. É o que mais pesava aqui, porque coisas como a tabela de
+// horários dos ônibus e a biblioteca de QR Code só interessam a quem abre aquela ferramenta.
+// Os componentes usam export nomeado, daí o mapeamento para `default` que o lazy() exige.
+const AndroidApps = lazy(() =>
+  import('./components/tools/AndroidApps').then((m) => ({ default: m.AndroidApps }))
+);
+const MogiBusSchedule = lazy(() =>
+  import('./components/tools/MogiBusSchedule').then((m) => ({ default: m.MogiBusSchedule }))
+);
+const CpfGeneratorValidator = lazy(() =>
+  import('./components/tools/CpfGeneratorValidator').then((m) => ({
+    default: m.CpfGeneratorValidator,
+  }))
+);
+const CnpjGeneratorValidator = lazy(() =>
+  import('./components/tools/CnpjGeneratorValidator').then((m) => ({
+    default: m.CnpjGeneratorValidator,
+  }))
+);
+const PasswordGenerator = lazy(() =>
+  import('./components/tools/PasswordGenerator').then((m) => ({ default: m.PasswordGenerator }))
+);
+const ImageCompressor = lazy(() =>
+  import('./components/tools/ImageCompressor').then((m) => ({ default: m.ImageCompressor }))
+);
+const TextTools = lazy(() =>
+  import('./components/tools/TextTools').then((m) => ({ default: m.TextTools }))
+);
+const ResumeBuilder = lazy(() =>
+  import('./components/tools/ResumeBuilder').then((m) => ({ default: m.ResumeBuilder }))
+);
+const QrCodeGenerator = lazy(() =>
+  import('./components/tools/QrCodeGenerator').then((m) => ({ default: m.QrCodeGenerator }))
+);
+const JsonFormatter = lazy(() =>
+  import('./components/tools/JsonFormatter').then((m) => ({ default: m.JsonFormatter }))
+);
+const UuidGenerator = lazy(() =>
+  import('./components/tools/UuidGenerator').then((m) => ({ default: m.UuidGenerator }))
+);
+const WhatsappLinkGenerator = lazy(() =>
+  import('./components/tools/WhatsappLinkGenerator').then((m) => ({
+    default: m.WhatsappLinkGenerator,
+  }))
+);
+const Calculators = lazy(() =>
+  import('./components/tools/Calculators').then((m) => ({ default: m.Calculators }))
+);
+const UnitConverter = lazy(() =>
+  import('./components/tools/UnitConverter').then((m) => ({ default: m.UnitConverter }))
+);
+const Base64HashTools = lazy(() =>
+  import('./components/tools/Base64HashTools').then((m) => ({ default: m.Base64HashTools }))
+);
+const LocalNotesVault = lazy(() =>
+  import('./components/tools/LocalNotesVault').then((m) => ({ default: m.LocalNotesVault }))
+);
+const ExifCleaner = lazy(() =>
+  import('./components/tools/ExifCleaner').then((m) => ({ default: m.ExifCleaner }))
+);
+const PixQrGenerator = lazy(() =>
+  import('./components/tools/PixQrGenerator').then((m) => ({ default: m.PixQrGenerator }))
+);
+const DateCalculator = lazy(() =>
+  import('./components/tools/DateCalculator').then((m) => ({ default: m.DateCalculator }))
+);
+const ImageConverter = lazy(() =>
+  import('./components/tools/ImageConverter').then((m) => ({ default: m.ImageConverter }))
+);
+const CepLookup = lazy(() =>
+  import('./components/tools/CepLookup').then((m) => ({ default: m.CepLookup }))
+);
+const TextDiff = lazy(() =>
+  import('./components/tools/TextDiff').then((m) => ({ default: m.TextDiff }))
+);
 
 import { ToolCategory, ToastMessage } from './types';
 import { TOOLS } from './data/toolsData';
@@ -316,7 +371,19 @@ export default function App() {
             </div>
 
             {/* Render Tool View */}
-            {renderActiveToolComponent()}
+            <Suspense
+              fallback={
+                <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl">
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-2xl" />
+                    <div className="h-24 bg-slate-100 dark:bg-slate-800 rounded-2xl" />
+                    <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-2xl w-2/3" />
+                  </div>
+                </div>
+              }
+            >
+              {renderActiveToolComponent()}
+            </Suspense>
 
             {/* Real, unique text content per tool — helps search & ad-review crawlers see this isn't a blank screen */}
             <ToolInfoSection toolId={currentTool.id} />

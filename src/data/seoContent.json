@@ -15,8 +15,9 @@
   },
   "apps-android": {
     "howItWorks": [
-      "Filtre por categoria (lojas, ReVanced, mídia, privacidade, navegadores, utilitários) ou busque pelo nome do app.",
+      "Comece pelos destaques, uma seleção comentada com o que vale a pena em cada categoria (lojas, ReVanced, mídia, privacidade, navegadores, utilitários).",
       "Cada card mostra a versão mais recente publicada, consultada na hora no GitHub Releases do próprio desenvolvedor e no repositório do F-Droid.",
+      "Abaixo dos destaques fica o catálogo completo, com mil apps tirados dos índices oficiais do F-Droid e do IzzyOnDroid, com busca por nome, pacote ou descrição e filtro por categoria.",
       "Clique em Baixar APK para pegar o arquivo direto do servidor de origem: nada é hospedado nem redirecionado por aqui, então a assinatura do pacote é a mesma que o projeto publicou.",
       "No Android, permita a instalação de fontes desconhecidas apenas para o app que vai abrir o APK, e revogue depois."
     ],
@@ -24,7 +25,10 @@
       { "q": "Por que não tem app pago desbloqueado nem mod de aplicativo famoso?", "a": "Porque distribuir isso é ilegal e porque esses arquivos circulam recompactados por terceiros, que é o vetor mais comum de APK com malware no Android. Aqui só entra software de código aberto cuja licença permite a redistribuição." },
       { "q": "Como baixar o YouTube ReVanced ou o YouTube Music ReVanced?", "a": "O projeto ReVanced não distribui o app pronto, porque o APK do YouTube é da Google e republicá-lo alterado seria violação de direito autoral. O caminho oficial é instalar o ReVanced Manager e o GmsCore desta página, baixar o APK original do YouTube e gerar o app modificado no seu próprio aparelho." },
       { "q": "O APK vem do site de vocês?", "a": "Não. O link aponta para o servidor do GitHub ou do F-Droid. Nós só consultamos qual é a versão atual e montamos o link, sem intermediar o download." },
-      { "q": "Qual a diferença entre a versão do F-Droid e a do GitHub?", "a": "É a assinatura: o F-Droid recompila o app e assina com a chave dele, o GitHub traz o binário assinado pelo desenvolvedor. As duas são legítimas, mas o Android não deixa atualizar uma por cima da outra. Escolha uma origem e mantenha." }
+      { "q": "Qual a diferença entre a versão do F-Droid e a do GitHub?", "a": "É a assinatura: o F-Droid recompila o app e assina com a chave dele, o GitHub traz o binário assinado pelo desenvolvedor. As duas são legítimas, mas o Android não deixa atualizar uma por cima da outra. Escolha uma origem e mantenha." },
+      { "q": "Como o catálogo de mil apps é ordenado?", "a": "Nem o F-Droid nem o IzzyOnDroid divulgam número de downloads, então não existe ranking de mais baixado honesto para montar a partir deles. A ordem usa a quantidade de idiomas em que cada app foi traduzido pela comunidade, que é o melhor sinal de app conhecido disponível no índice: NewPipe tem 98 idiomas e Organic Maps 95, enquanto a mediana do repositório é 2. Empate é decidido pela atualização mais recente." },
+      { "q": "O catálogo tem app de conteúdo adulto?", "a": "Não. A geração da lista descarta automaticamente app de conteúdo adulto por termo no nome, no pacote e na descrição, porque o site é de uso geral." },
+      { "q": "O que significam os avisos em amarelo nos cards do catálogo?", "a": "São as anti-features que o próprio F-Droid marca no app: exibe anúncios, tem rastreamento, depende de serviço fechado, tem vulnerabilidade conhecida, entre outras. Aparecem para você decidir com a informação na mão, não para dizer que o app é ruim." }
     ]
   },
   "onibus-mogi": {

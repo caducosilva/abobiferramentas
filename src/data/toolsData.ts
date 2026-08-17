@@ -6,7 +6,7 @@ export const TOOLS: Tool[] = [
     slug: 'apps-android-open-source',
     aliases: ['/apk-open-source', '/apps-android', '/baixar-apk'],
     name: 'Apps Android Open Source',
-    description: 'Baixe o APK de apps de código aberto direto do GitHub Releases e do F-Droid, com a versão mais recente conferida na hora.',
+    description: 'Catálogo com mil apps de código aberto e link direto do APK, tirado dos índices oficiais do F-Droid, do IzzyOnDroid e do GitHub Releases.',
     category: 'android',
     icon: 'Smartphone',
     isPopular: true,
@@ -17,7 +17,7 @@ export const TOOLS: Tool[] = [
       textLight: 'text-emerald-600',
       accent: 'bg-emerald-600',
     },
-    keywords: ['apk', 'android', 'app', 'aplicativo', 'open source', 'código aberto', 'fdroid', 'f-droid', 'github', 'revanced', 'microg', 'gmscore', 'newpipe', 'baixar apk', 'loja'],
+    keywords: ['apk', 'android', 'app', 'aplicativo', 'open source', 'código aberto', 'fdroid', 'f-droid', 'izzyondroid', 'github', 'revanced', 'microg', 'gmscore', 'newpipe', 'baixar apk', 'download apk', 'loja', 'catalogo'],
   },
   {
     id: 'onibus-mogi',

@@ -1,4 +1,7 @@
-const CACHE_NAME = 'abobi-cache-v1';
+// Subir a versão descarta o cache antigo no activate. Precisa ser feito quando alguma página sai
+// do ar, senão quem já visitou continua recebendo a versão velha do cache local (foi o caso do
+// baixador de vídeos, que deixou de existir).
+const CACHE_NAME = 'abobi-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -30,7 +33,12 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  
+
+  // As funções em /api/ devolvem dados que mudam (versão atual de cada app), e já vêm com cache
+  // na borda da Vercel. Guardar no cache do navegador só serviria para mostrar versão velha.
+  if (new URL(event.request.url).pathname.startsWith('/api/')) return;
+
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
