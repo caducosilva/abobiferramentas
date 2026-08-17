@@ -45,10 +45,16 @@ export function Navbar({
         {/* Category Quick Links (Desktop) */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-500 dark:text-slate-400">
           <button
-            onClick={() => onSelectCategory('midia')}
+            onClick={() => onSelectCategory('android')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
           >
-            Vídeos
+            Apps Android
+          </button>
+          <button
+            onClick={() => onSelectCategory('financas')}
+            className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
+          >
+            Pix
           </button>
           <button
             onClick={() => onSelectCategory('transportes')}

@@ -46,6 +46,11 @@ const TOOL_CONFIGS: Record<string, ToolLimitConfig> = {
     windowMs: 10000,
     name: 'Gerador de QR Code',
   },
+  'conversor-imagem': {
+    maxRequests: 5,
+    windowMs: 15000, // 5 conversões por 15s
+    name: 'Conversor de Imagem',
+  },
 
   // Generator & Validator Tools
   'gerador-cpf': {
@@ -83,6 +88,17 @@ const TOOL_CONFIGS: Record<string, ToolLimitConfig> = {
     windowMs: 10000,
     name: 'Base64 & Hash',
   },
+  'gerador-pix': {
+    maxRequests: 10,
+    windowMs: 10000,
+    name: 'Gerador de Pix',
+  },
+  // Consulta a API pública do ViaCEP: limite mais apertado para não abusar de serviço de terceiro.
+  'consulta-cep': {
+    maxRequests: 8,
+    windowMs: 15000,
+    name: 'Consulta de CEP',
+  },
 
   // High-Frequency Realtime Tools
   'contador-texto': {
@@ -104,6 +120,16 @@ const TOOL_CONFIGS: Record<string, ToolLimitConfig> = {
     maxRequests: 25,
     windowMs: 5000,
     name: 'Conversor de Unidades',
+  },
+  'calculadora-datas': {
+    maxRequests: 25,
+    windowMs: 5000,
+    name: 'Calculadora de Datas',
+  },
+  'comparador-texto': {
+    maxRequests: 20,
+    windowMs: 5000,
+    name: 'Comparador de Textos',
   },
 };
 

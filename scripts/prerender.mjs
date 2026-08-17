@@ -22,8 +22,8 @@ const distDir = path.join(rootDir, 'dist');
 const seoContent = JSON.parse(await readFile(path.join(rootDir, 'src/data/seoContent.json'), 'utf-8'));
 
 const ROUTES = [
-  { id: 'baixador-video', slug: 'baixador-de-videos', name: 'Baixador de Vídeos', description: 'Baixe vídeos públicos do YouTube, YouTube Music, TikTok, Instagram, Facebook e Twitter/X na maior qualidade disponível.' },
-  { id: 'onibus-mogi', slug: 'horarios-de-onibus-mogi', name: 'Horários de Ônibus de Mogi das Cruzes', description: 'Consulte horários e itinerários das linhas municipais (SIM Mogi) e intermunicipais (EMTU) de Mogi das Cruzes.' },
+  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Baixe o APK de apps de código aberto direto do GitHub Releases e do F-Droid, com a versão mais recente conferida na hora.' },
+  { id: 'onibus-mogi', slug: 'horarios-de-onibus-mogi', name: 'Horários de Ônibus de Mogi das Cruzes', description: 'Consulte horários, sentidos e itinerários de todas as linhas municipais SIM Mogi de Mogi das Cruzes.' },
   { id: 'gerador-cpf', slug: 'gerador-de-cpf', name: 'Gerador de CPF', description: 'Gere CPFs válidos com ou sem pontuação para testes de software.' },
   { id: 'validador-cpf', slug: 'validador-de-cpf', name: 'Validador de CPF', description: 'Verifique a validade matemática do CPF com análise passo a passo.' },
   { id: 'gerador-cnpj', slug: 'gerador-de-cnpj', name: 'Gerador & Validador de CNPJ', description: 'Crie ou valide CNPJs de empresas formatados ou limpos para sistemas.' },
@@ -37,7 +37,14 @@ const ROUTES = [
   { id: 'link-whatsapp', slug: 'gerador-de-link-whatsapp', name: 'Gerador de Link WhatsApp', description: 'Crie links diretos para conversas no WhatsApp com mensagem preenchida.' },
   { id: 'calculadoras', slug: 'calculadora-de-porcentagem-e-imc', name: 'Calculadora de Porcentagem & IMC', description: 'Calcule porcentagens rápidas, variação percentual e Índice de Massa Corporal.' },
   { id: 'conversor-unidades', slug: 'conversor-de-unidades', name: 'Conversor de Unidades', description: 'Converta medidas de comprimento, peso, temperatura e tamanho de arquivos.' },
-  { id: 'base64-hash', slug: 'base64-e-hash', name: 'Base64 & Gerador de Hash', description: 'Codifique/decodifique Base64 e gere hashes MD5, SHA-1 e SHA-256 instantâneos.' },
+  { id: 'base64-hash', slug: 'base64-e-hash', name: 'Base64 & Gerador de Hash', description: 'Codifique/decodifique Base64, gere hashes SHA-1/SHA-256/SHA-512 de texto ou de arquivos direto no navegador.' },
+  { id: 'cofre-notas-local', slug: 'cofre-de-notas-local', name: 'Cofre de Notas Local', description: 'Guarde notas criptografadas com sua própria senha, salvas só no seu navegador, nunca no nosso servidor.' },
+  { id: 'limpador-exif', slug: 'limpador-de-metadados-de-fotos', name: 'Limpador de Metadados de Fotos', description: 'Veja e remova dados EXIF (localização GPS, câmera, data) de fotos sem enviar a imagem para nenhum servidor.' },
+  { id: 'gerador-pix', slug: 'gerador-de-pix-copia-e-cola', name: 'Gerador de Pix Copia e Cola', description: 'Crie o QR Code e o código Pix Copia e Cola da sua chave, com valor e descrição, tudo montado no navegador.' },
+  { id: 'calculadora-datas', slug: 'calculadora-de-datas', name: 'Calculadora de Datas & Idade', description: 'Calcule dias corridos e úteis entre duas datas, some ou subtraia prazos e descubra a idade exata.' },
+  { id: 'conversor-imagem', slug: 'conversor-de-imagem', name: 'Conversor de Imagem', description: 'Converta imagens entre WebP, JPG e PNG com controle de qualidade, sem enviar o arquivo para servidor.' },
+  { id: 'consulta-cep', slug: 'consulta-de-cep', name: 'Consulta de CEP', description: 'Descubra rua, bairro, cidade, estado, DDD e código IBGE a partir do CEP, com dados da base dos Correios.' },
+  { id: 'comparador-texto', slug: 'comparador-de-textos', name: 'Comparador de Textos (Diff)', description: 'Compare duas versões de um texto ou código e veja linha por linha o que foi adicionado e removido.' },
 ];
 
 const SITE_URL = 'https://abobiferramentas.com';

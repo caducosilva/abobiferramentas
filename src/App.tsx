@@ -10,7 +10,7 @@ import { ToolInfoSection } from './components/ToolInfoSection';
 import seoContent from './data/seoContent.json';
 
 // Tool Views
-import { VideoDownloader } from './components/tools/VideoDownloader';
+import { AndroidApps } from './components/tools/AndroidApps';
 import { MogiBusSchedule } from './components/tools/MogiBusSchedule';
 import { CpfGeneratorValidator } from './components/tools/CpfGeneratorValidator';
 import { CnpjGeneratorValidator } from './components/tools/CnpjGeneratorValidator';
@@ -27,12 +27,17 @@ import { UnitConverter } from './components/tools/UnitConverter';
 import { Base64HashTools } from './components/tools/Base64HashTools';
 import { LocalNotesVault } from './components/tools/LocalNotesVault';
 import { ExifCleaner } from './components/tools/ExifCleaner';
+import { PixQrGenerator } from './components/tools/PixQrGenerator';
+import { DateCalculator } from './components/tools/DateCalculator';
+import { ImageConverter } from './components/tools/ImageConverter';
+import { CepLookup } from './components/tools/CepLookup';
+import { TextDiff } from './components/tools/TextDiff';
 
 import { ToolCategory, ToastMessage } from './types';
 import { TOOLS } from './data/toolsData';
 import { ArrowLeft, Star, Share2 } from 'lucide-react';
 
-const SITE_TITLE = 'abobiferramentas | Baixador de Vídeos, Ônibus Mogi, CPF, CNPJ & Senhas';
+const SITE_TITLE = 'abobiferramentas | APK Open Source, Pix, Ônibus Mogi, CPF & Senhas';
 
 function resolveToolIdFromPath(pathname: string): string | null {
   if (pathname === '/' || pathname === '') return null;
@@ -185,8 +190,8 @@ export default function App() {
   // Render proper tool component
   const renderActiveToolComponent = () => {
     switch (activeToolId) {
-      case 'baixador-video':
-        return <VideoDownloader onCopyToast={addToast} />;
+      case 'apps-android':
+        return <AndroidApps onCopyToast={addToast} />;
       case 'onibus-mogi':
         return <MogiBusSchedule />;
       case 'gerador-cpf':
@@ -220,6 +225,16 @@ export default function App() {
         return <LocalNotesVault onCopyToast={addToast} />;
       case 'limpador-exif':
         return <ExifCleaner onCopyToast={addToast} />;
+      case 'gerador-pix':
+        return <PixQrGenerator onCopyToast={addToast} />;
+      case 'calculadora-datas':
+        return <DateCalculator onCopyToast={addToast} />;
+      case 'conversor-imagem':
+        return <ImageConverter onCopyToast={addToast} />;
+      case 'consulta-cep':
+        return <CepLookup onCopyToast={addToast} />;
+      case 'comparador-texto':
+        return <TextDiff onCopyToast={addToast} />;
       default:
         return null;
     }

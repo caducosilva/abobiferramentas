@@ -65,9 +65,10 @@ export function PrivacyTermsModal({ isOpen, tab, onChangeTab, onClose }: Privacy
               bloco rápido local.
             </p>
             <p>
-              A ferramenta de <strong>Baixador de Vídeos</strong> processa o link enviado em nosso servidor apenas
-              para localizar e transmitir o arquivo de mídia pública solicitada diretamente para o seu
-              dispositivo — o arquivo não fica armazenado em nossos servidores.
+              Duas ferramentas consultam dados de fora: a <strong>Consulta de CEP</strong>, que envia apenas o CEP
+              digitado para o serviço público ViaCEP, e o catálogo de <strong>Apps Android Open Source</strong>, que
+              lê no GitHub e no F-Droid qual é a versão atual de cada projeto. Nenhum arquivo APK é hospedado ou
+              intermediado por nós: o download acontece direto no servidor de origem.
             </p>
             <p>
               Exibimos anúncios do Google AdSense, que pode utilizar cookies para personalizar anúncios relevantes.
@@ -91,7 +92,7 @@ export function PrivacyTermsModal({ isOpen, tab, onChangeTab, onClose }: Privacy
             <ul className="list-disc list-inside space-y-1.5 pl-1">
               <li>As ferramentas de geração de CPF e CNPJ destinam-se exclusivamente a testes de sistemas e desenvolvimento de software.</li>
               <li>Não nos responsabilizamos pelo uso indevido de dados gerados por terceiros.</li>
-              <li>O baixador de vídeos funciona apenas com conteúdo público; o uso do conteúdo baixado é de responsabilidade do usuário, respeitando direitos autorais.</li>
+              <li>O catálogo de apps Android lista apenas software de código aberto, com link para a fonte oficial de cada projeto; não hospedamos, modificamos nem redistribuímos nenhum APK, e a instalação é de responsabilidade do usuário.</li>
               <li>Os horários de ônibus são informativos e podem sofrer alterações pelas operadoras sem aviso prévio.</li>
               <li>Todas as ferramentas são fornecidas gratuitamente, "como estão", sem garantias de disponibilidade contínua.</li>
             </ul>

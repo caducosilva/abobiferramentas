@@ -20,10 +20,14 @@ import {
   ArrowRight,
   Search,
   Sparkles,
-  Video,
   Bus,
   Lock,
   ImageOff,
+  Smartphone,
+  CalendarDays,
+  RefreshCw,
+  MapPin,
+  GitCompare,
 } from 'lucide-react';
 
 interface BentoGridProps {
@@ -39,8 +43,9 @@ interface BentoGridProps {
 
 const CATEGORIES: { id: ToolCategory; label: string }[] = [
   { id: 'todos', label: 'Todos' },
-  { id: 'populares', label: 'Populares 🔥' },
-  { id: 'midia', label: 'Vídeos & Mídia' },
+  { id: 'populares', label: 'Populares' },
+  { id: 'android', label: 'Android & APK' },
+  { id: 'financas', label: 'Pix & Finanças' },
   { id: 'transportes', label: 'Transportes' },
   { id: 'geradores', label: 'Geradores' },
   { id: 'validadores', label: 'Validadores' },
@@ -48,7 +53,7 @@ const CATEGORIES: { id: ToolCategory; label: string }[] = [
   { id: 'desenvolvimento', label: 'Dev & JSON' },
   { id: 'imagem', label: 'Imagem' },
   { id: 'matematica', label: 'Matemática' },
-  { id: 'privacidade', label: 'Privacidade 🔒' },
+  { id: 'privacidade', label: 'Privacidade' },
 ];
 
 export function BentoGrid({
@@ -64,8 +69,8 @@ export function BentoGrid({
   // Helper to render icon based on name
   const renderIcon = (id: string) => {
     switch (id) {
-      case 'baixador-video':
-        return <Video className="w-6 h-6" />;
+      case 'apps-android':
+        return <Smartphone className="w-6 h-6" />;
       case 'onibus-mogi':
         return <Bus className="w-6 h-6" />;
       case 'gerador-cpf':
@@ -99,6 +104,16 @@ export function BentoGrid({
         return <Lock className="w-6 h-6" />;
       case 'limpador-exif':
         return <ImageOff className="w-6 h-6" />;
+      case 'gerador-pix':
+        return <QrCode className="w-6 h-6" />;
+      case 'calculadora-datas':
+        return <CalendarDays className="w-6 h-6" />;
+      case 'conversor-imagem':
+        return <RefreshCw className="w-6 h-6" />;
+      case 'consulta-cep':
+        return <MapPin className="w-6 h-6" />;
+      case 'comparador-texto':
+        return <GitCompare className="w-6 h-6" />;
       default:
         return <Sparkles className="w-6 h-6" />;
     }
@@ -135,7 +150,7 @@ export function BentoGrid({
         <div className="relative max-w-[600px] mx-auto">
           <input
             type="text"
-            placeholder="Pesquise ex: Gerador de CPF, Compressor..."
+            placeholder="Pesquise ex: APK open source, Pix, Gerador de CPF..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-14 pr-6 py-4 rounded-[16px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] dark:shadow-none text-base outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -191,7 +206,7 @@ export function BentoGrid({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filteredTools.map((tool) => {
               const isFav = favorites.includes(tool.id);
-              const isHeroCard = tool.id === 'baixador-video';
+              const isHeroCard = tool.id === 'apps-android';
 
               if (isHeroCard && activeCategory === 'todos' && !showingFavoritesOnly && !searchQuery) {
                 /* HERO FEATURED CARD (Deep Indigo / Slate Geometric Card) */

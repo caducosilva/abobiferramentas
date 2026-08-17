@@ -1,14 +1,12 @@
 {
   "trailingSlash": false,
-  "buildCommand": "vite build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/*.js": { "maxDuration": 60 },
-    "api/*.py": { "maxDuration": 60 }
+    "api/*.js": { "maxDuration": 30 }
   },
   "rewrites": [
-    { "source": "/baixar-video-instagram", "destination": "/baixar-video-instagram.html" },
-    { "source": "/baixador-de-videos", "destination": "/baixador-de-videos/index.html" },
+    { "source": "/apps-android-open-source", "destination": "/apps-android-open-source/index.html" },
     { "source": "/horarios-de-onibus-mogi", "destination": "/horarios-de-onibus-mogi/index.html" },
     { "source": "/gerador-de-cpf", "destination": "/gerador-de-cpf/index.html" },
     { "source": "/validador-de-cpf", "destination": "/validador-de-cpf/index.html" },
@@ -24,6 +22,13 @@
     { "source": "/calculadora-de-porcentagem-e-imc", "destination": "/calculadora-de-porcentagem-e-imc/index.html" },
     { "source": "/conversor-de-unidades", "destination": "/conversor-de-unidades/index.html" },
     { "source": "/base64-e-hash", "destination": "/base64-e-hash/index.html" },
+    { "source": "/cofre-de-notas-local", "destination": "/cofre-de-notas-local/index.html" },
+    { "source": "/limpador-de-metadados-de-fotos", "destination": "/limpador-de-metadados-de-fotos/index.html" },
+    { "source": "/gerador-de-pix-copia-e-cola", "destination": "/gerador-de-pix-copia-e-cola/index.html" },
+    { "source": "/calculadora-de-datas", "destination": "/calculadora-de-datas/index.html" },
+    { "source": "/conversor-de-imagem", "destination": "/conversor-de-imagem/index.html" },
+    { "source": "/consulta-de-cep", "destination": "/consulta-de-cep/index.html" },
+    { "source": "/comparador-de-textos", "destination": "/comparador-de-textos/index.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

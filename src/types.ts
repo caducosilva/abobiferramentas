@@ -7,8 +7,9 @@ export type ToolCategory =
   | 'desenvolvimento'
   | 'imagem'
   | 'matematica'
-  | 'midia'
+  | 'android'
   | 'transportes'
+  | 'financas'
   | 'privacidade';
 
 export interface Tool {

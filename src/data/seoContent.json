@@ -1,7 +1,7 @@
 {
   "home": {
-    "title": "abobiferramentas | Ônibus Mogi, Baixador de Vídeos, CPF, CNPJ & Senhas",
-    "description": "Suíte completa de ferramentas online gratuitas: baixador de vídeos (YouTube, TikTok, Instagram), horários de ônibus de Mogi das Cruzes, gerador de senha forte, CPF/CNPJ, QR Code, JSON, hashes, compressor de imagem e mais.",
+    "title": "abobiferramentas | APK Open Source, Pix, Ônibus Mogi, CPF & Senhas",
+    "description": "Suíte completa de ferramentas online gratuitas: catálogo de APK de apps open source direto do GitHub e F-Droid, gerador de Pix Copia e Cola, horários de ônibus de Mogi das Cruzes, gerador de senha forte, CPF/CNPJ, QR Code, JSON, hashes, compressor de imagem e mais.",
     "howItWorks": [
       "Escolha uma ferramenta na grade ou use a busca (Ctrl/Cmd+K) para encontrar pelo nome.",
       "Cada ferramenta roda inteiramente no seu navegador ou por uma chamada direta e pontual ao servidor — sem cadastro, sem e-mail, sem senha de conta.",
@@ -9,20 +9,22 @@
     ],
     "faq": [
       { "q": "Preciso me cadastrar para usar as ferramentas?", "a": "Não. Nenhuma ferramenta do abobiferramentas exige conta, e-mail ou login. Você abre e usa direto." },
-      { "q": "Os dados que eu digito são enviados para algum servidor?", "a": "Depende da ferramenta: geradores, validadores, calculadoras, JSON, senha, UUID e Base64/hash processam tudo localmente no seu navegador. Só o baixador de vídeos faz uma chamada ao servidor, necessária para buscar o link real do arquivo." },
+      { "q": "Os dados que eu digito são enviados para algum servidor?", "a": "Depende da ferramenta: geradores, validadores, calculadoras, JSON, senha, UUID, Pix, comparador de textos, conversor de imagem e Base64/hash processam tudo localmente no seu navegador. Só a consulta de CEP e o catálogo de apps Android fazem chamada externa, porque precisam consultar dados que vêm de fora." },
       { "q": "O site funciona sem internet?", "a": "Depois da primeira visita, o site funciona como um aplicativo instalável (PWA) com boa parte das ferramentas disponíveis offline, graças ao cache local do navegador." }
     ]
   },
-  "baixador-video": {
+  "apps-android": {
     "howItWorks": [
-      "Cole o link do vídeo, Reel, Short ou playlist pública (YouTube, TikTok, Instagram, Facebook ou Twitter/X).",
-      "O servidor resolve o link e retorna a prévia (miniatura, título e qualidade disponível) — nada é baixado nesse passo.",
-      "Escolha baixar o vídeo ou, no caso do YouTube, apenas o áudio em MP3, e o arquivo real é transferido direto para o seu dispositivo."
+      "Filtre por categoria (lojas, ReVanced, mídia, privacidade, navegadores, utilitários) ou busque pelo nome do app.",
+      "Cada card mostra a versão mais recente publicada, consultada na hora no GitHub Releases do próprio desenvolvedor e no repositório do F-Droid.",
+      "Clique em Baixar APK para pegar o arquivo direto do servidor de origem: nada é hospedado nem redirecionado por aqui, então a assinatura do pacote é a mesma que o projeto publicou.",
+      "No Android, permita a instalação de fontes desconhecidas apenas para o app que vai abrir o APK, e revogue depois."
     ],
     "faq": [
-      { "q": "Funciona com vídeos privados?", "a": "Não. Só conteúdo público pode ser processado — contas privadas e vídeos com áudio licenciado bloqueiam até ferramentas oficiais de terceiros, e mostramos o erro real em vez de fingir que funcionou." },
-      { "q": "O vídeo baixado tem marca d'água?", "a": "Vídeos do TikTok são baixados sem a marca d'água padrão do app, sempre na maior qualidade disponibilizada pela plataforma de origem." },
-      { "q": "Posso baixar uma playlist inteira do YouTube?", "a": "Sim. Cole o link da playlist, selecione quais vídeos quer (ou todos) e baixe em lote." }
+      { "q": "Por que não tem app pago desbloqueado nem mod de aplicativo famoso?", "a": "Porque distribuir isso é ilegal e porque esses arquivos circulam recompactados por terceiros, que é o vetor mais comum de APK com malware no Android. Aqui só entra software de código aberto cuja licença permite a redistribuição." },
+      { "q": "Como baixar o YouTube ReVanced ou o YouTube Music ReVanced?", "a": "O projeto ReVanced não distribui o app pronto, porque o APK do YouTube é da Google e republicá-lo alterado seria violação de direito autoral. O caminho oficial é instalar o ReVanced Manager e o GmsCore desta página, baixar o APK original do YouTube e gerar o app modificado no seu próprio aparelho." },
+      { "q": "O APK vem do site de vocês?", "a": "Não. O link aponta para o servidor do GitHub ou do F-Droid. Nós só consultamos qual é a versão atual e montamos o link, sem intermediar o download." },
+      { "q": "Qual a diferença entre a versão do F-Droid e a do GitHub?", "a": "É a assinatura: o F-Droid recompila o app e assina com a chave dele, o GitHub traz o binário assinado pelo desenvolvedor. As duas são legítimas, mas o Android não deixa atualizar uma por cima da outra. Escolha uma origem e mantenha." }
     ]
   },
   "onibus-mogi": {
@@ -180,6 +182,87 @@
     ],
     "faq": [
       { "q": "MD5 e SHA-1 são seguros para senhas?", "a": "Não. Ambos são considerados criptograficamente quebrados para uso em senhas — servem bem para checar integridade de arquivos, mas não para proteger dados sensíveis. Para senhas, use algoritmos como bcrypt ou Argon2 no seu backend." }
+    ]
+  },
+  "cofre-notas-local": {
+    "howItWorks": [
+      "Defina uma senha mestra na primeira vez: ela deriva a chave de criptografia e nunca é salva em lugar nenhum.",
+      "Escreva suas notas normalmente. Cada uma é cifrada com AES-GCM antes de ser guardada no armazenamento local do navegador.",
+      "Ao voltar, digite a mesma senha para destravar. Sem ela, o conteúdo salvo é um bloco de bytes ilegível, inclusive para nós."
+    ],
+    "faq": [
+      { "q": "Se eu esquecer a senha, tem como recuperar?", "a": "Não tem. A chave é derivada da senha por PBKDF2 e não existe cópia dela em servidor nenhum. Senha perdida significa nota perdida, e é exatamente isso que torna o cofre seguro." },
+      { "q": "As notas ficam no servidor de vocês?", "a": "Nunca. Elas ficam no localStorage do seu próprio navegador, já cifradas. Limpar os dados do site apaga tudo em definitivo." }
+    ]
+  },
+  "limpador-exif": {
+    "howItWorks": [
+      "Escolha uma foto. O arquivo é lido no seu navegador, sem upload.",
+      "A ferramenta mostra os metadados EXIF encontrados: coordenadas de GPS, marca e modelo da câmera, data e hora do clique.",
+      "Baixe a versão limpa: a imagem é redesenhada em canvas, e o arquivo novo sai sem nenhum metadado embutido."
+    ],
+    "faq": [
+      { "q": "Por que isso importa?", "a": "Foto tirada com o GPS ligado carrega a coordenada exata de onde foi feita. Postar o arquivo original entrega o endereço de casa junto com a imagem." },
+      { "q": "A qualidade da imagem cai?", "a": "Como a imagem é reprocessada, um JPEG pode ter perda mínima de qualidade em recompressão. A resolução e o enquadramento continuam iguais." }
+    ]
+  },
+  "gerador-pix": {
+    "howItWorks": [
+      "Escolha o tipo da sua chave Pix (CPF, CNPJ, e-mail, telefone ou aleatória) e informe a chave e o nome do recebedor.",
+      "Se quiser, preencha o valor: com valor, o app do pagador já abre com o campo travado; sem valor, ele digita quanto quiser enviar.",
+      "Copie o código Pix Copia e Cola ou baixe o QR Code em PNG para mandar no WhatsApp, imprimir ou colocar no seu site."
+    ],
+    "faq": [
+      { "q": "O código funciona em qualquer banco?", "a": "Sim. O padrão é o BR Code (EMV) definido pelo Banco Central, o mesmo que os bancos usam entre si, então qualquer app que leia Pix reconhece." },
+      { "q": "Minha chave Pix é enviada para vocês?", "a": "Não. O código é montado inteiramente no seu navegador, incluindo o cálculo do CRC de validação. Nada trafega para o nosso servidor." },
+      { "q": "Por que acento e cedilha somem do nome?", "a": "O padrão do BR Code conta caracteres em ASCII. Acento faria o tamanho declarado de cada campo divergir do que o app do banco calcula, e o código seria recusado." },
+      { "q": "Dá para reutilizar o mesmo QR Code em várias cobranças?", "a": "Sim, o código gerado é estático e pode ser usado quantas vezes quiser. Para conciliar pedidos no extrato, preencha o campo identificador." }
+    ]
+  },
+  "calculadora-datas": {
+    "howItWorks": [
+      "Em Diferença, escolha duas datas para ver dias corridos, dias úteis, semanas cheias e o intervalo em anos, meses e dias.",
+      "Em Somar dias, defina uma data base e quantos dias somar ou subtrair, útil para prazo de contrato, entrega ou vencimento.",
+      "Em Idade, informe a data de nascimento para ver a idade exata e quantos dias faltam para o próximo aniversário."
+    ],
+    "faq": [
+      { "q": "A contagem de dias úteis desconta feriado?", "a": "Não. São contados apenas os dias de segunda a sexta. Feriado municipal, estadual e federal varia demais por lugar e por ano, então preferimos não fingir precisão que não temos." },
+      { "q": "O cálculo considera ano bissexto?", "a": "Sim. As contas usam o calendário real do navegador, então 29 de fevereiro entra na conta quando existe." }
+    ]
+  },
+  "conversor-imagem": {
+    "howItWorks": [
+      "Escolha ou arraste a imagem: PNG, JPG, WebP, GIF, BMP e AVIF são aceitos.",
+      "Selecione o formato de saída (WebP, JPG ou PNG) e, nos formatos com perda, ajuste a qualidade.",
+      "Converta e baixe. A comparação de tamanho mostra quanto o arquivo novo economizou em relação ao original."
+    ],
+    "faq": [
+      { "q": "Qual formato devo escolher para site?", "a": "WebP, na maioria dos casos: costuma ficar bem menor que JPG com qualidade equivalente e tem suporte em todos os navegadores atuais. PNG só quando precisar de transparência sem perda." },
+      { "q": "A imagem sobe para algum servidor?", "a": "Não. A conversão usa o canvas do próprio navegador, então o arquivo nunca sai do seu dispositivo." },
+      { "q": "Os metadados da foto são preservados?", "a": "Não, e isso é proposital. Como o canvas redesenha os pixels, dados EXIF como localização de GPS não passam para o arquivo convertido." }
+    ]
+  },
+  "consulta-cep": {
+    "howItWorks": [
+      "Digite o CEP com ou sem hífen, oito dígitos.",
+      "A consulta busca no ViaCEP, serviço público e gratuito que espelha a base dos Correios.",
+      "Copie o endereço completo formatado ou abra a localização direto no mapa."
+    ],
+    "faq": [
+      { "q": "Por que alguns CEPs não mostram a rua?", "a": "CEP geral de cidade ou de faixa cobre um conjunto de vias, então a base retorna apenas cidade e estado. Já o CEP de logradouro específico traz rua e bairro." },
+      { "q": "Os dados são oficiais?", "a": "Vêm da base dos Correios, que é a fonte oficial, através do ViaCEP. Endereço recém-criado pode levar algum tempo para aparecer." }
+    ]
+  },
+  "comparador-texto": {
+    "howItWorks": [
+      "Cole a versão original em um lado e a versão alterada no outro.",
+      "A comparação acontece na hora, linha por linha, marcando em verde o que foi adicionado e em vermelho o que foi removido.",
+      "Use as opções para ignorar maiúsculas ou diferenças de espaçamento, ou marque para ver só as linhas que mudaram."
+    ],
+    "faq": [
+      { "q": "Que algoritmo é usado?", "a": "O da maior subsequência comum (LCS), o mesmo princípio do diff do git. É por isso que ele identifica trecho deslocado em vez de acusar o arquivo inteiro como diferente quando você insere uma linha no meio." },
+      { "q": "Serve para código?", "a": "Sim, e é um dos usos mais comuns: conferir o que mudou entre duas versões de um arquivo antes de commitar, ou comparar dois retornos de API." },
+      { "q": "Meu texto é enviado para algum servidor?", "a": "Não. A comparação roda inteira no navegador, o que também torna a ferramenta segura para texto confidencial." }
     ]
   }
 }

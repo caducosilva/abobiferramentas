@@ -6,7 +6,7 @@ Conjunto de utilitários e ferramentas web para automação de tarefas cotidiana
 
 ## O problema
 
-1. **O que é:** O **abobiferramentas** é um portal de ferramentas e utilitários web construído em HTML/Node.js.
+1. **O que é:** O **abobiferramentas** é um portal de ferramentas e utilitários web construído em Vite + React + TypeScript, com um punhado de funções serverless na Vercel para o que precisa consultar dados de fora.
 2. **Qual necessidade ataca:** Simplifica a execução de conversões, geradores e automações rápidas sem necessidade de instalar softwares pesados no computador.
 3. **Por que existe:** Muitas ferramentas online gratuitas na web estão lotadas de anúncios abusivos ou exigem cadastro. Esta suíte foi criada para ser direta, limpa e eficiente.
 4. **Qual o objetivo:** Oferecer um painel único com ferramentas de alta utilidade acessíveis instantaneamente pelo navegador.
@@ -15,9 +15,15 @@ Conjunto de utilitários e ferramentas web para automação de tarefas cotidiana
 
 ## Recursos
 
-- ✅ **Ferramentas Integradas:** Utilitários de texto, geradores e calculadoras acessíveis em um só lugar.
-- ✅ **Interface Limpa:** Sem propagandas, pop-ups ou distrações.
-- ✅ **Execução Local/Servidor:** Processamento rápido no cliente e backend Node.js.
+- ✅ **Ferramentas Integradas:** Geradores (CPF, CNPJ, senha, UUID, QR Code, Pix Copia e Cola), validadores, calculadoras, utilitários de texto, comparador de textos, conversor e compressor de imagem, formatador de JSON, Base64 e hashes.
+- ✅ **Catálogo de Apps Android Open Source:** Lista de aplicativos de código aberto com o link direto do APK na fonte oficial (GitHub Releases do desenvolvedor ou repositório do F-Droid), com a versão atual consultada em tempo real.
+- ✅ **Privacidade por padrão:** A maioria das ferramentas roda inteiramente no navegador. Cofre de notas com criptografia AES-GCM e limpador de metadados EXIF nunca enviam nada para fora.
+- ✅ **Dados locais de Mogi das Cruzes:** Horários e itinerários reais das linhas municipais SIM Mogi.
+- ✅ **Interface Limpa:** Anúncios sempre passivos, nunca bloqueando o uso de nenhuma ferramenta.
+
+### Sobre o catálogo de APK
+
+Só entra software de código aberto cuja licença permite a redistribuição, e o download aponta sempre para o servidor de origem: nenhum APK é hospedado, modificado ou intermediado por este projeto. Não há espelho de app pago desbloqueado nem de mod de aplicativo proprietário, tanto por ser distribuição ilegal quanto porque arquivo recompactado por terceiro é o vetor mais comum de malware no Android.
 
 ---
 
@@ -38,11 +44,18 @@ npm install
 
 ## Como usar
 
-Execute o servidor localmente:
+Execute o servidor de desenvolvimento localmente:
 ```bash
-npm start
+npm run dev
 ```
 Abra o navegador em `http://localhost:3000`.
+
+Para gerar a build de produção (inclui o passo de prerender das páginas de cada ferramenta):
+```bash
+npm run build
+```
+
+As funções em `api/` são serverless da Vercel e não sobem com o `vite dev`. Para testá-las localmente, use `vercel dev`.
 
 ---
 
