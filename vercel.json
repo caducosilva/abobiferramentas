@@ -5,6 +5,12 @@
   "functions": {
     "api/*.js": { "maxDuration": 30 }
   },
+  "redirects": [
+    { "source": "/baixador-de-videos", "destination": "/", "permanent": true },
+    { "source": "/baixar-video-instagram", "destination": "/", "permanent": true },
+    { "source": "/baixar-videos", "destination": "/", "permanent": true },
+    { "source": "/video-downloader", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/apps-android-open-source", "destination": "/apps-android-open-source/index.html" },
     { "source": "/horarios-de-onibus-mogi", "destination": "/horarios-de-onibus-mogi/index.html" },
