@@ -22,7 +22,7 @@ const distDir = path.join(rootDir, 'dist');
 const seoContent = JSON.parse(await readFile(path.join(rootDir, 'src/data/seoContent.json'), 'utf-8'));
 
 const ROUTES = [
-  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Catálogo com mil apps de código aberto e link direto do APK, tirado dos índices oficiais do F-Droid, do IzzyOnDroid e do GitHub Releases.' },
+  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Mais de 5 mil apps de código aberto com ícone, nome real, versão e link direto do APK, tirados dos índices oficiais do F-Droid, IzzyOnDroid, Guardian Project e GitHub Releases.' },
   { id: 'onibus-mogi', slug: 'horarios-de-onibus-mogi', name: 'Horários de Ônibus de Mogi das Cruzes', description: 'Consulte horários, sentidos e itinerários de todas as linhas municipais SIM Mogi de Mogi das Cruzes.' },
   { id: 'gerador-cpf', slug: 'gerador-de-cpf', name: 'Gerador de CPF', description: 'Gere CPFs válidos com ou sem pontuação para testes de software.' },
   { id: 'validador-cpf', slug: 'validador-de-cpf', name: 'Validador de CPF', description: 'Verifique a validade matemática do CPF com análise passo a passo.' },

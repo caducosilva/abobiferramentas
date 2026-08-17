@@ -25,19 +25,25 @@ Conjunto de utilitários e ferramentas web para automação de tarefas cotidiana
 
 Só entra software de código aberto cuja licença permite a redistribuição, e o download aponta sempre para o servidor de origem: nenhum APK é hospedado, modificado ou intermediado por este projeto. Não há espelho de app pago desbloqueado nem de mod de aplicativo proprietário, tanto por ser distribuição ilegal quanto porque arquivo recompactado por terceiro é o vetor mais comum de malware no Android.
 
-As fontes são três, todas públicas e oficiais:
+As fontes são todas públicas e oficiais:
 
 | Fonte | O que fornece |
 | --- | --- |
 | GitHub Releases | Asset `.apk` publicado pelo próprio desenvolvedor, consultado em tempo real por `api/app-releases.js` |
 | F-Droid | Índice oficial do repositório, com URL de APK estável |
 | IzzyOnDroid | Repositório em formato F-Droid, cobre projetos que não estão no oficial |
+| Guardian Project | Repositório oficial do Orbot, Tor Browser e afins |
+| microG | Repositório oficial do microG |
 
-O catálogo grande é gerado por script e commitado, porque os índices dos dois repositórios somam quase 70 MB e não faria sentido baixar isso em runtime. Para atualizar:
+O catálogo grande é gerado por script e commitado, porque os índices desses repositórios somam quase 70 MB e não faria sentido baixar isso em runtime. Para atualizar:
 
 ```bash
 npm run scrape:apps
 ```
+
+A saída vai para `public/apps/` fatiada em shards de 800 apps, não para `src/`: assim são arquivos estáticos servidos pela CDN e buscados sob demanda, em vez de entrarem no bundle. A página busca `meta.json`, dispara os shards em paralelo e vai renderizando conforme cada pedaço chega, com o shard 0 já trazendo os apps mais notórios.
+
+Sobre o APKMirror: não entra no catálogo por um motivo técnico antes de qualquer outro. Eles geram o link de download atrás de uma página intermediária, com token amarrado à sessão de quem clicou, então link direto copiado de lá pararia de funcionar em poucas horas. Onde o APKMirror é realmente necessário, que é pegar o APK original do YouTube antes de aplicar os patches, o link para a página deles está no guia do ReVanced na própria página.
 
 O script reordena a lista por notoriedade. Como nenhum repositório F-Droid divulga número de downloads, o critério é a quantidade de idiomas em que cada app foi traduzido pela comunidade, que separa bem app conhecido de app obscuro (NewPipe tem 98 idiomas e Organic Maps 95, contra mediana de 2 no repositório inteiro), com empate decidido pela data da última atualização. Ele também descarta automaticamente app de conteúdo adulto, já que o site é de uso geral.
 

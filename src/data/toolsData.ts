@@ -6,7 +6,7 @@ export const TOOLS: Tool[] = [
     slug: 'apps-android-open-source',
     aliases: ['/apk-open-source', '/apps-android', '/baixar-apk'],
     name: 'Apps Android Open Source',
-    description: 'Catálogo com mil apps de código aberto e link direto do APK, tirado dos índices oficiais do F-Droid, do IzzyOnDroid e do GitHub Releases.',
+    description: 'Mais de 5 mil apps de código aberto com ícone, nome real, versão e link direto do APK, tirados dos índices oficiais do F-Droid, IzzyOnDroid, Guardian Project e GitHub Releases.',
     category: 'android',
     icon: 'Smartphone',
     isPopular: true,

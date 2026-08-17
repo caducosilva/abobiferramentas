@@ -17,19 +17,56 @@
 // mais recente, para privilegiar projeto vivo. A interface explica esse critério, sem fingir que
 // é ranking de download.
 
-import { writeFile } from 'node:fs/promises';
+import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const outputPath = path.resolve(__dirname, '../src/data/fdroidCatalog.json');
+// Os shards ficam em public/ e não em src/: assim são arquivos estáticos servidos pela CDN e
+// buscados sob demanda, em vez de entrarem no bundle do Vite e pesarem no carregamento da página.
+const shardsDir = path.resolve(__dirname, '../public/apps');
+const iconsOutputPath = path.resolve(__dirname, '../src/data/curatedIcons.json');
+
+// Apps por arquivo. Cada shard fica na casa dos 200 KB, tamanho que a CDN entrega rápido e que
+// permite ir renderizando a lista conforme os pedaços chegam.
+const SHARD_SIZE = 800;
+
+// Ícones dos apps da seção "Destaques". Existem à parte porque a URL do ícone no F-Droid carrega
+// um hash do arquivo, ou seja, não dá para montar por convenção: tem que sair do índice. E porque
+// alguns desses apps não caem na fatia dos mil do catálogo, que além disso é carregado só sob
+// demanda, enquanto os destaques precisam do ícone na hora que a página abre.
+// Manter em sincronia com os campos `fdroidId` de src/data/androidApps.ts.
+const CURATED_PACKAGES = [
+  'org.fdroid.fdroid',
+  'com.machiav3lli.fdroid',
+  'com.aurora.store',
+  'org.schabi.newpipe',
+  'com.github.libretube',
+  'org.videolan.vlc',
+  'de.danoeh.antennapod',
+  'com.beemdevelopment.aegis',
+  'com.kunzisoft.keepass.libre',
+  'com.termux',
+  'app.organicmaps',
+  'org.fossify.gallery',
+  'org.fossify.filemanager',
+  'org.fossify.calendar',
+  'me.zhanghai.android.files',
+  'net.gsantner.markor',
+  'dev.patrickgold.florisboard',
+  'org.mozilla.fennec_fdroid',
+];
 
 const REPOS = [
   { id: 'fdroid', label: 'F-Droid', base: 'https://f-droid.org/repo' },
   { id: 'izzy', label: 'IzzyOnDroid', base: 'https://apt.izzysoft.de/fdroid/repo' },
+  { id: 'guardian', label: 'Guardian Project', base: 'https://guardianproject.info/fdroid/repo' },
+  { id: 'microg', label: 'microG', base: 'https://microg.org/fdroid/repo' },
 ];
 
-const MAX_APPS = 1000;
+// Sem corte: entra tudo o que os repositórios publicam. O peso é resolvido fatiando a saída em
+// shards, não jogando apps fora.
+const MAX_APPS = Infinity;
 // Resumo curto de propósito: o JSON inteiro vai para o navegador de quem abre o catálogo, então
 // cada caractere a mais são ~1 KB no arquivo final. 140 dá uma frase útil sem virar peso morto.
 const SUMMARY_MAX_LENGTH = 140;
@@ -219,8 +256,20 @@ function extractApps(index, repo) {
   return apps;
 }
 
+/** Ícones dos destaques, resolvidos no índice inteiro e não só na fatia dos mil. */
+function extractCuratedIcons(index, repo, into) {
+  for (const packageName of CURATED_PACKAGES) {
+    // O repositório oficial tem prioridade: se já achou lá, não sobrescreve com o do IzzyOnDroid.
+    if (into[packageName]) continue;
+
+    const iconName = pickLocalized(index.packages?.[packageName]?.metadata?.icon)?.name;
+    if (iconName) into[packageName] = `${repo.base}${iconName}`;
+  }
+}
+
 async function main() {
   const collected = [];
+  const curatedIcons = {};
 
   for (const repo of REPOS) {
     try {
@@ -228,6 +277,7 @@ async function main() {
       const apps = extractApps(index, repo);
       console.log(`[fdroid] ${repo.label}: ${apps.length} apps com APK publicado`);
       collected.push(...apps);
+      extractCuratedIcons(index, repo, curatedIcons);
     } catch (error) {
       // Um repositório fora do ar não deve derrubar a geração do catálogo inteiro.
       console.error(`[fdroid] falha em ${repo.label}: ${error.message}`);
@@ -254,19 +304,44 @@ async function main() {
     // `score` só serve para escolher e ordenar os mil: não precisa viajar até o navegador.
     .map(({ score, ...app }) => app);
 
-  const payload = {
+  // Limpa shards de uma geração anterior, senão uma execução que produza menos arquivos deixaria
+  // sobras que o cliente ainda tentaria buscar.
+  await mkdir(shardsDir, { recursive: true });
+  for (const file of await readdir(shardsDir)) {
+    if (/^(shard-\d+|meta)\.json$/.test(file)) await rm(path.join(shardsDir, file));
+  }
+
+  const shardCount = Math.ceil(ranked.length / SHARD_SIZE);
+  let totalBytes = 0;
+
+  for (let i = 0; i < shardCount; i++) {
+    const slice = ranked.slice(i * SHARD_SIZE, (i + 1) * SHARD_SIZE);
+    const body = `${JSON.stringify(slice)}\n`;
+    totalBytes += Buffer.byteLength(body);
+    await writeFile(path.join(shardsDir, `shard-${i}.json`), body, 'utf-8');
+  }
+
+  const meta = {
     generatedAt: new Date().toISOString().slice(0, 10),
     total: ranked.length,
     collected: byPackage.size,
-    apps: ranked,
+    shards: shardCount,
+    shardSize: SHARD_SIZE,
+    repos: REPOS.map((repo) => ({ id: repo.id, label: repo.label, base: repo.base })),
   };
 
-  await writeFile(outputPath, `${JSON.stringify(payload)}\n`, 'utf-8');
+  await writeFile(path.join(shardsDir, 'meta.json'), `${JSON.stringify(meta, null, 2)}\n`, 'utf-8');
+  await writeFile(iconsOutputPath, `${JSON.stringify(curatedIcons, null, 2)}\n`, 'utf-8');
 
-  const sizeKb = Math.round(Buffer.byteLength(JSON.stringify(payload)) / 1024);
+  const missingIcons = CURATED_PACKAGES.filter((pkg) => !curatedIcons[pkg]);
   console.log(
-    `[fdroid] ${ranked.length} apps gravados em src/data/fdroidCatalog.json (${sizeKb} KB), ` +
-      `de ${byPackage.size} únicos coletados`
+    `[fdroid] ícones dos destaques: ${Object.keys(curatedIcons).length}/${CURATED_PACKAGES.length}` +
+      (missingIcons.length ? ` (sem ícone: ${missingIcons.join(', ')})` : '')
+  );
+
+  console.log(
+    `[fdroid] ${ranked.length} apps em ${shardCount} shards em public/apps/ ` +
+      `(${Math.round(totalBytes / 1024)} KB no total, ~${Math.round(totalBytes / 1024 / shardCount)} KB por shard)`
   );
 }
 

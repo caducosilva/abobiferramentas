@@ -15,6 +15,7 @@ import {
   AndroidApp,
   AndroidAppCategory,
 } from '../../data/androidApps';
+import curatedIcons from '../../data/curatedIcons.json';
 import { FdroidCatalog } from './FdroidCatalog';
 
 interface ToolProps {
@@ -49,6 +50,19 @@ function formatDate(iso: string | null): string | null {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return null;
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+const ICON_BY_PACKAGE = curatedIcons as Record<string, string>;
+
+/**
+ * Ícone do app. Para quem está no F-Droid vem do mapa gerado pelo scraper, já que a URL do ícone
+ * carrega um hash e não pode ser montada por convenção. Para os que só existem no GitHub, usa o
+ * avatar do dono do repositório, que sempre existe e é a cara que o projeto usa lá mesmo.
+ */
+function iconFor(app: AndroidApp): string | null {
+  if (app.fdroidId && ICON_BY_PACKAGE[app.fdroidId]) return ICON_BY_PACKAGE[app.fdroidId];
+  if (app.repo) return `https://github.com/${app.repo.split('/')[0]}.png?size=96`;
+  return null;
 }
 
 export function AndroidApps({ onCopyToast }: ToolProps) {
@@ -142,7 +156,7 @@ export function AndroidApps({ onCopyToast }: ToolProps) {
           <h2 className="font-bold text-slate-900 dark:text-white">Destaques</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
             Seleção comentada, com a versão conferida na hora no GitHub e no F-Droid. O catálogo
-            completo, com mil apps, fica logo abaixo desta lista.
+            completo, com mais de 5 mil apps, fica logo abaixo desta lista.
           </p>
         </div>
 
@@ -206,21 +220,38 @@ export function AndroidApps({ onCopyToast }: ToolProps) {
                 key={app.id}
                 className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col gap-4"
               >
-                <div className="space-y-1.5">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-bold text-slate-900 dark:text-white leading-tight">
-                      {app.name}
-                    </h3>
-                    <span className="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                      {app.license}
-                    </span>
+                <div className="flex items-start gap-3.5">
+                  {iconFor(app) ? (
+                    <img
+                      src={iconFor(app)!}
+                      alt=""
+                      loading="lazy"
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-xl object-contain bg-slate-50 dark:bg-slate-800 p-0.5 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center font-bold text-slate-400">
+                      {app.name.charAt(0)}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 space-y-1.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-bold text-slate-900 dark:text-white leading-tight">
+                        {app.name}
+                      </h3>
+                      <span className="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        {app.license}
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                      {app.developer}
+                    </p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                      {app.description}
+                    </p>
                   </div>
-                  <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
-                    {app.developer}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
-                    {app.description}
-                  </p>
                 </div>
 
                 {app.note && (

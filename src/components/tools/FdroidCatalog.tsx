@@ -22,26 +22,24 @@ interface CatalogApp {
   file: string;
   icon: string;
   src: string;
-  repo: 'fdroid' | 'izzy';
+  repo: string;
   anti: string[];
 }
 
-interface CatalogFile {
+interface CatalogRepo {
+  id: string;
+  label: string;
+  base: string;
+}
+
+interface CatalogMeta {
   generatedAt: string;
   total: number;
   collected: number;
-  apps: CatalogApp[];
+  shards: number;
+  shardSize: number;
+  repos: CatalogRepo[];
 }
-
-const REPO_BASE: Record<CatalogApp['repo'], string> = {
-  fdroid: 'https://f-droid.org/repo',
-  izzy: 'https://apt.izzysoft.de/fdroid/repo',
-};
-
-const REPO_LABEL: Record<CatalogApp['repo'], string> = {
-  fdroid: 'F-Droid',
-  izzy: 'IzzyOnDroid',
-};
 
 const CATEGORIES: { id: string; label: string }[] = [
   { id: 'todos', label: 'Todas' },
@@ -74,34 +72,51 @@ function formatDate(timestamp: number): string {
   return new Date(timestamp).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
 }
 
-function pageUrlFor(app: CatalogApp): string {
-  return app.repo === 'fdroid'
-    ? `https://f-droid.org/packages/${app.pkg}/`
-    : `https://apt.izzysoft.de/fdroid/index/apk/${app.pkg}`;
-}
-
 interface CatalogProps {
   onCopyToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
 }
 
 export function FdroidCatalog({ onCopyToast }: CatalogProps) {
-  const [catalog, setCatalog] = useState<CatalogFile | null>(null);
+  const [meta, setMeta] = useState<CatalogMeta | null>(null);
+  // Guardado por índice, não concatenado: as respostas não voltam na ordem em que foram pedidas, e
+  // a posição do shard é justamente o que carrega a ordem de notoriedade da lista.
+  const [shardData, setShardData] = useState<(CatalogApp[] | undefined)[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('todos');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // O catálogo é um JSON de algumas centenas de KB. Import dinâmico para que só quem realmente
-  // abre a lista completa pague por ele, em vez de todo mundo que visita a página.
+  // O catálogo tem mais de 5 mil apps e uns 2 MB de metadados, então vive fatiado em arquivos
+  // estáticos em /apps/. Buscamos a lista sob demanda e vamos preenchendo a tela conforme cada
+  // pedaço chega, em vez de travar tudo esperando o conjunto inteiro. O shard 0 já traz os apps
+  // mais notórios, por isso a lista fica útil desde o primeiro pedaço.
   const loadCatalog = async () => {
-    if (catalog || loading) return;
+    if (meta || loading) return;
     setLoading(true);
     setFailed(false);
 
     try {
-      const data = await import('../../data/fdroidCatalog.json');
-      setCatalog((data.default ?? data) as unknown as CatalogFile);
+      const metaResponse = await fetch('/apps/meta.json');
+      if (!metaResponse.ok) throw new Error(`meta HTTP ${metaResponse.status}`);
+      const metaData: CatalogMeta = await metaResponse.json();
+      setMeta(metaData);
+      setShardData(new Array(metaData.shards).fill(undefined));
+
+      await Promise.all(
+        Array.from({ length: metaData.shards }, async (_unused, index) => {
+          const response = await fetch(`/apps/shard-${index}.json`);
+          if (!response.ok) return;
+          const slice: CatalogApp[] = await response.json();
+
+          // Cada shard aparece na tela assim que chega, na sua posição correta.
+          setShardData((current) => {
+            const next = [...current];
+            next[index] = slice;
+            return next;
+          });
+        })
+      );
     } catch {
       setFailed(true);
     } finally {
@@ -109,11 +124,28 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
     }
   };
 
+  const repoById = useMemo(() => {
+    const map: Record<string, CatalogRepo> = {};
+    for (const repo of meta?.repos ?? []) map[repo.id] = repo;
+    return map;
+  }, [meta]);
+
+  const baseFor = (app: CatalogApp) => repoById[app.repo]?.base ?? '';
+  const labelFor = (app: CatalogApp) => repoById[app.repo]?.label ?? app.repo;
+
+  const pageUrlFor = (app: CatalogApp): string => {
+    if (app.repo === 'fdroid') return `https://f-droid.org/packages/${app.pkg}/`;
+    if (app.repo === 'izzy') return `https://apt.izzysoft.de/fdroid/index/apk/${app.pkg}`;
+    // Guardian Project e microG não têm página por app: cai para o código-fonte ou o repositório.
+    return app.src || baseFor(app);
+  };
+
+  const apps = useMemo(() => shardData.flatMap((slice) => slice ?? []), [shardData]);
+
   const filtered = useMemo(() => {
-    if (!catalog) return [];
     const term = query.trim().toLowerCase();
 
-    return catalog.apps.filter((app) => {
+    return apps.filter((app) => {
       if (category !== 'todos' && !app.cats.includes(category)) return false;
       if (!term) return true;
       return (
@@ -122,13 +154,14 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
         app.summary.toLowerCase().includes(term)
       );
     });
-  }, [catalog, query, category]);
+  }, [apps, query, category]);
 
   const visible = filtered.slice(0, visibleCount);
-
   const resetPaging = () => setVisibleCount(PAGE_SIZE);
+  const shardsLoaded = shardData.filter(Boolean).length;
+  const stillLoading = Boolean(meta) && shardsLoaded < (meta?.shards ?? 0);
 
-  if (!catalog) {
+  if (!meta) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
         <div className="flex items-start gap-3">
@@ -137,13 +170,12 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
           </div>
           <div className="space-y-1">
             <h2 className="font-bold text-slate-900 dark:text-white">
-              Catálogo completo: 1.000 apps open source
+              Catálogo completo: mais de 5 mil apps open source
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Além dos destaques acima, tem a lista grande, montada a partir dos índices oficiais do
-              F-Droid e do IzzyOnDroid, com link direto do APK para cada app. A lista carrega em uma
-              tacada só porque é um arquivo de algumas centenas de KB, por isso fica fora do
-              carregamento inicial da página.
+              Tudo o que os repositórios F-Droid, IzzyOnDroid, Guardian Project e microG publicam,
+              com ícone, nome real, versão, tamanho e link direto do APK. São uns 2 MB de dados, por
+              isso a lista só carrega quando você pedir.
             </p>
           </div>
         </div>
@@ -181,12 +213,11 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
           Catálogo completo
         </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-          {catalog.total.toLocaleString('pt-BR')} apps, escolhidos entre os{' '}
-          {catalog.collected.toLocaleString('pt-BR')} publicados no F-Droid e no IzzyOnDroid. Nenhum
-          desses repositórios divulga número de downloads, então em vez de inventar um ranking de
-          "mais baixado" a ordem usa o quanto cada app foi traduzido pela comunidade, que é o melhor
-          sinal de app conhecido que existe no índice, com empate decidido pela atualização mais
-          recente. Snapshot de {catalog.generatedAt}.
+          {meta.total.toLocaleString('pt-BR')} apps de {meta.repos.length} repositórios (
+          {meta.repos.map((repo) => repo.label).join(', ')}). Nenhum deles divulga número de
+          downloads, então em vez de inventar um ranking de "mais baixado" a ordem usa o quanto cada
+          app foi traduzido pela comunidade, que é o melhor sinal de app conhecido que existe no
+          índice, com empate decidido pela atualização mais recente. Snapshot de {meta.generatedAt}.
         </p>
       </div>
 
@@ -200,7 +231,7 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
               setQuery(event.target.value);
               resetPaging();
             }}
-            placeholder="Buscar entre os 1.000 apps por nome, pacote ou descrição..."
+            placeholder={`Buscar entre ${meta.total.toLocaleString('pt-BR')} apps por nome, pacote ou descrição...`}
             className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
           <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -225,10 +256,14 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
           ))}
         </div>
 
-        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+          {stillLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
           {filtered.length === 0
-            ? 'Nenhum app encontrado com esse filtro.'
-            : `Mostrando ${visible.length} de ${filtered.length} apps.`}
+            ? stillLoading
+              ? 'Carregando a lista...'
+              : 'Nenhum app encontrado com esse filtro.'
+            : `Mostrando ${visible.length} de ${filtered.length} apps` +
+              (stillLoading ? ` (${shardsLoaded} de ${meta.shards} partes carregadas)` : '')}
         </p>
       </div>
 
@@ -241,15 +276,17 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
           >
             {app.icon ? (
               <img
-                src={`${REPO_BASE[app.repo]}${app.icon}`}
+                src={`${baseFor(app)}${app.icon}`}
                 alt=""
                 loading="lazy"
-                width={40}
-                height={40}
-                className="w-10 h-10 rounded-xl object-contain bg-slate-50 dark:bg-slate-800 shrink-0"
+                width={44}
+                height={44}
+                className="w-11 h-11 rounded-xl object-contain bg-slate-50 dark:bg-slate-800 p-0.5 shrink-0"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0" />
+              <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center font-bold text-slate-400">
+                {app.name.charAt(0)}
+              </div>
             )}
 
             <div className="min-w-0 flex-1 space-y-1.5">
@@ -258,9 +295,13 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
                   {app.name}
                 </h3>
                 <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
-                  {REPO_LABEL[app.repo]}
+                  {labelFor(app)}
                 </span>
               </div>
+
+              <p className="text-[10px] font-mono text-slate-400 dark:text-slate-500 truncate">
+                {app.pkg}
+              </p>
 
               {app.summary && (
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -283,9 +324,9 @@ export function FdroidCatalog({ onCopyToast }: CatalogProps) {
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <a
-                  href={`${REPO_BASE[app.repo]}${app.file}`}
+                  href={`${baseFor(app)}${app.file}`}
                   rel="noopener noreferrer nofollow"
-                  onClick={() => onCopyToast(`Baixando ${app.name} do ${REPO_LABEL[app.repo]}`, 'info')}
+                  onClick={() => onCopyToast(`Baixando ${app.name} do ${labelFor(app)}`, 'info')}
                   className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold transition"
                 >
                   <Download className="w-3 h-3" /> APK
