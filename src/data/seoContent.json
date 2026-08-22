@@ -1,46 +1,167 @@
 {
   "home": {
-    "title": "abobiferramentas | APK Open Source, Pix, Ônibus Mogi, CPF & Senhas",
-    "description": "Suíte completa de ferramentas online gratuitas: catálogo de APK de apps open source direto do GitHub e F-Droid, gerador de Pix Copia e Cola, horários de ônibus de Mogi das Cruzes, gerador de senha forte, CPF/CNPJ, QR Code, JSON, hashes, compressor de imagem e mais.",
+    "title": "abobiferramentas | Ferramentas Dev, Horários de Ônibus & Utilitários",
+    "description": "Suíte completa de ferramentas online gratuitas para desenvolvedores e utilitários: formatador JSON/SQL, regex, JWT, conversor de dados, diff, gerador de UUID, CPF/CNPJ, senhas, Pix e horários de ônibus de Mogi, São Paulo, Fortaleza e Ceará.",
     "howItWorks": [
       "Escolha uma ferramenta na grade ou use a busca (Ctrl/Cmd+K) para encontrar pelo nome.",
-      "Cada ferramenta roda inteiramente no seu navegador ou por uma chamada direta e pontual ao servidor — sem cadastro, sem e-mail, sem senha de conta.",
-      "Favorite as que você mais usa (ícone de estrela) para encontrá-las mais rápido da próxima vez — isso fica salvo só no seu navegador."
+      "Cada ferramenta roda inteiramente no seu navegador de forma isolada — sem cadastro, sem login e sem anúncios.",
+      "Favorite as que você mais usa (ícone de estrela) para encontrá-las mais rápido da próxima vez."
     ],
     "faq": [
-      { "q": "Preciso me cadastrar para usar as ferramentas?", "a": "Não. Nenhuma ferramenta do abobiferramentas exige conta, e-mail ou login. Você abre e usa direto." },
-      { "q": "Os dados que eu digito são enviados para algum servidor?", "a": "Depende da ferramenta: geradores, validadores, calculadoras, JSON, senha, UUID, Pix, comparador de textos, conversor de imagem e Base64/hash processam tudo localmente no seu navegador. Só a consulta de CEP e o catálogo de apps Android fazem chamada externa, porque precisam consultar dados que vêm de fora." },
-      { "q": "O site funciona sem internet?", "a": "Depois da primeira visita, o site funciona como um aplicativo instalável (PWA) com boa parte das ferramentas disponíveis offline, graças ao cache local do navegador." }
+      { "q": "Preciso me cadastrar para usar as ferramentas?", "a": "Não. Nenhuma ferramenta exige conta, e-mail ou login. Você abre e usa direto." },
+      { "q": "Os dados que eu digito são enviados para algum servidor?", "a": "Não. Todas as ferramentas de manipulação de código, conversões, criptografia, dados e horários de ônibus operam 100% no seu navegador via JavaScript/Web APIs nativas." },
+      { "q": "O site funciona sem internet?", "a": "Sim, o abobiferramentas conta com Service Worker e cache local (PWA), permitindo carregar ferramentas e consultar horários de ônibus mesmo offline." }
     ]
   },
-  "apps-android": {
+  "formatador-sql": {
     "howItWorks": [
-      "Comece pelos destaques, uma seleção comentada com o que vale a pena em cada categoria (lojas, ReVanced, mídia, privacidade, navegadores, utilitários).",
-      "Cada card mostra a versão mais recente publicada, consultada na hora no GitHub Releases do próprio desenvolvedor e no repositório do F-Droid.",
-      "Abaixo dos destaques fica o catálogo completo, com mais de 5 mil apps tirados dos índices oficiais do F-Droid, IzzyOnDroid, Guardian Project e microG, cada um com ícone, nome real, nome do pacote, versão, tamanho e licença, com busca e filtro por categoria.",
-      "Clique em Baixar APK para pegar o arquivo direto do servidor de origem: nada é hospedado nem redirecionado por aqui, então a assinatura do pacote é a mesma que o projeto publicou.",
-      "No Android, permita a instalação de fontes desconhecidas apenas para o app que vai abrir o APK, e revogue depois."
+      "Cole sua query SQL na caixa de entrada.",
+      "A ferramenta analisa as cláusulas (SELECT, FROM, WHERE, JOINs, GROUP BY) e indenta o código de forma legível.",
+      "Alterne entre maiúsculas para palavras-chave ou copie a versão minificada em uma única linha."
     ],
     "faq": [
-      { "q": "Por que não tem app pago desbloqueado nem mod de aplicativo famoso?", "a": "Porque distribuir isso é ilegal e porque esses arquivos circulam recompactados por terceiros, que é o vetor mais comum de APK com malware no Android. Aqui só entra software de código aberto cuja licença permite a redistribuição." },
-      { "q": "Como baixar o YouTube ReVanced ou o YouTube Music ReVanced?", "a": "O projeto ReVanced não distribui o app pronto, porque o APK do YouTube é da Google e republicá-lo alterado seria violação de direito autoral. O caminho oficial é instalar o ReVanced Manager e o GmsCore desta página, baixar o APK original do YouTube e gerar o app modificado no seu próprio aparelho." },
-      { "q": "O APK vem do site de vocês?", "a": "Não. O link aponta para o servidor do GitHub ou do F-Droid. Nós só consultamos qual é a versão atual e montamos o link, sem intermediar o download." },
-      { "q": "Qual a diferença entre a versão do F-Droid e a do GitHub?", "a": "É a assinatura: o F-Droid recompila o app e assina com a chave dele, o GitHub traz o binário assinado pelo desenvolvedor. As duas são legítimas, mas o Android não deixa atualizar uma por cima da outra. Escolha uma origem e mantenha." },
-      { "q": "Como o catálogo é ordenado?", "a": "Nenhum desses repositórios divulga número de downloads, então não existe ranking de mais baixado honesto para montar a partir deles. A ordem usa a quantidade de idiomas em que cada app foi traduzido pela comunidade, que é o melhor sinal de app conhecido disponível no índice: NewPipe tem 98 idiomas e Organic Maps 95, enquanto a mediana do repositório é 2. Empate é decidido pela atualização mais recente." },
-      { "q": "Tem os APKs do APKMirror também?", "a": "Não dá, e o motivo é técnico antes de ser qualquer outra coisa: o APKMirror gera o link de download atrás de uma página intermediária, com token amarrado à sessão de quem clicou. Um link direto copiado de lá para cá simplesmente pararia de funcionar em poucas horas. Por isso o catálogo usa repositórios que publicam URL de APK estável e permitem redistribuição. Onde o APKMirror é realmente necessário, que é para pegar o APK original do YouTube antes de aplicar os patches do ReVanced, o link para a página deles está no guia acima." },
-      { "q": "O catálogo tem app de conteúdo adulto?", "a": "Não. A geração da lista descarta automaticamente app de conteúdo adulto por termo no nome, no pacote e na descrição, porque o site é de uso geral." },
-      { "q": "O que significam os avisos em amarelo nos cards do catálogo?", "a": "São as anti-features que o próprio F-Droid marca no app: exibe anúncios, tem rastreamento, depende de serviço fechado, tem vulnerabilidade conhecida, entre outras. Aparecem para você decidir com a informação na mão, não para dizer que o app é ruim." }
+      { "q": "Minha query é enviada para algum servidor externo?", "a": "Não. A formatação do SQL ocorre inteiramente na memória do seu navegador através de expressões regulares JavaScript." }
+    ]
+  },
+  "conversor-json-yaml-csv": {
+    "howItWorks": [
+      "Selecione o formato de origem (JSON ou CSV) e cole seu conteúdo.",
+      "Escolha o formato de saída desejado: CSV, YAML ou JSON.",
+      "A conversão é gerada instantaneamente com suporte a download e cópia direta."
+    ],
+    "faq": [
+      { "q": "Posso converter planilhas CSV grandes?", "a": "Sim, o conversor roda localmente no navegador e processa matrizes de dados de forma rápida." }
+    ]
+  },
+  "testador-regex": {
+    "howItWorks": [
+      "Digite sua expressão regular no campo superior e ative as flags desejadas (g, i, m, s).",
+      "Cole o texto que deseja testar na área de texto.",
+      "Veja o resultado com destaque visual em tempo real e a lista detalhada de grupos capturados e índices."
+    ],
+    "faq": [
+      { "q": "A regex é testada com a engine nativa?", "a": "Sim, utiliza o motor RegExp nativo do JavaScript do seu próprio navegador." }
+    ]
+  },
+  "decodificador-jwt": {
+    "howItWorks": [
+      "Cole o JSON Web Token (JWT) completo com as 3 seções separadas por ponto.",
+      "A ferramenta decodifica o Header (algoritmo) e o Payload (claims/dados).",
+      "As datas de emissão (iat) e expiração (exp) são convertidas automaticamente para o fuso horário local brasileiro."
+    ],
+    "faq": [
+      { "q": "É seguro colar tokens de autenticação aqui?", "a": "Sim, porque a decodificação ocorre 100% no seu navegador com atob/base64 nativo. Nenhum token é gravado ou transmitido via internet." }
+    ]
+  },
+  "conversor-cores": {
+    "howItWorks": [
+      "Escolha uma cor no seletor nativo ou digite um código HEX.",
+      "Veja instantaneamente os valores equivalentes em RGB, RGBA, HSL e CMYK.",
+      "Acompanhe o cálculo do índice de contraste WCAG para texto preto e branco em conformidade com acessibilidade."
+    ],
+    "faq": [
+      { "q": "O cálculo de contraste segue qual padrão?", "a": "Segue a especificação WCAG 2.1 com cálculo de luminância relativa sRGB." }
+    ]
+  },
+  "gerador-mock-data": {
+    "howItWorks": [
+      "Selecione a quantidade de registros desejada e os campos (CPF, CNPJ, telefone, cargo, cidade).",
+      "Escolha o formato de exportação: JSON Array, CSV Planilha ou comandos SQL INSERT.",
+      "Copie os dados gerados ou faça o download do arquivo pronto para popular seu banco de testes."
+    ],
+    "faq": [
+      { "q": "Os CPFs gerados são válidos?", "a": "Sim, são matematicamente válidos conforme a regra de módulo 11 da Receita Federal, perfeitos para testes de validação de formulários." }
+    ]
+  },
+  "gerador-meta-tags": {
+    "howItWorks": [
+      "Preencha o título, descrição, URL canônica e imagem de destaque da sua página.",
+      "Veja em tempo real como o link aparecerá no Google Search, WhatsApp, Facebook e Twitter.",
+      "Copie o bloco de tags HTML pronto para colar na seção head do seu site."
+    ],
+    "faq": [
+      { "q": "As tags geradas são compatíveis com redes sociais modernas?", "a": "Sim, inclui Open Graph padrão (Facebook, WhatsApp, LinkedIn) e Twitter Cards summary_large_image." }
+    ]
+  },
+  "formatador-xml": {
+    "howItWorks": [
+      "Cole seu arquivo XML ou documento HTML desformatado.",
+      "A ferramenta estrutura a árvore de nós com indentação hierárquica clara.",
+      "Copie o XML formatado para inspeção rápida de NF-e, web services e feeds."
+    ],
+    "faq": [
+      { "q": "Suporta notas fiscais eletrônicas (NF-e)?", "a": "Sim, indenta e organiza nós complexos de NF-e, CT-e e MDF-e para conferência visual." }
+    ]
+  },
+  "sobre": {
+    "howItWorks": [
+      "Conheça os pilares do abobiferramentas: privacidade por padrão, processamento local e ferramentas abertas sem anúncios.",
+      "Desenvolvido por Caduco Silva com foco em engenharia limpa e utilidade pública."
+    ],
+    "faq": [
+      { "q": "Quem mantém o abobiferramentas?", "a": "O desenvolvedor de software Caduco Silva como um projeto livre e aberto para a comunidade de tecnologia e mobilidade urbana." }
+    ]
+  },
+  "contato": {
+    "howItWorks": [
+      "Acesse os canais diretos no GitHub e LinkedIn de Caduco Silva.",
+      "Envie feedbacks, sugestões de novas ferramentas ou conecte-se profissionalmente."
+    ],
+    "faq": [
+      { "q": "Onde posso acompanhar os projetos?", "a": "Diretamente no perfil do GitHub em github.com/caducosilva e no LinkedIn em linkedin.com/in/caducosilva." }
+    ]
+  },
+  "conformidade-legal": {
+    "howItWorks": [
+      "Consulte a fundamentação técnica e jurídica sobre a legalidade das ferramentas e proteção de dados.",
+      "Entenda o amparo no Marco Civil da Internet (Lei 12.965/2014), LGPD (Lei 13.709/2018), Constituição Federal e Lei de Acesso à Informação."
+    ],
+    "faq": [
+      { "q": "Por que geradores de CPF para teste são legais?", "a": "Porque utilizam apenas fórmulas matemáticas de domínio público (Módulo 11), sem invadir bancos de dados e sem emissão de documentos reais, destinando-se a testes de software de acordo com as boas práticas de desenvolvimento." }
     ]
   },
   "onibus-mogi": {
     "howItWorks": [
       "Busque por código da linha (ex: C001) ou por bairro/terminal (ex: Jundiapeba, Brás Cubas, Sabaúna).",
       "Abra a linha para ver o itinerário e o terminal de referência.",
-      "Escolha o dia — Segunda a Sexta, Sábado ou Domingo — para ver os horários corretos daquele dia."
+      "Escolha o dia: Segunda a Sexta, Sábado ou Domingo para ver os horários corretos."
     ],
     "faq": [
-      { "q": "Os horários são oficiais do SIM Mogi?", "a": "São horários informativos, obtidos do portal oficial de mobilidade da Prefeitura de Mogi das Cruzes. Eles podem mudar sem aviso prévio das operadoras, então em datas críticas vale confirmar no ponto ou no portal da prefeitura." },
-      { "q": "Funciona sem internet?", "a": "Sim — depois de carregar a página uma vez, os horários ficam salvos no seu dispositivo (o app é instalável como PWA) e continuam consultáveis mesmo offline, já que os dados não dependem de uma chamada ao vivo ao servidor." }
+      { "q": "Os horários são oficiais do SIM Mogi?", "a": "São horários informativos obtidos do portal de mobilidade da Prefeitura de Mogi das Cruzes." },
+      { "q": "Funciona sem internet?", "a": "Sim, os dados ficam em cache no dispositivo e funcionam offline." }
+    ]
+  },
+  "onibus-sp": {
+    "howItWorks": [
+      "Pesquise pelo número da linha (ex: 8000, 175T, 4310, 5110) ou pelo nome do terminal/bairro (ex: Lapa, Santana, Itaquera, Paulista, Jabaquara).",
+      "Abra o card da linha para ver o itinerário completo e os pontos de partida e destino.",
+      "Selecione o tipo de dia (Seg a Sex, Sábado ou Domingo/Feriados) para visualizar a grade completa de saídas de Ida e Volta."
+    ],
+    "faq": [
+      { "q": "As linhas cobrem quais regiões de São Paulo?", "a": "Estão catalogadas as principais linhas troncais, estruturais e interterminais de SPTrans que conectam a Zona Leste, Zona Oeste, Zona Norte, Zona Sul e o Centro da capital paulista." },
+      { "q": "Os horários funcionam offline?", "a": "Sim! A grade horária fica gravada localmente na sua aplicação (PWA), permitindo consulta mesmo sem sinal de internet no ponto de ônibus." }
+    ]
+  },
+  "onibus-fortaleza": {
+    "howItWorks": [
+      "Consulte por código (ex: 026, 041, 050, 075, 077) ou pelos principais terminais (Papicu, Messejana, Antônio Bezerra, Parangaba, Siqueira, Conjunto Ceará).",
+      "Expanda a linha para ver os horários de saída programados para dias úteis, sábados e domingos.",
+      "Veja os detalhes de empresa operadora e sentido de circulação."
+    ],
+    "faq": [
+      { "q": "Quais linhas estão disponíveis?", "a": "As linhas troncais, expressas e circulares mais movimentadas do sistema integrado de transporte de Fortaleza (Etufor / Sindiônibus)." },
+      { "q": "Os dados ficam salvos no celular?", "a": "Sim, todos os dados são carregados e cacheados pelo Service Worker para consulta rápida e offline." }
+    ]
+  },
+  "onibus-ceara": {
+    "howItWorks": [
+      "Escolha a cidade no topo (Caucaia, Juazeiro do Norte, Sobral, Maracanaú) ou veja todas as linhas regionais.",
+      "Busque por bairro, ponto turístico (Cumbuco, Centro Histórico de Sobral, Basílica de Juazeiro) ou código da linha.",
+      "Alterne entre dias úteis e finais de semana para conferir as partidas de ida e volta."
+    ],
+    "faq": [
+      { "q": "Quais cidades do Ceará são atendidas?", "a": "Caucaia (com as linhas do programa Bora de Graça e praias como Cumbuco e Pacheco), Juazeiro do Norte no Cariri, Sobral na Região Norte e Maracanaú na Região Metropolitana." },
+      { "q": "O serviço é gratuito?", "a": "Em Caucaia, o transporte municipal urbano é 100% gratuito através do programa Bora de Graça. Nas outras cidades, aplicam-se as tarifas municipais vigentes." }
     ]
   },
   "gerador-cpf": {
@@ -50,18 +171,17 @@
       "Clique em gerar: o número é criado no seu navegador com o algoritmo oficial de dígitos verificadores, pronto para copiar."
     ],
     "faq": [
-      { "q": "Esse CPF é de uma pessoa real?", "a": "Não. É um número matematicamente válido (passa na validação de dígitos verificadores), mas gerado aleatoriamente — não pertence a ninguém. Serve para testar formulários, sistemas e cadastros de desenvolvimento." },
-      { "q": "É seguro usar isso em produção?", "a": "Não. Use apenas para testes, QA e ambientes de desenvolvimento. Nunca em bases de dados reais ou processos que exijam identificação verdadeira." }
+      { "q": "Esse CPF é de uma pessoa real?", "a": "Não. É um número matematicamente válido gerado aleatoriamente para testes de sistemas e cadastros em homologação." }
     ]
   },
   "validador-cpf": {
     "howItWorks": [
       "Digite o CPF, com ou sem pontuação.",
       "A ferramenta recalcula os dois dígitos verificadores usando o algoritmo oficial da Receita Federal.",
-      "Você vê o resultado (válido ou inválido) e o passo a passo do cálculo, útil para conferir manualmente ou entender o algoritmo."
+      "Você vê o resultado (válido ou inválido) e o passo a passo do cálculo."
     ],
     "faq": [
-      { "q": "Validar aqui confirma que o CPF existe de verdade?", "a": "Não. A validação é só matemática (confere se os dígitos verificadores batem com o algoritmo). Ela não consulta a Receita Federal, então não garante que o número foi realmente emitido ou está ativo." }
+      { "q": "Validar aqui confirma que o CPF existe de verdade?", "a": "Não. A validação é matemática (confere se os dígitos verificadores batem com o algoritmo), sem consultar a base da Receita Federal." }
     ]
   },
   "gerador-cnpj": {
@@ -71,203 +191,185 @@
       "Para validar, cole o CNPJ e veja na hora se os dígitos verificadores conferem."
     ],
     "faq": [
-      { "q": "Esse CNPJ pertence a uma empresa real?", "a": "Não. É gerado aleatoriamente seguindo o algoritmo oficial de validação — útil para testar sistemas e cadastros, mas não corresponde a nenhuma empresa registrada." },
-      { "q": "Qual a diferença entre matriz e filial no CNPJ?", "a": "Os quatro dígitos depois da raiz (os 8 primeiros números) indicam a ordem: 0001 é sempre a matriz, e 0002, 0003 etc. são filiais da mesma empresa." }
+      { "q": "Esse CNPJ pertence a uma empresa real?", "a": "Não. É gerado aleatoriamente seguindo o algoritmo oficial de validação para testes de sistemas." }
     ]
   },
   "gerador-senhas": {
     "howItWorks": [
       "Escolha o tamanho da senha e quais tipos de caractere incluir: maiúsculas, minúsculas, números e símbolos.",
-      "A senha é gerada localmente no seu navegador usando um gerador de números aleatórios criptográfico — nunca é enviada para nenhum servidor.",
-      "O medidor de força mostra o quão resistente ela é a ataques de força bruta antes de você copiar e usar."
+      "A senha é gerada localmente no seu navegador usando um gerador de números aleatórios criptográfico.",
+      "O medidor de força mostra o nível de entropia da credencial."
     ],
     "faq": [
-      { "q": "A senha gerada fica salva em algum lugar?", "a": "Não. Ela existe só na tela do seu navegador enquanto a página está aberta. Nada é armazenado ou enviado para fora do seu dispositivo." },
-      { "q": "Qual tamanho de senha é seguro?", "a": "Recomenda-se pelo menos 12 caracteres misturando os quatro tipos. Para contas críticas (e-mail principal, banco), 16+ caracteres é mais seguro ainda." }
+      { "q": "A senha gerada fica salva em algum lugar?", "a": "Não. Ela existe só na tela do seu navegador enquanto a página está aberta." }
     ]
   },
   "compressor-imagem": {
     "howItWorks": [
       "Envie uma imagem PNG, JPG ou WebP arrastando o arquivo ou selecionando do seu dispositivo.",
-      "Ajuste a qualidade de compressão e veja o tamanho final estimado em tempo real, comparando com o original.",
-      "Baixe a imagem comprimida — todo o processamento acontece no seu navegador, o arquivo nunca sai do seu dispositivo."
+      "Ajuste a qualidade de compressão e veja o tamanho final estimado em tempo real.",
+      "Baixe a imagem comprimida direto no navegador."
     ],
     "faq": [
-      { "q": "Minhas fotos são enviadas para algum servidor?", "a": "Não. A compressão usa APIs nativas do navegador (Canvas). A imagem nunca deixa o seu dispositivo, o que também torna o processo mais rápido." },
-      { "q": "Tem limite de tamanho de arquivo?", "a": "Como o processamento é local, o limite prático é a memória do seu dispositivo — imagens muito grandes (dezenas de MB) podem demorar mais para processar em aparelhos mais fracos." }
+      { "q": "Minhas fotos são enviadas para algum servidor?", "a": "Não. A compressão usa APIs nativas do navegador (Canvas) e nunca deixa seu dispositivo." }
     ]
   },
   "contador-texto": {
     "howItWorks": [
       "Cole ou digite o texto na caixa — a contagem de palavras, caracteres e linhas atualiza em tempo real.",
-      "Use os conversores rápidos para transformar o texto em MAIÚSCULAS, minúsculas, Capitalizado, camelCase ou slug-de-url.",
-      "O rascunho fica salvo automaticamente no seu navegador, então se você fechar a aba sem querer, o texto continua lá quando voltar."
+      "Use os conversores rápidos para transformar o texto em MAIÚSCULAS, minúsculas, Capitalizado, camelCase ou slug.",
+      "O rascunho fica salvo automaticamente no seu navegador."
     ],
     "faq": [
-      { "q": "O texto que eu digito é enviado para algum lugar?", "a": "Não. Toda contagem e conversão acontece localmente no seu navegador via JavaScript. Nada é transmitido." }
+      { "q": "O texto que eu digito é enviado para algum lugar?", "a": "Não. Toda contagem e conversão acontece localmente no seu navegador via JavaScript." }
     ]
   },
   "gerador-curriculo": {
     "howItWorks": [
       "Preencha seus dados, experiências e formação nos campos do formulário.",
       "Escolha a cor de destaque e acompanhe a pré-visualização do currículo em tempo real.",
-      "Exporte em PDF pronto para enviar — o layout é otimizado para passar por sistemas de triagem automática (ATS) usados por recrutadores."
+      "Exporte em PDF pronto para enviar e otimizado para sistemas de triagem automática (ATS)."
     ],
     "faq": [
-      { "q": "Meus dados de currículo ficam salvos em algum servidor?", "a": "Não. Tudo o que você digita fica salvo apenas no localStorage do seu próprio navegador, para você poder continuar editando depois — nada é enviado para fora do seu dispositivo." },
-      { "q": "O que é um currículo 'otimizado para ATS'?", "a": "ATS (Applicant Tracking System) é o software que muitas empresas usam para escanear currículos antes de um humano ler. Um layout otimizado evita colunas, tabelas e elementos gráficos que confundem esses sistemas e podem descartar seu currículo automaticamente." }
+      { "q": "Meus dados de currículo ficam salvos em algum servidor?", "a": "Não. Tudo o que você digita fica salvo apenas no localStorage do seu próprio navegador." }
     ]
   },
   "gerador-qrcode": {
     "howItWorks": [
       "Escolha o tipo de conteúdo: link, texto simples, rede Wi-Fi ou mensagem de WhatsApp.",
-      "Personalize as cores do QR Code para combinar com sua marca ou material.",
-      "Baixe a imagem gerada — tudo é criado localmente no navegador, sem depender de um serviço externo."
+      "Personalize as cores do QR Code para combinar com seu projeto.",
+      "Baixe a imagem gerada em PNG."
     ],
     "faq": [
-      { "q": "O QR Code expira ou tem limite de leituras?", "a": "Não. É um QR Code estático gerado localmente, sem serviço de encurtamento por trás — funciona para sempre e sem limite de escaneamentos." }
+      { "q": "O QR Code expira ou tem limite de leituras?", "a": "Não. É um QR Code estático gerado localmente, sem prazo de expiração." }
     ]
   },
   "formatador-json": {
     "howItWorks": [
-      "Cole o JSON na caixa de entrada — a formatação e a validação de sintaxe rodam automaticamente.",
-      "Use o modo árvore para explorar objetos e arrays grandes de forma organizada, expandindo só o que interessa.",
-      "Alterne entre indentar (para leitura) e minificar (para produção) com um clique."
+      "Cole o JSON na caixa de entrada: a formatação e a validação de sintaxe rodam automaticamente.",
+      "Use o modo árvore para explorar objetos e arrays grandes de forma organizada.",
+      "Alterne entre indentar e minificar com um clique."
     ],
     "faq": [
-      { "q": "Meu JSON é enviado para algum servidor ao colar aqui?", "a": "Não. A validação e formatação usam o parser nativo do JavaScript, direto no seu navegador — útil inclusive para colar dados sensíveis sem risco de vazamento." }
+      { "q": "Meu JSON é enviado para algum servidor ao colar aqui?", "a": "Não. A validação e formatação usam o parser nativo do JavaScript no seu navegador." }
     ]
   },
   "gerador-uuid": {
     "howItWorks": [
       "Escolha quantos UUIDs você precisa gerar de uma vez.",
       "Cada identificador é gerado no padrão UUID v4 (aleatório), usando a API criptográfica nativa do navegador.",
-      "Copie um único ID ou a lista inteira de uma vez para usar no seu código ou banco de dados."
+      "Copie um único ID ou a lista inteira de uma vez."
     ],
     "faq": [
-      { "q": "Qual a chance de dois UUIDs v4 serem iguais?", "a": "Estatisticamente desprezível — com 122 bits aleatórios, seriam necessários bilhões de IDs gerados por segundo por séculos para haver risco real de colisão." }
+      { "q": "Qual a chance de dois UUIDs v4 serem iguais?", "a": "Estatisticamente desprezível, devido à entropia de 122 bits aleatórios." }
     ]
   },
   "link-whatsapp": {
     "howItWorks": [
-      "Digite o número de telefone com DDD (o código do país é preenchido automaticamente para o Brasil).",
+      "Digite o número de telefone com DDD.",
       "Opcionalmente, escreva uma mensagem que já vai aparecer pronta na conversa.",
-      "Copie o link gerado (wa.me) ou o QR Code para compartilhar em redes sociais, cartão de visita ou bio."
+      "Copie o link gerado (wa.me) ou o QR Code para compartilhar."
     ],
     "faq": [
-      { "q": "Preciso ter o número salvo nos contatos para o link funcionar?", "a": "Não. Links wa.me abrem a conversa direto, mesmo que o número não esteja salvo — funciona tanto no WhatsApp do celular quanto no WhatsApp Web." }
+      { "q": "Preciso ter o número salvo nos contatos para o link funcionar?", "a": "Não. Links wa.me abrem a conversa direto no aplicativo ou WhatsApp Web." }
     ]
   },
   "calculadoras": {
     "howItWorks": [
-      "Escolha a calculadora: porcentagem (de quanto é X% de Y, ou qual % um valor representa) ou IMC.",
+      "Escolha a calculadora: porcentagem ou IMC.",
       "Preencha os campos — o resultado atualiza automaticamente conforme você digita.",
-      "Para o IMC, veja também a faixa de classificação (abaixo do peso, normal, sobrepeso etc.) segundo os parâmetros da OMS."
+      "Para o IMC, veja também a faixa de classificação segundo os parâmetros da OMS."
     ],
     "faq": [
-      { "q": "O cálculo de IMC substitui uma avaliação médica?", "a": "Não. O IMC é um indicador geral e não considera composição corporal (massa muscular vs. gordura), idade ou outros fatores de saúde. Use como referência, não como diagnóstico." }
+      { "q": "O cálculo de IMC substitui uma avaliação médica?", "a": "Não. É um indicador geral e não considera composição muscular ou fatores clínicos individuais." }
     ]
   },
   "conversor-unidades": {
     "howItWorks": [
-      "Escolha a categoria: comprimento, peso, temperatura ou tamanho de arquivo (bytes, KB, MB, GB).",
+      "Escolha a categoria: comprimento, peso, temperatura ou tamanho de arquivo.",
       "Digite o valor em uma unidade e veja a conversão instantânea para as outras da mesma categoria.",
       "Troque a unidade de origem a qualquer momento sem perder o valor digitado."
     ],
     "faq": [
-      { "q": "As conversões usam fatores oficiais do SI?", "a": "Sim, os fatores de conversão seguem o Sistema Internacional de Unidades (SI) e as definições padrão para bytes binários." }
+      { "q": "As conversões usam fatores oficiais do SI?", "a": "Sim, seguem o Sistema Internacional de Unidades." }
     ]
   },
   "base64-hash": {
     "howItWorks": [
-      "Para Base64: digite um texto para codificar, ou cole um Base64 para decodificar de volta ao texto original.",
-      "Para hash: digite qualquer texto e veja instantaneamente os hashes SHA-1 e SHA-256 correspondentes.",
-      "No modo Arquivo, envie um arquivo para calcular SHA-1, SHA-256 e SHA-512 e comparar com um hash esperado — o arquivo nunca sai do seu navegador.",
-      "Tudo roda localmente com a Web Crypto API nativa do navegador — nenhum dado é enviado para fora."
+      "Para Base64: codifique e decodifique textos.",
+      "Para hash: calcule SHA-1, SHA-256 e SHA-512 de textos ou arquivos.",
+      "Tudo roda localmente com a Web Crypto API nativa do navegador."
     ],
     "faq": [
-      { "q": "MD5 e SHA-1 são seguros para senhas?", "a": "Não. Ambos são considerados criptograficamente quebrados para uso em senhas — servem bem para checar integridade de arquivos, mas não para proteger dados sensíveis. Para senhas, use algoritmos como bcrypt ou Argon2 no seu backend." }
+      { "q": "O arquivo sobe para a nuvem para calcular o hash?", "a": "Não, o arquivo é lido localmente via FileReader e Web Crypto." }
     ]
   },
   "cofre-notas-local": {
     "howItWorks": [
-      "Defina uma senha mestra na primeira vez: ela deriva a chave de criptografia e nunca é salva em lugar nenhum.",
-      "Escreva suas notas normalmente. Cada uma é cifrada com AES-GCM antes de ser guardada no armazenamento local do navegador.",
-      "Ao voltar, digite a mesma senha para destravar. Sem ela, o conteúdo salvo é um bloco de bytes ilegível, inclusive para nós."
+      "Defina uma senha mestra para criptografar as notas com AES-GCM.",
+      "As notas são salvas apenas no armazenamento local do seu navegador.",
+      "Ao voltar, digite a mesma senha para destravar o conteúdo."
     ],
     "faq": [
-      { "q": "Se eu esquecer a senha, tem como recuperar?", "a": "Não tem. A chave é derivada da senha por PBKDF2 e não existe cópia dela em servidor nenhum. Senha perdida significa nota perdida, e é exatamente isso que torna o cofre seguro." },
-      { "q": "As notas ficam no servidor de vocês?", "a": "Nunca. Elas ficam no localStorage do seu próprio navegador, já cifradas. Limpar os dados do site apaga tudo em definitivo." }
+      { "q": "Se eu esquecer a senha mestra, tem como recuperar?", "a": "Não, pois a chave não é armazenada em servidores externos por questões de privacidade." }
     ]
   },
   "limpador-exif": {
     "howItWorks": [
-      "Escolha uma foto. O arquivo é lido no seu navegador, sem upload.",
-      "A ferramenta mostra os metadados EXIF encontrados: coordenadas de GPS, marca e modelo da câmera, data e hora do clique.",
-      "Baixe a versão limpa: a imagem é redesenhada em canvas, e o arquivo novo sai sem nenhum metadado embutido."
+      "Selecione uma foto e veja as informações EXIF encontradas (GPS, data, câmera).",
+      "Baixe a imagem limpa e redesenhada sem nenhum metadado embutido."
     ],
     "faq": [
-      { "q": "Por que isso importa?", "a": "Foto tirada com o GPS ligado carrega a coordenada exata de onde foi feita. Postar o arquivo original entrega o endereço de casa junto com a imagem." },
-      { "q": "A qualidade da imagem cai?", "a": "Como a imagem é reprocessada, um JPEG pode ter perda mínima de qualidade em recompressão. A resolução e o enquadramento continuam iguais." }
+      { "q": "Por que remover metadados EXIF?", "a": "Para evitar vazamento de dados de localização geográfica ao publicar fotos na internet." }
     ]
   },
   "gerador-pix": {
     "howItWorks": [
-      "Escolha o tipo da sua chave Pix (CPF, CNPJ, e-mail, telefone ou aleatória) e informe a chave e o nome do recebedor.",
-      "Se quiser, preencha o valor: com valor, o app do pagador já abre com o campo travado; sem valor, ele digita quanto quiser enviar.",
-      "Copie o código Pix Copia e Cola ou baixe o QR Code em PNG para mandar no WhatsApp, imprimir ou colocar no seu site."
+      "Escolha o tipo da sua chave Pix (CPF, CNPJ, e-mail, telefone ou aleatória) e informe o recebedor.",
+      "Gere o QR Code e o código Copia e Cola no padrão BR Code do Banco Central.",
+      "Copie ou baixe em PNG."
     ],
     "faq": [
-      { "q": "O código funciona em qualquer banco?", "a": "Sim. O padrão é o BR Code (EMV) definido pelo Banco Central, o mesmo que os bancos usam entre si, então qualquer app que leia Pix reconhece." },
-      { "q": "Minha chave Pix é enviada para vocês?", "a": "Não. O código é montado inteiramente no seu navegador, incluindo o cálculo do CRC de validação. Nada trafega para o nosso servidor." },
-      { "q": "Por que acento e cedilha somem do nome?", "a": "O padrão do BR Code conta caracteres em ASCII. Acento faria o tamanho declarado de cada campo divergir do que o app do banco calcula, e o código seria recusado." },
-      { "q": "Dá para reutilizar o mesmo QR Code em várias cobranças?", "a": "Sim, o código gerado é estático e pode ser usado quantas vezes quiser. Para conciliar pedidos no extrato, preencha o campo identificador." }
+      { "q": "O código funciona em qualquer banco?", "a": "Sim, compatível com todos os bancos e instituições financeiras que operam com Pix." }
     ]
   },
   "calculadora-datas": {
     "howItWorks": [
-      "Em Diferença, escolha duas datas para ver dias corridos, dias úteis, semanas cheias e o intervalo em anos, meses e dias.",
-      "Em Somar dias, defina uma data base e quantos dias somar ou subtrair, útil para prazo de contrato, entrega ou vencimento.",
-      "Em Idade, informe a data de nascimento para ver a idade exata e quantos dias faltam para o próximo aniversário."
+      "Calcule a diferença entre duas datas em dias corridos, dias úteis e semanas.",
+      "Some ou subtraia dias a partir de uma data de referência ou descubra a idade exata."
     ],
     "faq": [
-      { "q": "A contagem de dias úteis desconta feriado?", "a": "Não. São contados apenas os dias de segunda a sexta. Feriado municipal, estadual e federal varia demais por lugar e por ano, então preferimos não fingir precisão que não temos." },
-      { "q": "O cálculo considera ano bissexto?", "a": "Sim. As contas usam o calendário real do navegador, então 29 de fevereiro entra na conta quando existe." }
+      { "q": "O cálculo considera ano bissexto?", "a": "Sim, utiliza o calendário gregoriano nativo do JavaScript." }
     ]
   },
   "conversor-imagem": {
     "howItWorks": [
-      "Escolha ou arraste a imagem: PNG, JPG, WebP, GIF, BMP e AVIF são aceitos.",
-      "Selecione o formato de saída (WebP, JPG ou PNG) e, nos formatos com perda, ajuste a qualidade.",
-      "Converta e baixe. A comparação de tamanho mostra quanto o arquivo novo economizou em relação ao original."
+      "Escolha ou arraste a imagem: PNG, JPG, WebP, GIF, BMP e AVIF.",
+      "Selecione o formato de saída (WebP, JPG ou PNG) e controle a qualidade.",
+      "Converta e baixe diretamente no navegador."
     ],
     "faq": [
-      { "q": "Qual formato devo escolher para site?", "a": "WebP, na maioria dos casos: costuma ficar bem menor que JPG com qualidade equivalente e tem suporte em todos os navegadores atuais. PNG só quando precisar de transparência sem perda." },
-      { "q": "A imagem sobe para algum servidor?", "a": "Não. A conversão usa o canvas do próprio navegador, então o arquivo nunca sai do seu dispositivo." },
-      { "q": "Os metadados da foto são preservados?", "a": "Não, e isso é proposital. Como o canvas redesenha os pixels, dados EXIF como localização de GPS não passam para o arquivo convertido." }
+      { "q": "Qual formato devo escolher para sites?", "a": "WebP costuma ser mais leve com qualidade equivalente aos outros formatos." }
     ]
   },
   "consulta-cep": {
     "howItWorks": [
-      "Digite o CEP com ou sem hífen, oito dígitos.",
-      "A consulta busca no ViaCEP, serviço público e gratuito que espelha a base dos Correios.",
-      "Copie o endereço completo formatado ou abra a localização direto no mapa."
+      "Digite o CEP com oito dígitos.",
+      "A consulta busca os dados no serviço público e gratuito do ViaCEP.",
+      "Copie o endereço completo ou abra no mapa."
     ],
     "faq": [
-      { "q": "Por que alguns CEPs não mostram a rua?", "a": "CEP geral de cidade ou de faixa cobre um conjunto de vias, então a base retorna apenas cidade e estado. Já o CEP de logradouro específico traz rua e bairro." },
-      { "q": "Os dados são oficiais?", "a": "Vêm da base dos Correios, que é a fonte oficial, através do ViaCEP. Endereço recém-criado pode levar algum tempo para aparecer." }
+      { "q": "Os dados de endereçamento são oficiais?", "a": "Sim, espelham a base oficial dos Correios do Brasil." }
     ]
   },
   "comparador-texto": {
     "howItWorks": [
-      "Cole a versão original em um lado e a versão alterada no outro.",
-      "A comparação acontece na hora, linha por linha, marcando em verde o que foi adicionado e em vermelho o que foi removido.",
-      "Use as opções para ignorar maiúsculas ou diferenças de espaçamento, ou marque para ver só as linhas que mudaram."
+      "Cole a versão original de um lado e a versão alterada do outro.",
+      "O comparador destaca em verde o que foi adicionado e em vermelho o que foi removido.",
+      "Use as opções para ignorar maiúsculas ou espaços em branco."
     ],
     "faq": [
-      { "q": "Que algoritmo é usado?", "a": "O da maior subsequência comum (LCS), o mesmo princípio do diff do git. É por isso que ele identifica trecho deslocado em vez de acusar o arquivo inteiro como diferente quando você insere uma linha no meio." },
-      { "q": "Serve para código?", "a": "Sim, e é um dos usos mais comuns: conferir o que mudou entre duas versões de um arquivo antes de commitar, ou comparar dois retornos de API." },
-      { "q": "Meu texto é enviado para algum servidor?", "a": "Não. A comparação roda inteira no navegador, o que também torna a ferramenta segura para texto confidencial." }
+      { "q": "Serve para comparar código de programação?", "a": "Sim, utiliza o algoritmo de maior subsequência comum (LCS), o mesmo padrão do git diff." }
     ]
   }
 }

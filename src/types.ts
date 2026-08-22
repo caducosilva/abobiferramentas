@@ -1,14 +1,13 @@
 export type ToolCategory =
   | 'todos'
   | 'populares'
+  | 'desenvolvimento'
+  | 'transportes'
   | 'geradores'
   | 'validadores'
   | 'texto'
-  | 'desenvolvimento'
   | 'imagem'
   | 'matematica'
-  | 'android'
-  | 'transportes'
   | 'financas'
   | 'privacidade';
 
@@ -36,23 +35,27 @@ export interface Tool {
   keywords: string[];
 }
 
-export interface MogiBusDaySchedule {
+export interface BusDaySchedule {
   ida: string[];
   volta: string[];
 }
 
-export interface MogiBusLine {
+export interface BusLine {
   code: string;
   name: string;
   pontoA: string;
   pontoB: string;
-  sentido: string;
-  diasAtendidos: string;
-  empresa: string;
-  weekdays: MogiBusDaySchedule;
-  saturdays: MogiBusDaySchedule;
-  sundays: MogiBusDaySchedule;
+  sentido?: string;
+  diasAtendidos?: string;
+  empresa?: string;
+  cidade?: string;
+  weekdays: BusDaySchedule;
+  saturdays: BusDaySchedule;
+  sundays: BusDaySchedule;
 }
+
+export type MogiBusLine = BusLine;
+export type MogiBusDaySchedule = BusDaySchedule;
 
 export interface ToastMessage {
   id: string;

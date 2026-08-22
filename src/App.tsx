@@ -1,35 +1,21 @@
 import { useState, useEffect, lazy, Suspense, MouseEvent } from 'react';
+import { TOOLS } from './data/toolsData';
+import { ToolCategory, ToastMessage } from './types';
 import { Navbar } from './components/Navbar';
 import { BentoGrid } from './components/BentoGrid';
+import { Footer } from './components/Footer';
 import { SearchModal } from './components/SearchModal';
 import { LocalScratchpadModal } from './components/LocalScratchpadModal';
 import { PwaInstallModal } from './components/PwaInstallModal';
 import { ToastContainer } from './components/Toast';
-import { Footer } from './components/Footer';
-import { ToolInfoSection } from './components/ToolInfoSection';
-import seoContent from './data/seoContent.json';
+import { ArrowLeft, Loader2, Share2, Star } from 'lucide-react';
 
-// Tool Views
-//
-// Carregadas sob demanda: cada ferramenta virou um chunk separado, então a home não paga mais
-// pelo peso de todas elas juntas. É o que mais pesava aqui, porque coisas como a tabela de
-// horários dos ônibus e a biblioteca de QR Code só interessam a quem abre aquela ferramenta.
-// Os componentes usam export nomeado, daí o mapeamento para `default` que o lazy() exige.
-const AndroidApps = lazy(() =>
-  import('./components/tools/AndroidApps').then((m) => ({ default: m.AndroidApps }))
-);
-const MogiBusSchedule = lazy(() =>
-  import('./components/tools/MogiBusSchedule').then((m) => ({ default: m.MogiBusSchedule }))
-);
+// Lazy loading das ferramentas existentes
 const CpfGeneratorValidator = lazy(() =>
-  import('./components/tools/CpfGeneratorValidator').then((m) => ({
-    default: m.CpfGeneratorValidator,
-  }))
+  import('./components/tools/CpfGeneratorValidator').then((m) => ({ default: m.CpfGeneratorValidator }))
 );
 const CnpjGeneratorValidator = lazy(() =>
-  import('./components/tools/CnpjGeneratorValidator').then((m) => ({
-    default: m.CnpjGeneratorValidator,
-  }))
+  import('./components/tools/CnpjGeneratorValidator').then((m) => ({ default: m.CnpjGeneratorValidator }))
 );
 const PasswordGenerator = lazy(() =>
   import('./components/tools/PasswordGenerator').then((m) => ({ default: m.PasswordGenerator }))
@@ -39,9 +25,6 @@ const ImageCompressor = lazy(() =>
 );
 const TextTools = lazy(() =>
   import('./components/tools/TextTools').then((m) => ({ default: m.TextTools }))
-);
-const ResumeBuilder = lazy(() =>
-  import('./components/tools/ResumeBuilder').then((m) => ({ default: m.ResumeBuilder }))
 );
 const QrCodeGenerator = lazy(() =>
   import('./components/tools/QrCodeGenerator').then((m) => ({ default: m.QrCodeGenerator }))
@@ -53,9 +36,7 @@ const UuidGenerator = lazy(() =>
   import('./components/tools/UuidGenerator').then((m) => ({ default: m.UuidGenerator }))
 );
 const WhatsappLinkGenerator = lazy(() =>
-  import('./components/tools/WhatsappLinkGenerator').then((m) => ({
-    default: m.WhatsappLinkGenerator,
-  }))
+  import('./components/tools/WhatsappLinkGenerator').then((m) => ({ default: m.WhatsappLinkGenerator }))
 );
 const Calculators = lazy(() =>
   import('./components/tools/Calculators').then((m) => ({ default: m.Calculators }))
@@ -87,73 +68,146 @@ const CepLookup = lazy(() =>
 const TextDiff = lazy(() =>
   import('./components/tools/TextDiff').then((m) => ({ default: m.TextDiff }))
 );
+const ResumeBuilder = lazy(() =>
+  import('./components/tools/ResumeBuilder').then((m) => ({ default: m.ResumeBuilder }))
+);
+const BusSchedule = lazy(() =>
+  import('./components/tools/BusSchedule').then((m) => ({ default: m.BusSchedule }))
+);
 
-import { ToolCategory, ToastMessage } from './types';
-import { TOOLS } from './data/toolsData';
-import { ArrowLeft, Star, Share2 } from 'lucide-react';
+// Lazy loading das novas ferramentas
+const SqlFormatter = lazy(() =>
+  import('./components/tools/SqlFormatter').then((m) => ({ default: m.SqlFormatter }))
+);
+const JsonYamlCsvConverter = lazy(() =>
+  import('./components/tools/JsonYamlCsvConverter').then((m) => ({ default: m.JsonYamlCsvConverter }))
+);
+const RegexTester = lazy(() =>
+  import('./components/tools/RegexTester').then((m) => ({ default: m.RegexTester }))
+);
+const ColorConverter = lazy(() =>
+  import('./components/tools/ColorConverter').then((m) => ({ default: m.ColorConverter }))
+);
+const JwtDecoder = lazy(() =>
+  import('./components/tools/JwtDecoder').then((m) => ({ default: m.JwtDecoder }))
+);
+const MockDataGenerator = lazy(() =>
+  import('./components/tools/MockDataGenerator').then((m) => ({ default: m.MockDataGenerator }))
+);
+const MetaTagGenerator = lazy(() =>
+  import('./components/tools/MetaTagGenerator').then((m) => ({ default: m.MetaTagGenerator }))
+);
+const XmlFormatter = lazy(() =>
+  import('./components/tools/XmlFormatter').then((m) => ({ default: m.XmlFormatter }))
+);
 
-const SITE_TITLE = 'abobiferramentas | APK Open Source, Pix, Ônibus Mogi, CPF & Senhas';
-
-function resolveToolIdFromPath(pathname: string): string | null {
-  if (pathname === '/' || pathname === '') return null;
-  const tool = TOOLS.find((t) => `/${t.slug}` === pathname || t.aliases?.includes(pathname));
-  return tool?.id ?? null;
-}
+// Lazy loading das páginas institucionais
+const AboutPage = lazy(() =>
+  import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage }))
+);
+const ContactPage = lazy(() =>
+  import('./components/pages/ContactPage').then((m) => ({ default: m.ContactPage }))
+);
+const LegalCompliancePage = lazy(() =>
+  import('./components/pages/LegalCompliancePage').then((m) => ({ default: m.LegalCompliancePage }))
+);
 
 export default function App() {
-  // Static SEO content is baked into the pre-rendered HTML (outside #root) so crawlers with
-  // weak JS support see real content immediately. Once React mounts, its own interactive
-  // version (ToolInfoSection / BentoGrid teaser) takes over, so the static copy is removed
-  // to avoid showing the same content twice to real users.
-  useEffect(() => {
-    document.getElementById('prerendered-seo-content')?.remove();
-  }, []);
+  const [activeCategory, setActiveCategory] = useState<ToolCategory>('todos');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeToolId, setActiveToolId] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
+  const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [showingFavoritesOnly, setShowingFavoritesOnly] = useState(false);
 
-  // Dark mode setup
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('abobi_favorites');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('abobi_dark');
-    if (saved !== null) return JSON.parse(saved);
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('abobi_theme');
+      if (saved === 'dark' || saved === 'light') return saved === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
   });
 
   useEffect(() => {
-    localStorage.setItem('abobi_dark', JSON.stringify(darkMode));
+    const root = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      localStorage.setItem('abobi_theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      localStorage.setItem('abobi_theme', 'light');
     }
   }, [darkMode]);
 
-  // Favorites
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    const saved = localStorage.getItem('multitool_favs');
-    return saved ? JSON.parse(saved) : ['gerador-cpf', 'compressor-imagem', 'gerador-senhas'];
-  });
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
+
+  const getToolFromPath = (pathname: string): string | null => {
+    const path = pathname.replace(/\/$/, '') || '/';
+    if (path === '/') return null;
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+
+    const toolBySlug = TOOLS.find((t) => t.slug === cleanPath || t.id === cleanPath);
+    if (toolBySlug) return toolBySlug.id;
+
+    const toolByAlias = TOOLS.find((t) => t.aliases && t.aliases.includes(path));
+    if (toolByAlias) return toolByAlias.id;
+
+    return null;
+  };
 
   useEffect(() => {
-    localStorage.setItem('multitool_favs', JSON.stringify(favorites));
-  }, [favorites]);
+    const handleLocationChange = () => {
+      const toolId = getToolFromPath(window.location.pathname);
+      setActiveToolId(toolId);
+    };
+
+    handleLocationChange();
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const openTool = (toolId: string | null) => {
+    setActiveToolId(toolId);
+    setIsSearchOpen(false);
+    if (toolId) {
+      const tool = TOOLS.find((t) => t.id === toolId);
+      if (tool) {
+        window.history.pushState({}, '', `/${tool.slug}`);
+        document.title = `${tool.name} | abobiferramentas`;
+      }
+    } else {
+      window.history.pushState({}, '', '/');
+      document.title = 'abobiferramentas | Ferramentas Dev, Horários de Ônibus & Utilitários';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const toggleFavorite = (toolId: string, e?: MouseEvent) => {
     if (e) e.stopPropagation();
     setFavorites((prev) => {
-      const isFav = prev.includes(toolId);
-      if (isFav) {
-        addToast('Removido dos favoritos', 'info');
-        return prev.filter((id) => id !== toolId);
-      } else {
-        addToast('Adicionado aos favoritos!', 'success');
-        return [...prev, toolId];
-      }
+      const next = prev.includes(toolId) ? prev.filter((id) => id !== toolId) : [...prev, toolId];
+      localStorage.setItem('abobi_favorites', JSON.stringify(next));
+      return next;
     });
   };
 
-  // Toast System
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
   const addToast = (text: string, type: 'success' | 'info' | 'error' = 'success') => {
-    const id = String(Date.now());
+    const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, text, type }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -164,276 +218,207 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Search & Navigation
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const activeTool = TOOLS.find((t) => t.id === activeToolId);
 
-  // Cmd/Ctrl+K opens the search modal from anywhere (no dedicated navbar button anymore)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
-  const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<ToolCategory>('todos');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeToolId, setActiveToolId] = useState<string | null>(() =>
-    resolveToolIdFromPath(window.location.pathname)
-  );
-  const [showingFavoritesOnly, setShowingFavoritesOnly] = useState(false);
-
-  // Keep the URL, tab title and browser back/forward button in sync with the open tool (SEO deep-linking)
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveToolId(resolveToolIdFromPath(window.location.pathname));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  useEffect(() => {
-    const tool = TOOLS.find((t) => t.id === activeToolId);
-    document.title = tool ? `${tool.name} | abobiferramentas` : SITE_TITLE;
-
-    const description =
-      (tool ? tool.description : (seoContent as any).home?.description) ?? (seoContent as any).home?.description;
-    if (description) {
-      let tag = document.querySelector('meta[name="description"]');
-      if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute('name', 'description');
-        document.head.appendChild(tag);
-      }
-      tag.setAttribute('content', description);
-    }
-  }, [activeToolId]);
-
-  const closeTool = () => {
-    setActiveToolId(null);
-    if (window.location.pathname !== '/') {
-      window.history.pushState(null, SITE_TITLE, '/');
-    }
-  };
-
-  // Recent tools persisted locally in browser
-  const [recentTools, setRecentTools] = useState<string[]>(() => {
-    const saved = localStorage.getItem('abobi_recent_tools');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('abobi_recent_tools', JSON.stringify(recentTools));
-  }, [recentTools]);
-
-  const handleOpenTool = (toolId: string) => {
-    setActiveToolId(toolId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setRecentTools((prev) => [toolId, ...prev.filter((id) => id !== toolId)].slice(0, 6));
-
-    const tool = TOOLS.find((t) => t.id === toolId);
-    if (tool) window.history.pushState({ toolId }, tool.name, `/${tool.slug}`);
-  };
-
-  const currentTool = TOOLS.find((t) => t.id === activeToolId);
-
-  // Render proper tool component
-  const renderActiveToolComponent = () => {
+  const renderToolComponent = () => {
     switch (activeToolId) {
-      case 'apps-android':
-        return <AndroidApps onCopyToast={addToast} />;
       case 'onibus-mogi':
-        return <MogiBusSchedule />;
-      case 'gerador-cpf':
-      case 'validador-cpf':
-        return <CpfGeneratorValidator onCopyToast={addToast} />;
-      case 'gerador-cnpj':
-        return <CnpjGeneratorValidator onCopyToast={addToast} />;
-      case 'gerador-senhas':
-        return <PasswordGenerator onCopyToast={addToast} />;
-      case 'compressor-imagem':
-        return <ImageCompressor onCopyToast={addToast} />;
-      case 'contador-texto':
-        return <TextTools onCopyToast={addToast} />;
-      case 'gerador-curriculo':
-        return <ResumeBuilder onCopyToast={addToast} />;
-      case 'gerador-qrcode':
-        return <QrCodeGenerator onCopyToast={addToast} />;
+        return <BusSchedule initialCity="mogi" onCopyToast={addToast} />;
+      case 'onibus-sp':
+        return <BusSchedule initialCity="sp" onCopyToast={addToast} />;
+      case 'onibus-fortaleza':
+        return <BusSchedule initialCity="fortaleza" onCopyToast={addToast} />;
+      case 'onibus-ceara':
+        return <BusSchedule initialCity="ceara" onCopyToast={addToast} />;
       case 'formatador-json':
         return <JsonFormatter onCopyToast={addToast} />;
+      case 'formatador-sql':
+        return <SqlFormatter onCopyToast={addToast} />;
+      case 'conversor-json-yaml-csv':
+        return <JsonYamlCsvConverter onCopyToast={addToast} />;
+      case 'testador-regex':
+        return <RegexTester onCopyToast={addToast} />;
+      case 'decodificador-jwt':
+        return <JwtDecoder onCopyToast={addToast} />;
+      case 'conversor-cores':
+        return <ColorConverter onCopyToast={addToast} />;
+      case 'gerador-mock-data':
+        return <MockDataGenerator onCopyToast={addToast} />;
+      case 'gerador-meta-tags':
+        return <MetaTagGenerator onCopyToast={addToast} />;
+      case 'formatador-xml':
+        return <XmlFormatter onCopyToast={addToast} />;
+      case 'comparador-texto':
+        return <TextDiff onCopyToast={addToast} />;
       case 'gerador-uuid':
         return <UuidGenerator onCopyToast={addToast} />;
-      case 'link-whatsapp':
-        return <WhatsappLinkGenerator onCopyToast={addToast} />;
+      case 'base64-hash':
+        return <Base64HashTools onCopyToast={addToast} />;
+      case 'gerador-senhas':
+        return <PasswordGenerator onCopyToast={addToast} />;
+      case 'gerador-cpf':
+        return <CpfGeneratorValidator initialMode="generator" onCopyToast={addToast} />;
+      case 'validador-cpf':
+        return <CpfGeneratorValidator initialMode="validator" onCopyToast={addToast} />;
+      case 'gerador-cnpj':
+        return <CnpjGeneratorValidator onCopyToast={addToast} />;
+      case 'gerador-qrcode':
+        return <QrCodeGenerator onCopyToast={addToast} />;
+      case 'gerador-pix':
+        return <PixQrGenerator onCopyToast={addToast} />;
+      case 'contador-texto':
+        return <TextTools onCopyToast={addToast} />;
+      case 'limpador-exif':
+        return <ExifCleaner onCopyToast={addToast} />;
+      case 'conversor-imagem':
+        return <ImageConverter onCopyToast={addToast} />;
+      case 'compressor-imagem':
+        return <ImageCompressor onCopyToast={addToast} />;
+      case 'consulta-cep':
+        return <CepLookup onCopyToast={addToast} />;
+      case 'cofre-notas-local':
+        return <LocalNotesVault onCopyToast={addToast} />;
+      case 'calculadora-datas':
+        return <DateCalculator onCopyToast={addToast} />;
       case 'calculadoras':
         return <Calculators onCopyToast={addToast} />;
       case 'conversor-unidades':
         return <UnitConverter onCopyToast={addToast} />;
-      case 'base64-hash':
-        return <Base64HashTools onCopyToast={addToast} />;
-      case 'cofre-notas-local':
-        return <LocalNotesVault onCopyToast={addToast} />;
-      case 'limpador-exif':
-        return <ExifCleaner onCopyToast={addToast} />;
-      case 'gerador-pix':
-        return <PixQrGenerator onCopyToast={addToast} />;
-      case 'calculadora-datas':
-        return <DateCalculator onCopyToast={addToast} />;
-      case 'conversor-imagem':
-        return <ImageConverter onCopyToast={addToast} />;
-      case 'consulta-cep':
-        return <CepLookup onCopyToast={addToast} />;
-      case 'comparador-texto':
-        return <TextDiff onCopyToast={addToast} />;
+      case 'link-whatsapp':
+        return <WhatsappLinkGenerator onCopyToast={addToast} />;
+      case 'gerador-curriculo':
+        return <ResumeBuilder onCopyToast={addToast} />;
+      case 'sobre':
+        return <AboutPage />;
+      case 'contato':
+        return <ContactPage />;
+      case 'conformidade-legal':
+        return <LegalCompliancePage />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
-      {/* Navbar */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
       <Navbar
         darkMode={darkMode}
-        onToggleDarkMode={() => setDarkMode(!darkMode)}
+        onToggleDarkMode={toggleDarkMode}
         onOpenScratchpad={() => setIsScratchpadOpen(true)}
         onOpenPwaModal={() => setIsPwaModalOpen(true)}
         activeCategory={activeCategory}
         onSelectCategory={(cat) => {
           setActiveCategory(cat);
           setShowingFavoritesOnly(false);
-          if (activeToolId) closeTool();
+          if (activeToolId) openTool(null);
         }}
         favoriteCount={favorites.length}
-        recentToolsCount={recentTools.length}
+        recentToolsCount={0}
         onShowFavoritesOnly={() => {
           setShowingFavoritesOnly(!showingFavoritesOnly);
-          if (activeToolId) closeTool();
+          if (activeToolId) openTool(null);
         }}
         showingFavoritesOnly={showingFavoritesOnly}
-        onHomeClick={() => {
-          closeTool();
-          setShowingFavoritesOnly(false);
-        }}
+        onHomeClick={() => openTool(null)}
       />
 
-      {/* Main Content Area */}
       <main className="flex-1">
-        {activeToolId && currentTool ? (
-          /* TOOL EXECUTION VIEW WITH BREADCRUMB */
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6">
-            {/* Breadcrumb Header */}
-            <div className="flex items-center justify-between gap-4">
-              <button
-                onClick={closeTool}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-bold transition cursor-pointer"
-              >
-                <ArrowLeft className="w-4 h-4" /> Voltar para o Início
-              </button>
+        {activeTool ? (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            {/* TOOL HEADER BAR */}
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => openTool(null)}
+                  className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+                  title="Voltar para a lista de ferramentas"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                    {activeTool.name}
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                    {activeTool.description}
+                  </p>
+                </div>
+              </div>
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => toggleFavorite(currentTool.id)}
-                  className={`p-2.5 rounded-xl border transition cursor-pointer ${
-                    favorites.includes(currentTool.id)
-                      ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800 text-amber-500'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400'
-                  }`}
-                  title="Favoritar ferramenta"
+                  onClick={(e) => toggleFavorite(activeTool.id, e)}
+                  className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+                  title={favorites.includes(activeTool.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                 >
                   <Star
-                    className={`w-4 h-4 ${
-                      favorites.includes(currentTool.id) ? 'fill-amber-400 text-amber-400' : ''
+                    className={`w-5 h-5 ${
+                      favorites.includes(activeTool.id)
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-slate-400'
                     }`}
                   />
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    addToast('Link da ferramenta copiado!', 'success');
+                  }}
+                  className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+                  title="Compartilhar link"
+                >
+                  <Share2 className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            {/* Tool Title Banner */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-start gap-4">
-              <div className={`p-4 rounded-2xl ${currentTool.color.bgLight} ${currentTool.color.textLight} dark:bg-slate-800 shrink-0`}>
-                <Star className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  {currentTool.name}
-                </h1>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-                  {currentTool.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Render Tool View */}
+            {/* TOOL VIEW CONTAINER */}
             <Suspense
               fallback={
-                <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl">
-                  <div className="animate-pulse space-y-4">
-                    <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-2xl" />
-                    <div className="h-24 bg-slate-100 dark:bg-slate-800 rounded-2xl" />
-                    <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-2xl w-2/3" />
-                  </div>
+                <div className="flex flex-col items-center justify-center p-16 space-y-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-indigo-600 dark:text-indigo-400" />
+                  <p className="text-sm font-semibold text-slate-500">Carregando ferramenta...</p>
                 </div>
               }
             >
-              {renderActiveToolComponent()}
+              {renderToolComponent()}
             </Suspense>
-
-            {/* Real, unique text content per tool — helps search & ad-review crawlers see this isn't a blank screen */}
-            <ToolInfoSection toolId={currentTool.id} />
           </div>
         ) : (
-          /* HOMEPAGE BENTO GRID DASHBOARD */
-          <>
-            <BentoGrid
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onOpenTool={handleOpenTool}
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
-              showingFavoritesOnly={showingFavoritesOnly}
-            />
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-12">
-              <ToolInfoSection toolId="home" />
-            </div>
-          </>
+          <BentoGrid
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onOpenTool={openTool}
+            favorites={favorites}
+            onToggleFavorite={toggleFavorite}
+            showingFavoritesOnly={showingFavoritesOnly}
+          />
         )}
       </main>
 
-      {/* Footer */}
-      <Footer onOpenPwaModal={() => setIsPwaModalOpen(true)} />
+      <Footer onOpenPwaModal={() => setIsPwaModalOpen(true)} onOpenTool={openTool} />
 
-      {/* Global Command+K Search Modal */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onSelectTool={handleOpenTool}
+        onSelectTool={openTool}
         favorites={favorites}
       />
 
-      {/* Local Scratchpad & Privacy Manager */}
       <LocalScratchpadModal
         isOpen={isScratchpadOpen}
         onClose={() => setIsScratchpadOpen(false)}
         onToast={addToast}
       />
 
-      {/* PWA App Install Modal */}
       <PwaInstallModal
         isOpen={isPwaModalOpen}
         onClose={() => setIsPwaModalOpen(false)}
         onToast={addToast}
       />
 
-      {/* Toast Notification Popups */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );

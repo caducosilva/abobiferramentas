@@ -1,7 +1,6 @@
 import { MouseEvent } from 'react';
 import { Tool, ToolCategory } from '../types';
 import { TOOLS } from '../data/toolsData';
-import { AdSlot } from './AdSlot';
 import {
   IdCard,
   CheckCircle2,
@@ -23,11 +22,19 @@ import {
   Bus,
   Lock,
   ImageOff,
-  Smartphone,
   CalendarDays,
   RefreshCw,
   MapPin,
   GitCompare,
+  Database,
+  FileSpreadsheet,
+  Regex,
+  Key,
+  Palette,
+  Users,
+  Globe,
+  FileCode,
+  Scale,
 } from 'lucide-react';
 
 interface BentoGridProps {
@@ -44,16 +51,15 @@ interface BentoGridProps {
 const CATEGORIES: { id: ToolCategory; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'populares', label: 'Populares' },
-  { id: 'android', label: 'Android & APK' },
-  { id: 'financas', label: 'Pix & Finanças' },
-  { id: 'transportes', label: 'Transportes' },
+  { id: 'desenvolvimento', label: 'Desenvolvimento & Dev' },
+  { id: 'transportes', label: 'Ônibus & Horários' },
   { id: 'geradores', label: 'Geradores' },
   { id: 'validadores', label: 'Validadores' },
-  { id: 'texto', label: 'Texto & Documentos' },
-  { id: 'desenvolvimento', label: 'Dev & JSON' },
+  { id: 'financas', label: 'Pix & Finanças' },
+  { id: 'texto', label: 'Texto & Diff' },
   { id: 'imagem', label: 'Imagem' },
   { id: 'matematica', label: 'Matemática' },
-  { id: 'privacidade', label: 'Privacidade' },
+  { id: 'privacidade', label: 'Privacidade & Legal' },
 ];
 
 export function BentoGrid({
@@ -66,12 +72,12 @@ export function BentoGrid({
   onToggleFavorite,
   showingFavoritesOnly,
 }: BentoGridProps) {
-  // Helper to render icon based on name
   const renderIcon = (id: string) => {
     switch (id) {
-      case 'apps-android':
-        return <Smartphone className="w-6 h-6" />;
       case 'onibus-mogi':
+      case 'onibus-sp':
+      case 'onibus-fortaleza':
+      case 'onibus-ceara':
         return <Bus className="w-6 h-6" />;
       case 'gerador-cpf':
         return <IdCard className="w-6 h-6" />;
@@ -87,12 +93,30 @@ export function BentoGrid({
       case 'gerador-curriculo':
         return <FileText className="w-6 h-6" />;
       case 'gerador-qrcode':
+      case 'gerador-pix':
         return <QrCode className="w-6 h-6" />;
       case 'formatador-json':
         return <FileCode2 className="w-6 h-6" />;
+      case 'formatador-sql':
+        return <Database className="w-6 h-6" />;
+      case 'conversor-json-yaml-csv':
+        return <FileSpreadsheet className="w-6 h-6" />;
+      case 'testador-regex':
+        return <Regex className="w-6 h-6" />;
+      case 'decodificador-jwt':
+        return <Key className="w-6 h-6" />;
+      case 'conversor-cores':
+        return <Palette className="w-6 h-6" />;
+      case 'gerador-mock-data':
+        return <Users className="w-6 h-6" />;
+      case 'gerador-meta-tags':
+        return <Globe className="w-6 h-6" />;
+      case 'formatador-xml':
+        return <FileCode className="w-6 h-6" />;
       case 'gerador-uuid':
         return <Fingerprint className="w-6 h-6" />;
       case 'link-whatsapp':
+      case 'contato':
         return <MessageSquare className="w-6 h-6" />;
       case 'calculadoras':
         return <Calculator className="w-6 h-6" />;
@@ -104,8 +128,6 @@ export function BentoGrid({
         return <Lock className="w-6 h-6" />;
       case 'limpador-exif':
         return <ImageOff className="w-6 h-6" />;
-      case 'gerador-pix':
-        return <QrCode className="w-6 h-6" />;
       case 'calculadora-datas':
         return <CalendarDays className="w-6 h-6" />;
       case 'conversor-imagem':
@@ -114,6 +136,8 @@ export function BentoGrid({
         return <MapPin className="w-6 h-6" />;
       case 'comparador-texto':
         return <GitCompare className="w-6 h-6" />;
+      case 'conformidade-legal':
+        return <Scale className="w-6 h-6" />;
       default:
         return <Sparkles className="w-6 h-6" />;
     }
@@ -150,7 +174,7 @@ export function BentoGrid({
         <div className="relative max-w-[600px] mx-auto">
           <input
             type="text"
-            placeholder="Pesquise ex: APK open source, Pix, Gerador de CPF..."
+            placeholder="Pesquise ex: SQL, Regex, JWT, JSON, Diff, Cores, Ônibus SP, CPF..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-14 pr-6 py-4 rounded-[16px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] dark:shadow-none text-base outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -160,14 +184,6 @@ export function BentoGrid({
           </div>
         </div>
       </header>
-
-      {/* TOP AD BANNER (passive, never blocks any action) — hidden on empty search results so
-          Google never sees an ad sitting above a screen with no real content below it. */}
-      {filteredTools.length > 0 && (
-        <div className="max-w-3xl mx-auto px-4">
-          <AdSlot format="horizontal" />
-        </div>
-      )}
 
       {/* CATEGORY FILTER PILLS */}
       <div className="flex flex-wrap items-center justify-center gap-3 px-4 sm:px-10 pb-6 max-w-7xl mx-auto">
@@ -206,10 +222,10 @@ export function BentoGrid({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filteredTools.map((tool) => {
               const isFav = favorites.includes(tool.id);
-              const isHeroCard = tool.id === 'apps-android';
+              const isHeroCard = tool.id === 'formatador-json';
 
               if (isHeroCard && activeCategory === 'todos' && !showingFavoritesOnly && !searchQuery) {
-                /* HERO FEATURED CARD (Deep Indigo / Slate Geometric Card) */
+                /* HERO FEATURED CARD */
                 return (
                   <div
                     key={tool.id}
@@ -240,7 +256,7 @@ export function BentoGrid({
                     </div>
 
                     <div className="mt-8 flex items-center gap-2 text-sm font-semibold text-[#818cf8] group-hover:text-white transition">
-                      <span>TESTAR AGORA</span>
+                      <span>USAR AGORA</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
                     </div>
                   </div>
@@ -248,7 +264,6 @@ export function BentoGrid({
               }
 
               /* STANDARD GEOMETRIC CARD */
-              // Add special top accent border for Validador de CPF as in design reference
               const isGreenAccent = tool.id === 'validador-cpf';
 
               return (

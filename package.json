@@ -1,13 +1,12 @@
 {
   "name": "abobiferramentas",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.1.0",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
-    "scrape:apps": "node scripts/scrape-fdroid-catalog.mjs",
     "scrape:bus": "node scripts/scrape-mogi-bus.mjs"
   },
   "dependencies": {

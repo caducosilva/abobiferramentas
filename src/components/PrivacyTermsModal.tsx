@@ -54,35 +54,22 @@ export function PrivacyTermsModal({ isOpen, tab, onChangeTab, onClose }: Privacy
           <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Política de Privacidade</h3>
             <p>
-              O <strong>abobiferramentas</strong> respeita integralmente a sua privacidade. Operações como geração
-              de senhas, validação de documentos (CPF/CNPJ), formatação de código, compressão de imagem e geração
-              de hashes ocorrem <strong>exclusivamente no seu navegador</strong> — nenhum dado digitado ou gerado
-              é enviado aos nossos servidores.
+              O <strong>abobiferramentas</strong> respeita integralmente a sua privacidade. Operações como formatação
+              de JSON, comparação de código (Diff), geração de senhas, validação e geração de documentos (CPF/CNPJ),
+              compressão de imagem e cálculo de hashes ocorrem <strong>exclusivamente no seu navegador</strong>,
+              sem envio de dados para servidores externos.
             </p>
             <p>
               Utilizamos apenas o <code className="text-xs bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">localStorage</code> do
-              seu navegador para guardar preferências de tema (claro/escuro), ferramentas favoritas e notas do
-              bloco rápido local.
+              seu navegador para guardar preferências de tema (claro/escuro), ferramentas favoritas e anotações do
+              bloco rápido local criptografadas na sua máquina.
             </p>
             <p>
-              Duas ferramentas consultam dados de fora: a <strong>Consulta de CEP</strong>, que envia apenas o CEP
-              digitado para o serviço público ViaCEP, e o catálogo de <strong>Apps Android Open Source</strong>, que
-              lê no GitHub e no F-Droid qual é a versão atual de cada projeto. Nenhum arquivo APK é hospedado ou
-              intermediado por nós: o download acontece direto no servidor de origem.
+              Apenas a <strong>Consulta de CEP</strong> faz uma chamada de rede para a API pública do ViaCEP, enviando
+              exclusivamente os dígitos do CEP pesquisado.
             </p>
             <p>
-              Exibimos anúncios do Google AdSense, que pode utilizar cookies para personalizar anúncios relevantes.
-              Nossos anúncios nunca bloqueiam ou condicionam o uso de nenhuma ferramenta. Você pode gerenciar suas
-              preferências de anúncios em{' '}
-              <a
-                href="https://adssettings.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 underline"
-              >
-                adssettings.google.com
-              </a>
-              .
+              Este site é 100% livre de rastreadores invasivos e livre de anúncios publicitários.
             </p>
           </div>
         ) : (
@@ -91,10 +78,9 @@ export function PrivacyTermsModal({ isOpen, tab, onChangeTab, onClose }: Privacy
             <p>Ao utilizar o <strong>abobiferramentas</strong>, você concorda com os seguintes termos:</p>
             <ul className="list-disc list-inside space-y-1.5 pl-1">
               <li>As ferramentas de geração de CPF e CNPJ destinam-se exclusivamente a testes de sistemas e desenvolvimento de software.</li>
-              <li>Não nos responsabilizamos pelo uso indevido de dados gerados por terceiros.</li>
-              <li>O catálogo de apps Android lista apenas software de código aberto, com link para a fonte oficial de cada projeto; não hospedamos, modificamos nem redistribuímos nenhum APK, e a instalação é de responsabilidade do usuário.</li>
-              <li>Os horários de ônibus são informativos e podem sofrer alterações pelas operadoras sem aviso prévio.</li>
-              <li>Todas as ferramentas são fornecidas gratuitamente, "como estão", sem garantias de disponibilidade contínua.</li>
+              <li>Não nos responsabilizamos pelo uso indevido de dados gerados por terceiros em sistemas de produção.</li>
+              <li>Os horários de ônibus (Mogi das Cruzes, São Paulo, Fortaleza e Ceará) são informativos e podem sofrer alterações pelas operadoras sem aviso prévio.</li>
+              <li>Todas as ferramentas são fornecidas gratuitamente, "como estão", para fins educacionais e produtividade de desenvolvedores.</li>
             </ul>
           </div>
         )}

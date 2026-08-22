@@ -45,22 +45,16 @@ export function Navbar({
         {/* Category Quick Links (Desktop) */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-500 dark:text-slate-400">
           <button
-            onClick={() => onSelectCategory('android')}
+            onClick={() => onSelectCategory('desenvolvimento')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
           >
-            Apps Android
-          </button>
-          <button
-            onClick={() => onSelectCategory('financas')}
-            className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
-          >
-            Pix
+            Desenvolvimento
           </button>
           <button
             onClick={() => onSelectCategory('transportes')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
           >
-            Ônibus Mogi
+            Ônibus & Horários
           </button>
           <button
             onClick={() => onSelectCategory('geradores')}
@@ -75,16 +69,16 @@ export function Navbar({
             Validadores
           </button>
           <button
-            onClick={() => onSelectCategory('desenvolvimento')}
+            onClick={() => onSelectCategory('financas')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
           >
-            Desenvolvimento
+            Pix
           </button>
           <button
-            onClick={() => onSelectCategory('matematica')}
+            onClick={() => onSelectCategory('texto')}
             className="hover:text-slate-900 dark:hover:text-slate-100 transition cursor-pointer"
           >
-            Matemática
+            Texto & Diff
           </button>
         </nav>
 

@@ -1,15 +1,5 @@
 // Post-build step: generates a static index.html per indexed tool route inside dist/,
 // each with a unique <title>/description and a real, crawlable content block (outside #root).
-//
-// Why: this is a client-rendered SPA — every route used to serve the exact same generic
-// dist/index.html until React ran. Crawlers with weaker JS support (notably Google's AdSense
-// crawler, Mediapartners-Google) could see near-identical, low-content pages across all 16
-// indexed URLs, which is a known trigger for "low value content" / "ads on screens without
-// publisher content" policy flags. This script fixes that at the HTML level, with zero
-// runtime cost for real users (React still mounts into #root exactly as before).
-//
-// Keep the ROUTES list in sync with src/data/toolsData.ts (slug/name/description) whenever
-// a tool is added, renamed, or removed.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -22,29 +12,49 @@ const distDir = path.join(rootDir, 'dist');
 const seoContent = JSON.parse(await readFile(path.join(rootDir, 'src/data/seoContent.json'), 'utf-8'));
 
 const ROUTES = [
-  { id: 'apps-android', slug: 'apps-android-open-source', name: 'Apps Android Open Source', description: 'Mais de 5 mil apps de código aberto com ícone, nome real, versão e link direto do APK, tirados dos índices oficiais do F-Droid, IzzyOnDroid, Guardian Project e GitHub Releases.' },
+  // Transportes
   { id: 'onibus-mogi', slug: 'horarios-de-onibus-mogi', name: 'Horários de Ônibus de Mogi das Cruzes', description: 'Consulte horários, sentidos e itinerários de todas as linhas municipais SIM Mogi de Mogi das Cruzes.' },
+  { id: 'onibus-sp', slug: 'horarios-de-onibus-sp', name: 'Horários de Ônibus de São Paulo (SPTrans)', description: 'Consulte linhas troncais, estruturais e interterminais da capital de São Paulo com horários atualizados.' },
+  { id: 'onibus-fortaleza', slug: 'horarios-de-onibus-fortaleza', name: 'Horários de Ônibus de Fortaleza (Etufor)', description: 'Consulte horários e rotas expressas dos terminais Papicu, Messejana, Antônio Bezerra, Parangaba e Siqueira.' },
+  { id: 'onibus-ceara', slug: 'horarios-de-onibus-ceara', name: 'Horários de Ônibus do Ceará (Caucaia, Juazeiro, Sobral)', description: 'Linhas urbanas e metropolitanas de Caucaia (Bora de Graça), Juazeiro do Norte (Cariri), Sobral (TranSol) e Maracanaú.' },
+
+  // Desenvolvimento & Dev
+  { id: 'formatador-json', slug: 'formatador-de-json', name: 'Formatador & Validador JSON', description: 'Indente, valide sintaxe, minifique e explore arquivos JSON em árvore.' },
+  { id: 'formatador-sql', slug: 'formatador-de-sql', name: 'Formatador & Minificador SQL', description: 'Indente consultas SQL com palavras-chave em maiúsculas e minificação para código limpo.' },
+  { id: 'conversor-json-yaml-csv', slug: 'conversor-json-yaml-csv', name: 'Conversor JSON ↔ YAML ↔ CSV', description: 'Transforme dados entre JSON, tabelas CSV e arquivos de configuração YAML em tempo real.' },
+  { id: 'testador-regex', slug: 'testador-de-regex', name: 'Testador de Expressões Regulares (Regex)', description: 'Teste e depure expressões regulares com destaque visual de correspondências e flags.' },
+  { id: 'decodificador-jwt', slug: 'decodificador-de-jwt', name: 'Decodificador de JWT (JSON Web Token)', description: 'Inspecione header, payload e datas de expiração de tokens JWT sem enviar dados para a internet.' },
+  { id: 'gerador-mock-data', slug: 'gerador-de-dados-mock-faker', name: 'Gerador de Dados de Teste (Faker Mock)', description: 'Gere listas de usuários, CPFs válidos, emails, telefones e cargos em JSON, CSV ou SQL INSERTs.' },
+  { id: 'conversor-cores', slug: 'conversor-de-cores', name: 'Conversor de Cores & Contraste WCAG', description: 'Converta cores entre HEX, RGB, HSL e CMYK e verifique contraste de acessibilidade para interfaces.' },
+  { id: 'gerador-meta-tags', slug: 'gerador-de-meta-tags-seo', name: 'Gerador de Meta Tags SEO & Open Graph', description: 'Crie tags HTML para Google, Facebook, WhatsApp e Twitter com pré-visualização em tempo real.' },
+  { id: 'formatador-xml', slug: 'formatador-de-xml', name: 'Formatador & Validador XML / HTML', description: 'Indente arquivos XML, notas fiscais eletrônicas (NF-e) e documentos HTML estruturados.' },
+  { id: 'comparador-texto', slug: 'comparador-de-textos', name: 'Comparador de Textos (Diff)', description: 'Compare duas versões de um texto ou código e veja linha por linha o que foi adicionado e removido.' },
+  { id: 'gerador-uuid', slug: 'gerador-de-uuid', name: 'Gerador de UUID v4', description: 'Gere identificadores únicos universais (UUIDs) em lote ou individualmente.' },
+  { id: 'base64-hash', slug: 'base64-e-hash', name: 'Base64 & Gerador de Hash', description: 'Codifique/decodifique Base64, gere hashes SHA-1/SHA-256/SHA-512 de texto ou de arquivos direto no navegador.' },
+
+  // Geradores & Validadores
+  { id: 'gerador-senhas', slug: 'gerador-de-senha', name: 'Gerador de Senhas', description: 'Crie senhas ultra-seguras personalizadas com medidor de força criptográfico.' },
   { id: 'gerador-cpf', slug: 'gerador-de-cpf', name: 'Gerador de CPF', description: 'Gere CPFs válidos com ou sem pontuação para testes de software.' },
   { id: 'validador-cpf', slug: 'validador-de-cpf', name: 'Validador de CPF', description: 'Verifique a validade matemática do CPF com análise passo a passo.' },
   { id: 'gerador-cnpj', slug: 'gerador-de-cnpj', name: 'Gerador & Validador de CNPJ', description: 'Crie ou valide CNPJs de empresas formatados ou limpos para sistemas.' },
-  { id: 'gerador-senhas', slug: 'gerador-de-senha', name: 'Gerador de Senhas', description: 'Crie senhas ultra-seguras personalizadas com medidor de força.' },
-  { id: 'compressor-imagem', slug: 'compressor-de-imagem', name: 'Compressor de Imagem', description: 'Reduza o tamanho de PNG, JPG e WebP mantendo a qualidade visual no navegador.' },
-  { id: 'contador-texto', slug: 'contador-de-texto', name: 'Contador & Utilitários de Texto', description: 'Conte palavras e letras, e converta maiúsculas, minúsculas, camelCase e slug.' },
-  { id: 'gerador-curriculo', slug: 'gerador-de-curriculo', name: 'Gerador de Currículo ATS', description: 'Crie um currículo profissional formatado e otimizado para sistemas de triagem.' },
   { id: 'gerador-qrcode', slug: 'gerador-de-qr-code', name: 'Gerador de QR Code', description: 'Gere QR Codes para links, Wi-Fi, textos e WhatsApp com cores personalizadas.' },
-  { id: 'formatador-json', slug: 'formatador-de-json', name: 'Formatador & Validador JSON', description: 'Indente, valide sintaxe, minifique e explore arquivos JSON em árvore.' },
-  { id: 'gerador-uuid', slug: 'gerador-de-uuid', name: 'Gerador de UUID v4', description: 'Gere identificadores únicos universais (UUIDs) em lote ou individualmente.' },
-  { id: 'link-whatsapp', slug: 'gerador-de-link-whatsapp', name: 'Gerador de Link WhatsApp', description: 'Crie links diretos para conversas no WhatsApp com mensagem preenchida.' },
+  { id: 'gerador-pix', slug: 'gerador-de-pix-copia-e-cola', name: 'Gerador de Pix Copia e Cola', description: 'Crie o QR Code e o código Pix Copia e Cola da sua chave, com valor e descrição, tudo montado no navegador.' },
+  { id: 'contador-texto', slug: 'contador-de-texto', name: 'Contador & Utilitários de Texto', description: 'Conte palavras e letras, e converta maiúsculas, minúsculas, camelCase e slug.' },
+  { id: 'limpador-exif', slug: 'limpador-de-metadados-de-fotos', name: 'Limpador de Metadados de Fotos', description: 'Veja e remova dados EXIF (localização GPS, câmera, data) de fotos sem enviar a imagem para nenhum servidor.' },
+  { id: 'conversor-imagem', slug: 'conversor-de-imagem', name: 'Conversor de Imagem', description: 'Converta imagens entre WebP, JPG e PNG com controle de qualidade, sem enviar o arquivo para servidor.' },
+  { id: 'compressor-imagem', slug: 'compressor-de-imagem', name: 'Compressor de Imagem', description: 'Reduza o tamanho de PNG, JPG e WebP mantendo a qualidade visual no navegador.' },
+  { id: 'consulta-cep', slug: 'consulta-de-cep', name: 'Consulta de CEP', description: 'Descubra rua, bairro, cidade, estado, DDD e código IBGE a partir do CEP, com dados da base dos Correios.' },
+  { id: 'cofre-notas-local', slug: 'cofre-de-notas-local', name: 'Cofre de Notas Local', description: 'Guarde notas criptografadas com sua própria senha, salvas só no seu navegador, nunca no nosso servidor.' },
+  { id: 'calculadora-datas', slug: 'calculadora-de-datas', name: 'Calculadora de Datas & Idade', description: 'Calcule dias corridos e úteis entre duas datas, some ou subtraia prazos e descubra a idade exata.' },
   { id: 'calculadoras', slug: 'calculadora-de-porcentagem-e-imc', name: 'Calculadora de Porcentagem & IMC', description: 'Calcule porcentagens rápidas, variação percentual e Índice de Massa Corporal.' },
   { id: 'conversor-unidades', slug: 'conversor-de-unidades', name: 'Conversor de Unidades', description: 'Converta medidas de comprimento, peso, temperatura e tamanho de arquivos.' },
-  { id: 'base64-hash', slug: 'base64-e-hash', name: 'Base64 & Gerador de Hash', description: 'Codifique/decodifique Base64, gere hashes SHA-1/SHA-256/SHA-512 de texto ou de arquivos direto no navegador.' },
-  { id: 'cofre-notas-local', slug: 'cofre-de-notas-local', name: 'Cofre de Notas Local', description: 'Guarde notas criptografadas com sua própria senha, salvas só no seu navegador, nunca no nosso servidor.' },
-  { id: 'limpador-exif', slug: 'limpador-de-metadados-de-fotos', name: 'Limpador de Metadados de Fotos', description: 'Veja e remova dados EXIF (localização GPS, câmera, data) de fotos sem enviar a imagem para nenhum servidor.' },
-  { id: 'gerador-pix', slug: 'gerador-de-pix-copia-e-cola', name: 'Gerador de Pix Copia e Cola', description: 'Crie o QR Code e o código Pix Copia e Cola da sua chave, com valor e descrição, tudo montado no navegador.' },
-  { id: 'calculadora-datas', slug: 'calculadora-de-datas', name: 'Calculadora de Datas & Idade', description: 'Calcule dias corridos e úteis entre duas datas, some ou subtraia prazos e descubra a idade exata.' },
-  { id: 'conversor-imagem', slug: 'conversor-de-imagem', name: 'Conversor de Imagem', description: 'Converta imagens entre WebP, JPG e PNG com controle de qualidade, sem enviar o arquivo para servidor.' },
-  { id: 'consulta-cep', slug: 'consulta-de-cep', name: 'Consulta de CEP', description: 'Descubra rua, bairro, cidade, estado, DDD e código IBGE a partir do CEP, com dados da base dos Correios.' },
-  { id: 'comparador-texto', slug: 'comparador-de-textos', name: 'Comparador de Textos (Diff)', description: 'Compare duas versões de um texto ou código e veja linha por linha o que foi adicionado e removido.' },
+  { id: 'link-whatsapp', slug: 'gerador-de-link-whatsapp', name: 'Gerador de Link WhatsApp', description: 'Crie links diretos para conversas no WhatsApp com mensagem preenchida.' },
+  { id: 'gerador-curriculo', slug: 'gerador-de-curriculo', name: 'Gerador de Currículo ATS', description: 'Crie um currículo profissional formatado e otimizado para sistemas de triagem.' },
+
+  // Páginas Institucionais & Legais
+  { id: 'sobre', slug: 'sobre', name: 'Sobre o abobiferramentas', description: 'Conheça a história, princípios e missão do portal abobiferramentas.' },
+  { id: 'contato', slug: 'contato', name: 'Contato & Redes Oficiais', description: 'Canais oficiais de contato com Caduco Silva: GitHub e LinkedIn.' },
+  { id: 'conformidade-legal', slug: 'conformidade-legal', name: 'Bases Legais & Conformidade Jurídica', description: 'Fundamentação técnica sobre a legalidade das ferramentas, Marco Civil da Internet e LGPD.' },
 ];
 
 const SITE_URL = 'https://abobiferramentas.com';
@@ -72,8 +82,6 @@ function buildContentBlock(name, description, entry) {
   </section>`;
 }
 
-// Matches the whole tag by its identifying attribute regardless of attribute order or
-// whether the tag is written on one line or split across several (index.html has both).
 function replaceTag(html, identifyingAttr, replacementTag) {
   const pattern = new RegExp(`<(meta|link)\\s[^>]*${identifyingAttr}[\\s\\S]*?\\/>`, '');
   return html.replace(pattern, replacementTag);
@@ -100,61 +108,64 @@ function injectContentAfterRoot(html, contentBlock) {
   return html.replace('<div id="root"></div>', `<div id="root"></div>\n${contentBlock}`);
 }
 
-// Marcação FAQPage do schema.org. O Google só aceita quando as mesmas perguntas e respostas estão
-// visíveis na página, e estão: são as mesmas do bloco <details> gerado acima e do ToolInfoSection.
-// Vale porque é o tipo de dado estruturado que rende resultado expandido na busca.
-function buildFaqJsonLd(entry) {
-  const faq = entry?.faq ?? [];
-  if (faq.length === 0) return '';
-
+function buildFaqStructuredData(canonicalUrl, faq) {
+  if (!faq || faq.length === 0) return '';
   const data = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faq.map((item) => ({
       '@type': 'Question',
       name: item.q,
-      acceptedAnswer: { '@type': 'Answer', text: item.a },
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
     })),
   };
-
-  // Uma resposta que contivesse "</script>" fecharia a tag antes da hora e quebraria o HTML.
-  const json = JSON.stringify(data).replace(/<\//g, '<\\/');
-  return `<script type="application/ld+json">${json}</script>`;
+  return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2)}\n</script>`;
 }
 
-function injectIntoHead(html, tag) {
-  if (!tag) return html;
-  return html.replace('</head>', `  ${tag}\n  </head>`);
+function injectFaqSchema(html, scriptTag) {
+  if (!scriptTag) return html;
+  return html.replace('</head>', `${scriptTag}\n</head>`);
 }
 
 async function main() {
-  const template = await readFile(path.join(distDir, 'index.html'), 'utf-8');
+  const templatePath = path.join(distDir, 'index.html');
+  const template = await readFile(templatePath, 'utf-8');
 
-  // Homepage: inject a static teaser too, so "/" itself isn't blank pre-hydration.
+  // 1. Homepage
   const homeEntry = seoContent.home;
+  let homeHtml = patchHead(template, {
+    title: homeEntry?.title ?? 'abobiferramentas | Ferramentas Dev, Horários de Ônibus & Utilitários',
+    description: homeEntry?.description ?? '',
+    canonicalPath: '/',
+  });
   const homeBlock = buildContentBlock('abobiferramentas', homeEntry?.description ?? '', homeEntry);
-  const homeHtml = injectIntoHead(
-    injectContentAfterRoot(template, homeBlock),
-    buildFaqJsonLd(homeEntry)
-  );
-  await writeFile(path.join(distDir, 'index.html'), homeHtml, 'utf-8');
+  homeHtml = injectContentAfterRoot(homeHtml, homeBlock);
+  const homeFaqScript = buildFaqStructuredData(SITE_URL, homeEntry?.faq);
+  homeHtml = injectFaqSchema(homeHtml, homeFaqScript);
+  await writeFile(templatePath, homeHtml, 'utf-8');
 
+  // 2. Tool routes
   for (const route of ROUTES) {
+    const routeDir = path.join(distDir, route.slug);
+    await mkdir(routeDir, { recursive: true });
+
     const entry = seoContent[route.id];
-    const contentBlock = buildContentBlock(route.name, route.description, entry);
-    const patched = patchHead(template, {
+    let pageHtml = patchHead(template, {
       title: route.name,
       description: route.description,
       canonicalPath: `/${route.slug}`,
     });
-    const html = injectIntoHead(
-      injectContentAfterRoot(patched, contentBlock),
-      buildFaqJsonLd(entry)
-    );
 
-    const outDir = path.join(distDir, route.slug);
-    await mkdir(outDir, { recursive: true });
-    await writeFile(path.join(outDir, 'index.html'), html, 'utf-8');
+    const contentBlock = buildContentBlock(route.name, route.description, entry);
+    pageHtml = injectContentAfterRoot(pageHtml, contentBlock);
+
+    const faqScript = buildFaqStructuredData(`${SITE_URL}/${route.slug}`, entry?.faq);
+    pageHtml = injectFaqSchema(pageHtml, faqScript);
+
+    await writeFile(path.join(routeDir, 'index.html'), pageHtml, 'utf-8');
   }
 
   console.log(`[prerender] generated ${ROUTES.length} static tool pages + homepage teaser in dist/`);
