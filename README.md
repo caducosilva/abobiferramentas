@@ -1,131 +1,93 @@
 # abobiferramentas
 
-Conjunto de utilitários e ferramentas web para automação de tarefas cotidianas e produtividade.
+Suíte de ferramentas web gratuitas, abertas e utilitários para desenvolvedores e cidadãos, com execução 100% no navegador (client-side), sem coleta de dados e sem anúncios.
 
 ---
 
-## O problema
+## O que é o projeto
 
-1. **O que é:** O **abobiferramentas** é um portal de ferramentas e utilitários web construído em Vite + React + TypeScript, com um punhado de funções serverless na Vercel para o que precisa consultar dados de fora.
-2. **Qual necessidade ataca:** Simplifica a execução de conversões, geradores e automações rápidas sem necessidade de instalar softwares pesados no computador.
-3. **Por que existe:** Muitas ferramentas online gratuitas na web estão lotadas de anúncios abusivos ou exigem cadastro. Esta suíte foi criada para ser direta, limpa e eficiente.
-4. **Qual o objetivo:** Oferecer um painel único com ferramentas de alta utilidade acessíveis instantaneamente pelo navegador.
+O **abobiferramentas** é um portal construído em React 19 + TypeScript + Vite + Tailwind CSS, projetado para oferecer ferramentas essenciais de desenvolvimento de software, validação de dados, manipulação de texto e consulta de mobilidade urbana (São Paulo, Mogi das Cruzes, Fortaleza e cidades do Ceará) com privacidade total e carregamento instantâneo.
 
 ---
 
-## Recursos
+## Recursos & Ferramentas Integradas
 
-- ✅ **Ferramentas Integradas:** Geradores (CPF, CNPJ, senha, UUID, QR Code, Pix Copia e Cola), validadores, calculadoras, utilitários de texto, comparador de textos, conversor e compressor de imagem, formatador de JSON, Base64 e hashes.
-- ✅ **Catálogo de Apps Android Open Source:** Mil aplicativos de código aberto com link direto do APK na fonte oficial, divididos em destaques comentados (versão consultada em tempo real no GitHub Releases e no F-Droid) e catálogo completo com busca e filtro por categoria.
-- ✅ **Privacidade por padrão:** A maioria das ferramentas roda inteiramente no navegador. Cofre de notas com criptografia AES-GCM e limpador de metadados EXIF nunca enviam nada para fora.
-- ✅ **Dados locais de Mogi das Cruzes:** Horários e itinerários reais das linhas municipais SIM Mogi.
-- ✅ **Interface Limpa:** Anúncios sempre passivos, nunca bloqueando o uso de nenhuma ferramenta.
+### Desenvolvimento & Engenharia de Software
+- **Formatador & Validador JSON:** Indentação, visualização em árvore e minificação rápida.
+- **Formatador & Minificador SQL:** Indentação de queries SQL com palavras-chave em maiúsculas.
+- **Conversor JSON ↔ YAML ↔ CSV:** Conversão bidirecional entre estruturas de dados e tabelas.
+- **Testador de Expressões Regulares (Regex):** Teste com flags (g, i, m, s) e destaque visual de matches em tempo real.
+- **Decodificador de JWT (JSON Web Token):** Inspeção local de header, payload e datas de expiração.
+- **Gerador de Massa de Dados (Faker Mock):** Criação de listas de usuários para testes em JSON, CSV e SQL INSERTs.
+- **Conversor de Cores & WCAG:** Conversão HEX, RGB, HSL, CMYK e índice de contraste de acessibilidade.
+- **Gerador de Meta Tags SEO & Open Graph:** Criação de tags com prévia em tempo real para Google e redes sociais.
+- **Formatador & Validador XML / HTML:** Estruturação hierárquica de arquivos XML e notas fiscais eletrônicas (NF-e).
+- **Comparador de Textos (Diff):** Comparação linha a linha (algoritmo LCS / git diff).
+- **Gerador de UUID v4:** Geração em lote via Web Crypto API nativa.
+- **Base64 & Hashes Criptográficos:** Codificação/decodificação e cálculo de SHA-1, SHA-256 e SHA-512 de textos ou arquivos.
 
-### Sobre o catálogo de APK
+### Geradores, Validadores & Finanças
+- **Gerador de Senhas Seguras:** Geração com medidor de força e entropia criptográfica.
+- **Gerador & Validador de CPF e CNPJ:** Fórmulas matemáticas de Módulo 11 para testes unitários e homologação de sistemas.
+- **Gerador de QR Code:** Criação personalizável para links, textos, Wi-Fi e WhatsApp.
+- **Gerador de Pix Copia e Cola:** Montagem de BR Code estático do Banco Central direto no navegador.
+- **Consulta de CEP:** Integração direta com a base pública aberta do ViaCEP.
 
-Só entra software de código aberto cuja licença permite a redistribuição, e o download aponta sempre para o servidor de origem: nenhum APK é hospedado, modificado ou intermediado por este projeto. Não há espelho de app pago desbloqueado nem de mod de aplicativo proprietário, tanto por ser distribuição ilegal quanto porque arquivo recompactado por terceiro é o vetor mais comum de malware no Android.
+### Utilidades & Imagem
+- **Contador & Manipulador de Texto:** Contagem de palavras/caracteres e conversão de caixas (camelCase, slug, etc.).
+- **Limpador de Metadados EXIF:** Visualização e remoção de dados de geolocalização (GPS) de fotos no navegador.
+- **Conversor & Compressor de Imagens:** Suporte a WebP, JPG e PNG com ajuste de qualidade local.
+- **Cofre de Notas Local:** Criptografia AES-GCM com senha mestra salva exclusivamente no dispositivo.
+- **Calculadoras:** Datas, idade, porcentagem e IMC.
+- **Gerador de Currículo ATS:** Modelo formatado e otimizado para triagem automatizada.
 
-As fontes são todas públicas e oficiais:
-
-| Fonte | O que fornece |
-| --- | --- |
-| GitHub Releases | Asset `.apk` publicado pelo próprio desenvolvedor, consultado em tempo real por `api/app-releases.js` |
-| F-Droid | Índice oficial do repositório, com URL de APK estável |
-| IzzyOnDroid | Repositório em formato F-Droid, cobre projetos que não estão no oficial |
-| Guardian Project | Repositório oficial do Orbot, Tor Browser e afins |
-| microG | Repositório oficial do microG |
-
-O catálogo grande é gerado por script e commitado, porque os índices desses repositórios somam quase 70 MB e não faria sentido baixar isso em runtime. Para atualizar:
-
-```bash
-npm run scrape:apps
-```
-
-A saída vai para `public/apps/` fatiada em shards de 800 apps, não para `src/`: assim são arquivos estáticos servidos pela CDN e buscados sob demanda, em vez de entrarem no bundle. A página busca `meta.json`, dispara os shards em paralelo e vai renderizando conforme cada pedaço chega, com o shard 0 já trazendo os apps mais notórios.
-
-Sobre o APKMirror: não entra no catálogo por um motivo técnico antes de qualquer outro. Eles geram o link de download atrás de uma página intermediária, com token amarrado à sessão de quem clicou, então link direto copiado de lá pararia de funcionar em poucas horas. Onde o APKMirror é realmente necessário, que é pegar o APK original do YouTube antes de aplicar os patches, o link para a página deles está no guia do ReVanced na própria página.
-
-O script reordena a lista por notoriedade. Como nenhum repositório F-Droid divulga número de downloads, o critério é a quantidade de idiomas em que cada app foi traduzido pela comunidade, que separa bem app conhecido de app obscuro (NewPipe tem 98 idiomas e Organic Maps 95, contra mediana de 2 no repositório inteiro), com empate decidido pela data da última atualização. Ele também descarta automaticamente app de conteúdo adulto, já que o site é de uso geral.
-
-Sobre ReVanced: o projeto não distribui o YouTube modificado pronto, porque o APK do YouTube é da Google e republicá-lo alterado seria violação de direito autoral. O que o catálogo traz é o ReVanced Manager e o GmsCore (microG), que é o caminho oficial: o app modificado é gerado no próprio aparelho do usuário, a partir do APK original.
+### Mobilidade Urbana & Horários de Ônibus
+- **Mogi das Cruzes (SIM Mogi):** Grade horária completa das 83 linhas municipais.
+- **São Paulo (SPTrans):** Linhas estruturais, troncais e interterminais da capital.
+- **Fortaleza (Etufor / Sindiônibus):** Linhas expressas dos terminais Papicu, Messejana, Antônio Bezerra, Parangaba e Siqueira.
+- **Ceará Regional:** Linhas de Caucaia (Bora de Graça com Tarifa Zero), Juazeiro do Norte (Cariri) e Sobral (TranSol).
 
 ---
 
-## Instalação
+## Privacidade & Conformidade Jurídica
+
+- **Zero Coleta em Servidores:** Todas as operações ocorrem na memória volátil do navegador ou no cache local.
+- **Conformidade Legal:** Amparado pela LGPD (Lei nº 13.709/2018), Marco Civil da Internet (Lei nº 12.965/2014) e Lei de Acesso à Informação (Lei nº 12.527/2011).
+- **Sem Anúncios:** Experiência limpa sem banners, popups ou rastreadores de terceiros.
+
+---
+
+## Como Executar Localmente
 
 ### Pré-requisitos
-- Node.js v18.0.0 ou superior
+- Node.js 18+
 - npm
 
-### Comandos de instalação
 ```bash
+# Clonar o repositório
 git clone https://github.com/caducosilva/abobiferramentas.git
 cd abobiferramentas
+
+# Instalar dependências
 npm install
-```
 
----
-
-## Como usar
-
-Execute o servidor de desenvolvimento localmente:
-```bash
+# Iniciar ambiente de desenvolvimento
 npm run dev
-```
-Abra o navegador em `http://localhost:3000`.
 
-Para gerar a build de produção (inclui o passo de prerender das páginas de cada ferramenta):
-```bash
+# Gerar build de produção com pré-renderização estática (36 rotas)
 npm run build
 ```
 
-As funções em `api/` são serverless da Vercel e não sobem com o `vite dev`. Para testá-las localmente, use `vercel dev`.
-
 ---
 
-## Configuração
+## Contato & Autor
 
-| Variável | Descrição | Valor Padrão |
-|---|---|---|
-| `PORT` | Porta do servidor HTTP | `3000` |
-| `NODE_ENV` | Ambiente de execução (`development`/`production`) | `development` |
-
----
-
-## Detalhes técnicos relevantes
-
-- **Arquitetura:** Frontend responsivo em HTML5/CSS3 com servidor backend Node.js.
-- **Desempenho:** Carregamento inicial em ~0.4s.
-
----
-
-## Testes
-
-Para rodar os testes automatizados:
-```bash
-npm test
-```
-
----
-
-## Problemas comuns
-
-| Mensagem de erro | Causa provável | Solução |
-|---|---|---|
-| `Error: listen EADDRINUSE :::3000` | A porta 3000 já está em uso por outro aplicativo | Altere a variável `PORT` no ambiente ou encerre o processo anterior |
-
----
-
-## Apoie o projeto
-
-Se este projeto te ajudou, considere fazer uma doação via PIX:
-
-```
-f74458dc-2a36-49bd-9250-1cef4365ebb8
-```
+Desenvolvido por **Caduco Silva**:
+- **GitHub:** [github.com/caducosilva](https://github.com/caducosilva)
+- **LinkedIn:** [linkedin.com/in/caducosilva](https://linkedin.com/in/caducosilva)
 
 ---
 
 ## Licença
 
-[MIT](LICENSE) — Carlos Eduardo
+[MIT](LICENSE) — Software Livre para a comunidade.
